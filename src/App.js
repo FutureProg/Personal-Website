@@ -1,17 +1,28 @@
 import './App.css';
 import collageImage from './images/Collage.png'
+import icon from './images/icon.png'
 
 function App() {
   return (
     <div className="App">
+      <nav>
+        <img src={icon} alt='website logo, a butterfly with the wings spelling N and M'/>
+        <ul>
+          <li>
+            <a href='https://blog.nickmorrison.me/'>Blog</a>
+          </li>
+        </ul>
+      </nav>
+
       <div className="content">
 
         {/* About Section */}
-        <h1>About Nick</h1>
+        <h1>Nick Morrison</h1>
         <div className='about'>
           <div className='about-content'>
+          <img className='collage' src={collageImage} alt='collage of images showing Nicks hobbies, the city of Burlington, and his dog charlie' />
             <p>
-              Using my understanding analytics, machine learning, business, software development, and design, I am working towards making a positive impact on people.
+              Using my understanding analytics, machine learning, business, software development, and design, I am working towards making a positive impact on people by <i>Building what Matters</i>.
             </p>
             <div className='bullets'>
               <p>
@@ -37,14 +48,14 @@ function App() {
               </p>
             </div>
             <p>
-              Email: <a href='mailto:nickmorrison09@gmail.com'>nickmorrison09@gmail.com</a><br/>
-              Github: <a href="https://github.com/FutureProg">github.com/FutureProg</a><br/>
+              <strong>Email:</strong> <a href='mailto:nickmorrison09@gmail.com'>nickmorrison09@gmail.com</a><br/>
+              <strong>Github:</strong> <a href="https://github.com/FutureProg">github.com/FutureProg</a><br/>
               <a href='Resume_2.pdf'>Download Resume Here</a>
             </p>
           </div>
-          <div className='collage'>
-            <img className='collage' src={collageImage} alt='collage of images showing Nicks hobbies, the city of Burlington, and his dog charlie' />
-          </div>
+          {/* <div className='collage'> */}
+            
+          {/* </div> */}
         </div>
       </div>
     </div>
