@@ -41,8 +41,9 @@ function App() {
                 </ul>
               </p>
               <p>
-                <strong>Current Occupation:</strong>
+                <strong>Occupations:</strong>
                 <ul>
+                  <li>🤓 software developer</li>
                   <li>🤓 data scientist</li>
                 </ul>
               </p>
@@ -50,7 +51,9 @@ function App() {
             <p>
               <strong>Email:</strong> <a href='mailto:nickmorrison09@gmail.com'>nickmorrison09@gmail.com</a><br/>
               <strong>Github:</strong> <a href="https://github.com/FutureProg">github.com/FutureProg</a><br/>
-              <a href='Resume_2.pdf'>Download Resume Here</a>
+              <b>Resumes:</b><br/>
+              <a href='Resume_software.pdf'>Software Resume</a><br/>
+              <a href='Resume_data.pdf'>Data Scientist Resume</a>
             </p>
           </div>
           {/* <div className='collage'> */}
