@@ -6,12 +6,7 @@ function App() {
   return (
     <div className="App">
       <nav>
-        <img src={icon} alt='website logo, a butterfly with the wings spelling N and M'/>
-        <ul>
-          <li>
-            <a href='https://blog.nickmorrison.me/'>Blog</a>
-          </li>
-        </ul>
+        <img src={icon} alt='website logo, a butterfly with the wings spelling N and M'/>        
       </nav>
 
       <div className="content">
