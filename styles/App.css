@@ -7,12 +7,31 @@ main {
 .about {
   position: relative;
   grid-area: content / main;
-  /* display: grid;
-  grid-template-columns: auto auto; */
-  /* display: flex;
-  justify-content: space-between;
-  flex-flow: row;
-  flex-wrap: wrap; */
+  
+  display: grid;
+  grid-template-columns: 1fr 1fr;  
+  column-gap: 16px;
+  container-name: about-section;
+  container-type: inline-size;
+
+  .about-content {
+    grid-area: 1 / 1;
+
+    @container about-section (max-width:800px) {
+      grid-column: 1 / span 2;
+    }
+  }
+
+  .collage { 
+    align-self: stretch;
+    object-fit: cover;
+    max-width: 100%;
+    grid-area: 1 / 2; 
+
+    @container about-section (max-width: 800px) {
+      display: none;
+    }
+  }
 }
 
 .about .bullets {
@@ -24,22 +43,4 @@ main {
 
 .about .bullets ul li {
   list-style: none;
-}
-/* 
-.collage {
-  width: 100%;
-} */
-.collage {
-  float: right;
-  width: 50%;
-  margin-left: 16px;
-  /* width: 300px;
-  height: auto; */
-}
-
-@media screen and (max-width: 760px) {
-  .collage {
-    float: none;
-    display: none;
-  }
 }
