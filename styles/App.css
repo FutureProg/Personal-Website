@@ -1,11 +1,12 @@
 main {
-  margin: 64px 20%;
-  min-height: calc(100vh - 64px * 2);
-  /* border: 1px solid black; */
+  display: grid;
+  grid: subgrid / subgrid;
+  grid-area: content / main;
 }
 
 .about {
   position: relative;
+  grid-area: content / main;
   /* display: grid;
   grid-template-columns: auto auto; */
   /* display: flex;
@@ -36,28 +37,7 @@ main {
   height: auto; */
 }
 
-@media screen and (min-width: 1600px) {
-  .content {
-    margin: 64px 30%;
-  }
-}
-
-@media screen and (max-width: 1400px) {
-  .content {
-    margin: 64px 10%;
-  }
-}
-
-@media screen and (max-width: 1200px) {
-  .content {
-    margin: 64px 16px;
-  }
-}
-
 @media screen and (max-width: 760px) {
-  .content {
-    margin: 64px 16px;
-  }
   .collage {
     float: none;
     display: none;
