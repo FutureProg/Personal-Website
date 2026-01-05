@@ -7,9 +7,9 @@ main {
 .about {
   position: relative;
   grid-area: content / main;
-  
+
   display: grid;
-  grid-template-columns: 1fr 1fr;  
+  grid-template-columns: 1fr 1fr;
   column-gap: 16px;
   container-name: about-section;
   container-type: inline-size;
@@ -22,11 +22,11 @@ main {
     }
   }
 
-  .collage { 
+  .collage {
     align-self: stretch;
     object-fit: cover;
     max-width: 100%;
-    grid-area: 1 / 2; 
+    grid-area: 1 / 2;
 
     @container about-section (max-width: 800px) {
       display: none;
@@ -41,14 +41,16 @@ main {
     column-gap: 24px;
 
     .bullet-heading {
-      grid-row: 1;      
+      grid-row: 1;
     }
+
     ul {
       grid-row: 2;
       padding-inline-start: 0;
       margin-block-start: 0;
       margin-block-end: 0;
     }
+
     ul li {
       list-style: none;
     }
