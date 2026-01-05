@@ -4,6 +4,17 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  display: grid;
+  grid-template-columns: 
+    [fullbleed-start] minmax(16px, 1fr)
+    [main-start] minmax(auto,1200px)
+    [main-end] minmax(16px, 1fr) 
+    [fullbleed-end];  
+  grid-template-rows: 
+    [nav] auto
+    [content] auto
+    [footer] auto;
 }
 
 
@@ -31,7 +42,7 @@ p {
   color: #000000;
 }
 
-nav {
+header {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -39,29 +50,12 @@ nav {
   padding: 16px 20%;
   border: 1px solid rgb(216, 216, 216);
   height: 48px;
-}
-nav img {
-  display: block;
-  height: 100%;
-}
-nav ul {
-  text-align: right;
 
-  list-style: none;
-  margin-block: 0;
-  margin-inline-end: 0;
-  margin-inline-end: 0;
-  padding-inline-start: 0;
-}
-nav li a{
-  color: #000;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
-  line-height: 24px;
-  /* identical to box height, or 133% */
-  text-decoration-line: underline;
-  color: #000000;
+  img {
+    display: block;
+    height: 100%;
+  }
+
 }
 
 

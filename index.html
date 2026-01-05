@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <link rel="icon" href="favicon.ico" />
-  <link rel="stylesheet" href="src/App.css" />
-  <link rel="stylesheet" href="src/index.css" />  
+  <link rel="stylesheet" href="styles/index.css" />
+  <link rel="stylesheet" href="styles/App.css" />  
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <meta name="description" content="Nick Morrison - Building What Matters" />
@@ -13,55 +13,53 @@
 </head>
 
 <body>
-  <div class="App">
-    <nav>
-      <img src="src/images/icon.png" alt='website logo, a butterfly with the wings spelling N and M' />
-    </nav>
+  <header>
+    <img src="/images/icon.png" alt='website logo, a butterfly with the wings spelling N and M' />
+  </header>
 
-    <div class="content">
+  <main class="content">
 
-      <!-- {/* About Section */} -->
-      <h1>Nick Morrison</h1>
-      <div class='about'>
-        <div class='about-content'>
-          <img class='collage' src="src/images/Collage.png"
-            alt='collage of images showing Nicks hobbies, the city of Burlington, and his dog charlie' />
+    <!-- {/* About Section */} -->
+    <h1>Nick Morrison</h1>
+    <div class='about'>
+      <div class='about-content'>
+        <img class='collage' src="/images/Collage.png"
+          alt='collage of images showing Nicks hobbies, the city of Burlington, and his dog charlie' />
+        <p>
+          Using my understanding analytics, machine learning, business, software development, and design, I am working
+          towards making a positive impact on people by <i>Building what Matters</i>.
+        </p>
+        <div class='bullets'>
           <p>
-            Using my understanding analytics, machine learning, business, software development, and design, I am working
-            towards making a positive impact on people by <i>Building what Matters</i>.
+            <strong>Passions:</strong>
+          <ul>
+            <li>🏙️ urban design</li>
+            <li>🌲 environmentalism</li>
+          </ul>
           </p>
-          <div class='bullets'>
-            <p>
-              <strong>Passions:</strong>
-            <ul>
-              <li>🏙️ urban design</li>
-              <li>🌲 environmentalism</li>
-            </ul>
-            </p>
-            <p style="grid-row: 1 /span 2; grid-column: 2;">
-              <strong>Hobbies:</strong>
-            <ul>
-              <li>🎮 video games</li>
-              <li>✍️ writing</li>
-              <li>💖 volunteering</li>
-            </ul>
-            </p>
-            <p>
-              <strong>Occupations:</strong>
-            <ul>
-              <li>🤓 software developer</li>
-              <li>🤓 data scientist</li>
-            </ul>
-            </p>
-          </div>
+          <p style="grid-area: 1 /span 2; grid-column: 2;">
+            <strong>Hobbies:</strong>
+          <ul>
+            <li>🎮 video games</li>
+            <li>✍️ writing</li>
+            <li>💖 volunteering</li>
+          </ul>
+          </p>
           <p>
-            <strong>Email:</strong> <a href='mailto:nickmorrison09@gmail.com'>nickmorrison09@gmail.com</a><br />
-            <strong>Github:</strong> <a href="https://github.com/FutureProg">github.com/FutureProg</a><br />
+            <strong>Occupations:</strong>
+          <ul>
+            <li>🤓 software developer</li>
+            <li>🤓 data scientist</li>
+          </ul>
           </p>
         </div>
+        <p>
+          <strong>Email:</strong> <a href='mailto:nickmorrison09@gmail.com'>nickmorrison09@gmail.com</a><br />
+          <strong>Github:</strong> <a href="https://github.com/FutureProg">github.com/FutureProg</a><br />
+        </p>
       </div>
     </div>
-  </div>
+  </main>
 </body>
 
 </html>

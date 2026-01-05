@@ -1,4 +1,4 @@
-.content {
+main {
   margin: 64px 20%;
   min-height: calc(100vh - 64px * 2);
   /* border: 1px solid black; */
