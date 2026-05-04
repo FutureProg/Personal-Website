@@ -1,0 +1,35 @@
+.statusToken {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 4px 8px;
+    gap: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--status-color);
+    background-color: color-mix(in srgb, var(--status-color) 30%, transparent);
+    box-sizing: border-box;
+}
+
+.label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1;
+    color: #000000;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--status-color);
+    flex-shrink: 0;
+}
+
+.live {
+    --status-color: #FD1B1B;
+}
+
+.offline {
+    --status-color: #8C8C8C;
+}
