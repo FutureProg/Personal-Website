@@ -1,4 +1,5 @@
 .statusToken {
+    --animation: blink 2s infinite ease-in-out;
     display: inline-flex;
     flex-direction: row;
     align-items: center;
@@ -18,18 +19,33 @@
     color: #000000;
 }
 
-.dot {
+.dot {    
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background-color: var(--status-color);
     flex-shrink: 0;
+    animation: var(--animation);
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.25;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .live {
     --status-color: #FD1B1B;
+    
 }
 
 .offline {
     --status-color: #8C8C8C;
+    --animation: none;
 }
