@@ -9,19 +9,45 @@ export interface GithubActivityRowProps {
     commitTimestamp: string;
 }
 
-function formatTimestamp(isoString: string): string {
-    const date = new Date(isoString);
-    const parts = new Intl.DateTimeFormat('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        timeZoneName: 'short',
-    }).formatToParts(date);
+// Reusable formatter for better performance
+// Uses the user's locale for formatting
+const dateFormatter = new Intl.DateTimeFormat(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    timeZoneName: 'short',
+});
 
-    const get = (type: string) => parts.find(p => p.type === type)?.value ?? '';
-    const dayPeriod = get('dayPeriod').toLowerCase();
-    return `${get('month')} ${get('day')}, ${get('year')} ${get('hour')}${dayPeriod} ${get('timeZoneName')}`;
+function formatTimestamp(isoString: string): string {
+    // Use Temporal API if available (Chrome 144+, Firefox 139+, Edge 144+)
+    if (typeof Temporal !== 'undefined') {
+        // Parse as Instant - Temporal handles timezone-aware parsing
+        const instant = Temporal.Instant.from(isoString);
+        
+        // Format the Instant directly (Intl.DateTimeFormat supports Temporal.Instant)
+        const parts = dateFormatter.formatToParts(instant as any);
+        
+        // Reconstruct the formatted string from parts, handling dayPeriod lowercase
+        return parts.map(part => {
+            if (part.type === 'dayPeriod') {
+                return part.value.toLowerCase();
+            }
+            return part.value;
+        }).join('');
+    }
+    
+    // Fallback to Date for browsers without Temporal support
+    const date = new Date(isoString);
+    const parts = dateFormatter.formatToParts(date);
+
+    // Reconstruct the formatted string from parts, handling dayPeriod lowercase
+    return parts.map(part => {
+        if (part.type === 'dayPeriod') {
+            return part.value.toLowerCase();
+        }
+        return part.value;
+    }).join('');
 }
 
 export const GithubActivityRow = ({
@@ -54,7 +80,7 @@ export const GithubActivityRow = ({
                     </a>
                 </div>
             </div>
-            <span className={styles.timestamp}>{formatTimestamp(commitTimestamp)}</span>
+            <time className={styles.timestamp} dateTime={commitTimestamp}>{formatTimestamp(commitTimestamp)}</time>
         </div>
     );
 };
