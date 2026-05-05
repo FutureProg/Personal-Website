@@ -131,4 +131,17 @@
       --border-primary: #3a3a3a;
     }
   }
+
+  /* Dark Mode - Manual Toggle (for Storybook) */
+  :root[data-theme="dark"] {
+    /* Text Colors */
+    --text-primary: var(--color-white);
+    --text-secondary: var(--color-gray-200);
+    
+    /* Background Colors */
+    --bg-primary: #1a1a1a;
+    
+    /* Border Colors */
+    --border-primary: #3a3a3a;
+  }
 }
