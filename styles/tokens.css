@@ -1,0 +1,119 @@
+/* ============================================
+   Design Tokens
+   ============================================ */
+
+/* Define layer order */
+@layer tokens.base, tokens.semantic;
+
+/* ============================================
+   BASE TOKENS
+   ============================================ */
+@layer tokens.base {
+  :root {
+    /* Color Primitives */
+    --color-black: #000000;
+    --color-white: #FFFFFF;
+    --color-gray-200: rgb(216, 216, 216);
+    --color-gray-500: #8C8C8C;
+    --color-red-500: #FD1B1B;
+
+    /* Font Families */
+    --font-family-primary: 'Open Sans', 'Helvetica Neue', sans-serif;
+    --font-family-heading: 'Nunito', sans-serif;
+    --font-family-display: 'Inter', sans-serif;
+    --font-family-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+
+    /* Font Sizes */
+    --font-size-sm: 14px;
+    --font-size-lg: 24px;
+    --font-size-xl: 48px;
+    --font-size-2xl: 58px;
+    --font-size-3xl: 65px;
+
+    /* Font Weights */
+    --font-weight-light: 300;
+    --font-weight-regular: 400;
+    --font-weight-bold: 700;
+
+    /* Line Heights */
+    --line-height-tight: 1;
+    --line-height-xs: 19px;
+    --line-height-sm: 24px;
+    --line-height-xl: 58px;
+    --line-height-2xl: 65px;
+
+    /* Spacing Scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 10px;
+    --space-4: 12px;
+    --space-5: 16px;
+    --space-6: 20px;
+    --space-7: 23px;
+    --space-8: 24px;
+    --space-9: 32px;
+
+    /* Border Radius */
+    --radius-md: 8px;
+    --radius-full: 50%;
+
+    /* Border Widths */
+    --border-width-thin: 1px;
+
+    /* Layout */
+    --max-width-content: 1200px;
+    --header-height: 48px;
+    --header-padding-inline: 20%;
+    --page-padding-inline: 16px;
+  }
+}
+
+/* ============================================
+   SEMANTIC TOKENS
+   ============================================ */
+@layer tokens.semantic {
+  :root {
+    /* Text Colors */
+    --text-primary: var(--color-black);
+    --text-secondary: var(--color-gray-500);
+
+    /* Background Colors */
+    --bg-primary: var(--color-white);
+
+    /* Border Colors */
+    --border-primary: var(--color-gray-200);
+
+    /* Status Colors */
+    --status-live: var(--color-red-500);
+    --status-offline: var(--color-gray-500);
+
+    /* Typography Presets */
+    --text-h1-family: var(--font-family-primary);
+    --text-h1-size: var(--font-size-xl);
+    --text-h1-weight: var(--font-weight-bold);
+    --text-h1-line-height: var(--line-height-2xl);
+
+    --text-body-family: var(--font-family-primary);
+    --text-body-size: var(--font-size-sm);
+    --text-body-weight: var(--font-weight-light);
+    --text-body-line-height: var(--line-height-sm);
+
+    --text-label-family: var(--font-family-heading);
+    --text-label-size: var(--font-size-lg);
+    --text-label-weight: var(--font-weight-bold);
+    --text-label-line-height: var(--line-height-tight);
+
+    /* Layout Tokens */
+    --gap-xs: var(--space-2);
+    --gap-sm: var(--space-4);
+    --gap-md: var(--space-5);
+    --gap-lg: var(--space-8);
+    --gap-xl: var(--space-9);
+
+    --padding-xs: var(--space-1);
+    --padding-sm: var(--space-2);
+    --padding-md: var(--space-5);
+    --padding-lg: var(--space-8);
+    --padding-xl: var(--space-9);
+  }
+}
