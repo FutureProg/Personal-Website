@@ -1,49 +1,48 @@
+@import './tokens.css';
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,700;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 body {
   margin: 0;
-  font-family: 'Open Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-family-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   display: grid;
   grid-template-columns: 
-    [fullbleed-start] minmax(16px, 1fr)
-    [main-start] minmax(auto,1200px)
-    [main-end] minmax(16px, 1fr) 
+    [fullbleed-start] minmax(var(--page-padding-inline), 1fr)
+    [main-start] minmax(auto, var(--max-width-content))
+    [main-end] minmax(var(--page-padding-inline), 1fr) 
     [fullbleed-end];  
   grid-template-rows: 
     [nav] auto
     [content] auto
     [footer] auto;
-  row-gap: 32px;
+  row-gap: var(--gap-xl);
 }
 
 
 h1 {
   font-style: normal;
-  font-weight: bold;
-  font-size: 48px;
-  line-height: 65px;
-  color: #000000;
-  margin-bottom: 24px;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-2xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-8);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: var(--font-family-mono);
 }
 
 p {
   font-style: normal;
-  font-weight: 300;
-  font-size: 14px;
-  line-height: 24px;
+  font-weight: var(--font-weight-light);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
   /* or 171% */
 
-  color: #000000;
+  color: var(--text-primary);
 }
 
 header {
@@ -54,14 +53,14 @@ header {
 
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20%;
-  border-bottom: 1px solid rgb(216, 216, 216);
-  height: 48px;
+  padding: var(--space-5) var(--header-padding-inline);
+  border-bottom: var(--border-width-thin) solid var(--border-primary);
+  height: var(--header-height);
 
   img {
     grid-area: nav / main;
     display: block;
-    height: 48px;
+    height: var(--header-height);
   }
 
 }

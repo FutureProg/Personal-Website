@@ -19,7 +19,7 @@
 
     /* Font Families */
     --font-family-primary: 'Open Sans', 'Helvetica Neue', sans-serif;
-    --font-family-heading: 'Nunito', sans-serif;
+    --font-family-nunito: 'Nunito', sans-serif;
     --font-family-display: 'Inter', sans-serif;
     --font-family-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 
@@ -98,7 +98,7 @@
     --text-body-weight: var(--font-weight-light);
     --text-body-line-height: var(--line-height-sm);
 
-    --text-label-family: var(--font-family-heading);
+    --text-label-family: var(--font-family-nunito);
     --text-label-size: var(--font-size-lg);
     --text-label-weight: var(--font-weight-bold);
     --text-label-line-height: var(--line-height-tight);
