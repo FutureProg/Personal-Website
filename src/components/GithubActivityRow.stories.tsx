@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { GithubActivityRow } from '../components/GithubActivityRow';
+import { GithubActivityRow } from './GithubActivityRow';
 
 const meta = {
     title: 'Components/Github Activity Row',
