@@ -19,6 +19,7 @@ body {
     [content] auto
     [footer] auto;
   row-gap: var(--gap-xl);
+  color: var(--text-primary);
 }
 
 
