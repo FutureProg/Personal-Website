@@ -116,4 +116,19 @@
     --padding-lg: var(--space-8);
     --padding-xl: var(--space-9);
   }
+
+  /* Dark Mode */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      /* Text Colors */
+      --text-primary: var(--color-white);
+      --text-secondary: var(--color-gray-200);
+      
+      /* Background Colors */
+      --bg-primary: #1a1a1a;
+      
+      /* Border Colors */
+      --border-primary: #3a3a3a;
+    }
+  }
 }
