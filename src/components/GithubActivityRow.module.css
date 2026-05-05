@@ -7,9 +7,16 @@
     padding-bottom: var(--space-5);
     gap: var(--space-7);
     border-bottom: var(--border-width-thin) solid var(--border-primary);
-
+    transition: 300ms ease;
     &:last-child {
         border-bottom: none;
+    }
+}
+
+@starting-style {
+    .row {
+        opacity: 0;
+        transform: translateY(-10px);
     }
 }
 

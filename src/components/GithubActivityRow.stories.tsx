@@ -81,23 +81,23 @@ const ViewTransitionDemo = () => {
         const newRepo = sampleRepos[nextIndex];
         if (!newRepo) return;
 
-        const transition = (document as any).startViewTransition(() => {
+        // const transition = (document as any).startViewTransition(() => {
             setRepos([newRepo, ...repos]);
             setNextIndex(nextIndex + 1);
-        });
+        // });
 
-        await transition.finished;
+        // await transition.finished;
     };
 
     const removeFirstRepo = async () => {
         if (repos.length === 0) return;
 
-        const transition = (document as any).startViewTransition(() => {
+        // const transition = (document as any).startViewTransition(() => {
             setRepos(repos.slice(1));
             if (nextIndex > 0) setNextIndex(nextIndex - 1);
-        });
+        // });
 
-        await transition.finished;
+        // await transition.finished;
     };
 
     return (
@@ -134,7 +134,7 @@ const ViewTransitionDemo = () => {
                     Remove First
                 </button>
             </div>
-            <div style={{ border: '1px solid #d0d7de', borderRadius: '6px' }}>
+            <div>
                 {repos.map((repo) => (
                     <GithubActivityRow
                         key={repo.commitId}
