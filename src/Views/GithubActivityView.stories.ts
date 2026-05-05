@@ -41,7 +41,7 @@ export const Online: Story = {
 export const Offline: Story = {
     args: {
         status: 'offline',
-        repositories: sampleRepositories,
+        repositories: [],
     },
 };
 

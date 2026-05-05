@@ -8,6 +8,15 @@ export interface GithubActivityViewProps {
 }
 
 export const GithubActivityView = ({ status, repositories }: GithubActivityViewProps) => {
+
+    const content = repositories.length > 0 ? (
+        <div className={styles.rows}>
+            {repositories.map((repo) => (
+                <GithubActivityRow key={repo.repositoryUrl} {...repo} />
+            ))}
+        </div>
+    ) : <div className={styles.emptyState}>{status === 'offline'? 'Github activity is not available...': 'No recent activity'}</div>;
+
     return (
         <div className={styles.view}>
             <div className={styles.header}>
@@ -17,11 +26,7 @@ export const GithubActivityView = ({ status, repositories }: GithubActivityViewP
                 </div>
                 <p className={styles.subtitle}>5 Most Recent Github Repositories with commits</p>
             </div>
-            <div className={styles.rows}>
-                {repositories.map((repo) => (
-                    <GithubActivityRow key={repo.repositoryUrl} {...repo} />
-                ))}
-            </div>
+            {content}
         </div>
     );
 };
