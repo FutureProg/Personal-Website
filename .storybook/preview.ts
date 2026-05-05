@@ -17,7 +17,11 @@ const preview: Preview = {
       // 'error' - fail CI on a11y violations
       // 'off' - skip a11y checks entirely
       test: 'todo'
-    }
+    },
+
+    backgrounds: {
+      disable: true, // Disable the backgrounds toolbar since we're using our own theme toggle
+    },
   },
 
   globalTypes: {
@@ -38,13 +42,24 @@ const preview: Preview = {
   decorators: [
     (Story, context) => {
       const theme = context.globals.theme || 'light';
+      const backgroundColor = theme === 'dark' ? '#1a1a1a' : '#FFFFFF';
       
-      // Apply theme to the document body
+      // Apply theme to the document
       if (typeof document !== 'undefined') {
         document.documentElement.setAttribute('data-theme', theme);
+        document.body.style.backgroundColor = backgroundColor;
       }
 
-      return React.createElement(Story);
+      // Wrap story in a container with the themed background
+      return React.createElement(
+        'div',
+        {
+          style: {
+            backgroundColor
+          }
+        },
+        React.createElement(Story)
+      );
     },
   ],
 };
