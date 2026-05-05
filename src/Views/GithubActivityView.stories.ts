@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GithubActivityView } from './GithubActivityView';
 
 const meta = {
-    title: 'Components/GithubActivityView',
+    title: 'Views/Github Activity View',
     component: GithubActivityView,
     parameters: {
         layout: 'centered',

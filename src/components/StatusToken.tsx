@@ -2,7 +2,7 @@ import styles from './StatusToken.module.css';
 
 export type StatusTokenStatus = 'live' | 'offline';
 
-interface StatusTokenProps {
+export interface StatusTokenProps {
     status: StatusTokenStatus;
 }
 

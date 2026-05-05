@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GithubActivityRow } from '../components/GithubActivityRow';
 
 const meta = {
-    title: 'Components/GithubActivityRow',
+    title: 'Components/Github Activity Row',
     component: GithubActivityRow,
     parameters: {
         layout: 'centered',

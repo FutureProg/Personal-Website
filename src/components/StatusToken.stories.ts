@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { StatusToken } from '../components/StatusToken';
+import { StatusToken } from './StatusToken';
 
 const meta = {
-    title: 'Components/StatusToken',
+    title: 'Components/Status Token',
     component: StatusToken,
     parameters: {
         layout: 'centered',
