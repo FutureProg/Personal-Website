@@ -17,9 +17,6 @@ export const useGithubActivity: () => {
     >("initializing");
     const [activity, setActivity] = useState<GithubActivityData[]>([]);
     useEffect(() => {
-        // This hook is currently a placeholder for any future side effects related to GitHub activity.
-        // For example, you might want to set up a polling mechanism to fetch the latest commits or
-        // subscribe to a WebSocket for real-time updates. For now, it does nothing.
         const es = new EventSource("/api/github/activity");        
         es.onerror = (error) => {
             console.debug("Error connecting to GitHub activity stream:", error);
