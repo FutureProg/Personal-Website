@@ -11,7 +11,10 @@ export interface GithubActivityUpdateEvent {
 }
 
 export type GithubActivityData = {
-    repository: string;
+    repository: {
+        name: string;
+        url: string;
+    };
     commit: {
         sha: string;
         message: string;
