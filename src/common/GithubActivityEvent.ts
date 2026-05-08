@@ -2,7 +2,7 @@ export type GithubActivityEvent = GithubActivityInitialEvent | GithubActivityUpd
 
 export interface GithubActivityInitialEvent {
     type: "initial";
-    data: Record<string, GithubActivityData>;
+    data: GithubActivityData[];
 }
 
 export interface GithubActivityUpdateEvent {
