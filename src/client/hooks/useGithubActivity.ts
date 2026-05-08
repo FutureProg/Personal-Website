@@ -36,7 +36,7 @@ export const useGithubActivity: () => {
                 setActivity((prev) => [
                     payload.data, // Add the new repository activity data
                     ...prev.filter((item) =>
-                        item.repository !== payload.data.repository
+                        item.repository.url !== payload.data.repository.url
                     ), // Remove any existing entry for the same repository
                 ]);
             }
