@@ -1,26 +1,34 @@
-import type { GithubActivityData, GithubActivityEvent } from "common/GithubActivityEvent";
+import type {
+    GithubActivityData,
+    GithubActivityEvent,
+} from "common/GithubActivityEvent";
 import { useEffect, useState } from "react";
 
 /**
  * Custom hook to fetch and manage GitHub activity data.
  * @returns An object containing the GitHub activity data and the connection status.
  */
-export const useGithubActivity = () => {
-    const [connectionStatus, setConnectionStatus] = useState<"initializing" | "connected" | "error" | "closed">("initializing");
-    const [activity, setActivity] = useState<Record<string, GithubActivityData>>({});
+export const useGithubActivity: () => {
+    items: GithubActivityData[];
+    connectionStatus: "initializing" | "connected" | "error" | "closed";
+} = () => {
+    const [connectionStatus, setConnectionStatus] = useState<
+        "initializing" | "connected" | "error" | "closed"
+    >("initializing");
+    const [activity, setActivity] = useState<GithubActivityData[]>([]);
     useEffect(() => {
         // This hook is currently a placeholder for any future side effects related to GitHub activity.
         // For example, you might want to set up a polling mechanism to fetch the latest commits or
         // subscribe to a WebSocket for real-time updates. For now, it does nothing.
-        const es = new EventSource("/api/github/activity");
+        const es = new EventSource("/api/github/activity");        
         es.onerror = (error) => {
-            console.debug("Error connecting to GitHub activity stream:", error);            
-            setConnectionStatus("error");        
-        }
+            console.debug("Error connecting to GitHub activity stream:", error);
+            setConnectionStatus("error");
+        };
         es.onopen = () => {
             console.debug("Connected to GitHub activity stream");
             setConnectionStatus("connected");
-        }
+        };
         es.onmessage = (event) => {
             console.debug("Received GitHub activity:", event.data);
             // You can add logic here to update your application's state based on the received data.
@@ -28,10 +36,12 @@ export const useGithubActivity = () => {
             if (payload.type === "initial") {
                 setActivity(payload.data);
             } else if (payload.type === "update") {
-                setActivity((prev) => ({
-                    ...prev,
-                    [payload.data.repository]: payload.data
-                }));
+                setActivity((prev) => [
+                    payload.data, // Add the new repository activity data
+                    ...prev.filter((item) =>
+                        item.repository !== payload.data.repository
+                    ), // Remove any existing entry for the same repository
+                ]);
             }
         };
         return () => {
@@ -40,5 +50,5 @@ export const useGithubActivity = () => {
             setConnectionStatus("closed");
         };
     }, []);
-    return { activity, connectionStatus };
+    return { items: activity, connectionStatus };
 };

@@ -1,6 +1,7 @@
 import styles from './GithubActivityView.module.css';
 import { StatusToken, type StatusTokenStatus } from '../components/StatusToken';
 import { GithubActivityRow, type GithubActivityRowProps } from '../components/GithubActivityRow';
+import { useGithubActivity } from 'client/hooks/useGithubActivity';
 
 export interface GithubActivityViewProps {
     status: StatusTokenStatus;
@@ -8,6 +9,8 @@ export interface GithubActivityViewProps {
 }
 
 export const GithubActivityView = ({ status, repositories }: GithubActivityViewProps) => {
+
+    const githubActivity = useGithubActivity();
 
     const content = repositories.length > 0 ? (
         <div className={styles.rows}>
