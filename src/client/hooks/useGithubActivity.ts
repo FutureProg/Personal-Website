@@ -39,7 +39,7 @@ export const useGithubActivity: (options?: { wrapUpdate?: (update: () => void) =
                         ...prev.filter((item) =>
                             item.repository.url !== payload.data.repository.url
                         ),
-                    ]);
+                    ].slice(0, 5));
                 };
                 if (options?.wrapUpdate) {
                     options.wrapUpdate(applyUpdate);
