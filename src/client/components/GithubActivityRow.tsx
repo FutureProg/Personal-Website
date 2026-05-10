@@ -50,6 +50,10 @@ function formatTimestamp(isoString: string): string {
     }).join('');
 }
 
+function toViewTransitionName(url: string): string {
+    return 'github-row-' + url.replace(/[^a-zA-Z0-9]/g, '-');
+}
+
 export const GithubActivityRow = ({
     repositoryName,
     repositoryUrl,
@@ -58,7 +62,7 @@ export const GithubActivityRow = ({
     commitTimestamp,
 }: GithubActivityRowProps) => {
     return (
-        <div className={styles.row}>
+        <div className={styles.row} style={{ viewTransitionName: toViewTransitionName(repositoryUrl) }}>
             <div className={styles.left}>
                 <a
                     href={repositoryUrl}

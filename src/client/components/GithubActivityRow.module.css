@@ -13,14 +13,6 @@
         border-bottom: none;
     }
 }
-/* 
-@starting-style {
-    .row {
-        opacity: 0;
-        border-bottom-color: rgba(0, 0, 0, 0);
-        transform: translateY(-10px);
-    }
-} */
 
 .left {
     display: flex;

@@ -8,10 +8,10 @@ import { useEffect, useState } from "react";
  * Custom hook to fetch and manage GitHub activity data.
  * @returns An object containing the GitHub activity data and the connection status.
  */
-export const useGithubActivity: () => {
+export const useGithubActivity: (options?: { wrapUpdate?: (update: () => void) => void }) => {
     items: GithubActivityData[];
     connectionStatus: "initializing" | "connected" | "error" | "closed";
-} = () => {
+} = (options) => {
     const [connectionStatus, setConnectionStatus] = useState<
         "initializing" | "connected" | "error" | "closed"
     >("initializing");
@@ -33,12 +33,19 @@ export const useGithubActivity: () => {
             if (payload.type === "initial") {
                 setActivity(payload.data);
             } else if (payload.type === "update") {
-                setActivity((prev) => [
-                    payload.data, // Add the new repository activity data
-                    ...prev.filter((item) =>
-                        item.repository.url !== payload.data.repository.url
-                    ), // Remove any existing entry for the same repository
-                ]);
+                const applyUpdate = () => {
+                    setActivity((prev) => [
+                        payload.data,
+                        ...prev.filter((item) =>
+                            item.repository.url !== payload.data.repository.url
+                        ),
+                    ]);
+                };
+                if (options?.wrapUpdate) {
+                    options.wrapUpdate(applyUpdate);
+                } else {
+                    applyUpdate();
+                }
             }
         };
         return () => {

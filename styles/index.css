@@ -65,3 +65,15 @@ header {
   }
 
 }
+
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0s;
+}
+
+::view-transition-group(no-transition),
+::view-transition-old(no-transition),
+::view-transition-new(no-transition) {
+    animation-duration: 0s;
+}

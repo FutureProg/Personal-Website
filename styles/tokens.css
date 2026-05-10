@@ -65,6 +65,9 @@
     --header-height: 48px;
     --header-padding-inline: 20%;
     --page-padding-inline: 16px;
+
+    /* View Transition */
+    --no-transition-name: 'no-transition';
   }
 }
 
