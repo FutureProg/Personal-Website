@@ -1,24 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, ReactRenderer, StoryContext, StoryObj } from '@storybook/react-vite';
+import {mocked} from 'storybook/test';
 
 import { GithubActivityView } from './GithubActivityView';
-
-const meta = {
-    title: 'Views/Github Activity View',
-    component: GithubActivityView,
-    parameters: {
-        layout: 'centered',
-    },
-    tags: ['autodocs'],
-} satisfies Meta<typeof GithubActivityView>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { useGithubActivity } from '../hooks/useGithubActivity';
 
 const sampleRepositories = [
     {
         repositoryName: 'FutureProg/repository-name',
         repositoryUrl: 'https://github.com/FutureProg/repository-name',
-        commitId: 'b8dsa8d3f1a2c4e5f6789012345678901234567',
+        commitId: 'x8dsa8d3f1a2c4e5f6789012345678901234567',
         commitUrl: 'https://github.com/FutureProg/repository-name/commit/b8dsa8d3f1a2c4e5f6789012345678901234567',
         commitTimestamp: '2028-09-09T17:00:00-05:00',
     },
@@ -31,46 +21,52 @@ const sampleRepositories = [
     },
 ];
 
-export const Online: Story = {
-    args: {
-        status: 'live',
-        repositories: sampleRepositories,
+const sampleFeed = sampleRepositories.map(repo => ({
+    repository: {
+        name: repo.repositoryName,
+        url: repo.repositoryUrl,
     },
+    commit: {
+        sha: repo.commitId,
+        message: 'Sample commit message for ' + repo.repositoryName,
+        url: repo.commitUrl,
+    },
+    timestamp: repo.commitTimestamp,
+}));
+
+const meta = {
+    title: 'Views/Github Activity View',
+    component: GithubActivityView,
+    decorators: [
+        (Story, context) => {
+            const name = context.name;
+            if (name === 'Offline') {
+                mocked(useGithubActivity).mockImplementation(() => ({
+                    items: [],
+                    connectionStatus: 'closed',
+                }));
+            }
+            else if (name === 'Online' || name === 'FullFeed') {
+                mocked(useGithubActivity).mockImplementation(() => ({
+                    items: sampleFeed,
+                    connectionStatus: 'connected',
+                }));
+            }
+
+            return (<><Story /></>);
+        },
+    ],
+    parameters: {
+        layout: 'centered',
+    },
+    tags: ['autodocs'],    
+} satisfies Meta<typeof GithubActivityView>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Online: Story = {
 };
 
 export const Offline: Story = {
-    args: {
-        status: 'offline',
-        repositories: [],
-    },
-};
-
-export const FullFeed: Story = {
-    args: {
-        status: 'live',
-        repositories: [
-            ...sampleRepositories,
-            {
-                repositoryName: 'FutureProg/personal-website',
-                repositoryUrl: 'https://github.com/FutureProg/personal-website',
-                commitId: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',
-                commitUrl: 'https://github.com/FutureProg/personal-website/commit/a1b2c3d',
-                commitTimestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-            },
-            {
-                repositoryName: 'FutureProg/safe-streets-halton',
-                repositoryUrl: 'https://github.com/FutureProg/safe-streets-halton',
-                commitId: 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
-                commitUrl: 'https://github.com/FutureProg/safe-streets-halton/commit/deadbee',
-                commitTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-            },
-            {
-                repositoryName: 'FutureProg/ml-experiments',
-                repositoryUrl: 'https://github.com/FutureProg/ml-experiments',
-                commitId: 'cafebabecafebabecafebabecafebabecafebabe',
-                commitUrl: 'https://github.com/FutureProg/ml-experiments/commit/cafebab',
-                commitTimestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-            },
-        ],
-    },
 };
