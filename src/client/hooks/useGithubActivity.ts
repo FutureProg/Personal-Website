@@ -1,7 +1,7 @@
 import type {
     GithubActivityData,
     GithubActivityEvent,
-} from "common/GithubActivityEvent";
+} from "@common/GithubActivityEvent";
 import { useEffect, useState } from "react";
 
 /**
