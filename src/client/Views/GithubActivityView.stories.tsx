@@ -94,11 +94,12 @@ export const Online: Story = {
     render: (args, context) => {
         return React.createElement(() => {
             const [activities, setActivities] = useState(sampleFeed.slice(0, 1));
-            const addActivity = () => {                
-                if (activities && activities.length >= sampleFeed.length) return;
-                const newItem = sampleFeed[activities.length];
+            const addActivity = () => {                                
+                let newItem = sampleFeed[activities.length % sampleFeed.length]!;
+                newItem = { ...newItem, 
+                    repository: { ...newItem.repository, url: newItem.repository.url + '?t=' + Date.now() } }; // Ensure unique URL for view transition
                 document.startViewTransition(() => {
-                    setActivities((prev) => [newItem!, ...prev]);
+                    setActivities((prev) => [newItem!, ...prev].slice(0, sampleFeed.length));
                 });
             }
             const removeActivity = () => {
