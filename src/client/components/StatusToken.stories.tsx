@@ -31,3 +31,9 @@ export const Offline: Story = {
         status: 'offline',
     },
 };
+
+export const Error: Story = {
+    args: {
+        status: 'error',
+    },
+};

@@ -42,10 +42,14 @@
 
 .online {
     --status-color: var(--status-online);
-    
 }
 
 .offline {
     --status-color: var(--status-offline);
+    --animation: none;
+}
+
+.error {
+    --status-color: var(--status-error);
     --animation: none;
 }
