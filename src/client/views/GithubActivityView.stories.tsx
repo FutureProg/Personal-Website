@@ -1,5 +1,5 @@
 import type { Meta, ReactRenderer, StoryContext, StoryObj } from '@storybook/react-vite';
-import {mocked} from 'storybook/test';
+import { expect, mocked, within } from 'storybook/test';
 
 import { GithubActivityView } from './GithubActivityView';
 import { useGithubActivity } from '../hooks/useGithubActivity';
@@ -107,6 +107,12 @@ export const Online: Story = {
     parameters: {
         layout: 'padded'
     },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        expect(canvas.getByText('ONLINE')).toBeInTheDocument();
+        expect(canvas.getByText('FutureProg/repository-name')).toBeInTheDocument();
+        
+    },
     render: (args, context) => {
         return React.createElement(() => {
             const [activities, setActivities] = useState(sampleFeed.slice(0, 1));
@@ -142,8 +148,26 @@ export const Online: Story = {
     }
 };
 
-export const Offline: Story = {};
+export const Offline: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        expect(canvas.getByText('No recent activity')).toBeInTheDocument();
+        expect(canvas.getByText('OFFLINE')).toBeInTheDocument();
+    },
+};
 
-export const Error: Story = {}
+export const Error: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        expect(canvas.getByText('Error occurred connecting to the Github API')).toBeInTheDocument();
+        expect(canvas.getByText('ERROR')).toBeInTheDocument();
+    },
+}
 
-export const ConnectionFailure: Story = {}
+export const ConnectionFailure: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        expect(canvas.getByText('Error occurred connecting to the Activity Stream. Please check your internet connection')).toBeInTheDocument();
+        expect(canvas.getByText('ERROR')).toBeInTheDocument();
+    },
+}
