@@ -2,14 +2,24 @@ import styles from './GithubActivityView.module.css';
 import { StatusToken, type StatusTokenStatus } from '../components/StatusToken';
 import { GithubActivityRow, type GithubActivityRowProps } from '../components/GithubActivityRow';
 import { useGithubActivity } from '../hooks/useGithubActivity';
+import { flushSync } from 'react-dom';
 
 export interface GithubActivityViewProps {
     status: StatusTokenStatus;
     repositories: GithubActivityRowProps[];
 }
 
+function wrapUpdate(update: () => void) {
+    const doUpdate = () => flushSync(update);
+    if (document.startViewTransition) {
+        document.startViewTransition(doUpdate);
+    } else {
+        doUpdate();
+    }
+}
+
 export const GithubActivityView = () => {
-    const githubActivity = useGithubActivity();
+    const githubActivity = useGithubActivity({ wrapUpdate });
 
     const content = githubActivity.items && githubActivity.items.length > 0 ? (
         <div className={styles.rows}>

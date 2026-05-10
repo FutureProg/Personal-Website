@@ -97,19 +97,21 @@ export const Online: Story = {
             const addActivity = () => {                
                 if (activities && activities.length >= sampleFeed.length) return;
                 const newItem = sampleFeed[activities.length];
-                document.startViewTransition?.(() => {
+                document.startViewTransition(() => {
                     setActivities((prev) => [newItem!, ...prev]);
                 });
             }
             const removeActivity = () => {
-                document.startViewTransition?.(() => {
+                document.startViewTransition(() => {
                     setActivities((prev) => prev.slice(0, prev.length - 1));
                 });
             }
-            mocked(useGithubActivity).mockImplementation(() => ({
-                items: activities,
-                connectionStatus: 'connected',
-            }));
+            mocked(useGithubActivity).mockImplementation((options) => {
+                return {
+                    items: activities,
+                    connectionStatus: 'connected',
+                }
+            });
 
             return (<div style={{display: 'grid', gridTemplateRows: 'auto 1fr', justifyContent: 'center'}}>
                 <div style={{display: 'flex', 'justifyContent': 'center'}}>
