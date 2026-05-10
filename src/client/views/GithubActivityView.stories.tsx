@@ -1,60 +1,26 @@
-import type { Meta, ReactRenderer, StoryContext, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, mocked, within } from 'storybook/test';
 
 import { GithubActivityView } from './GithubActivityView';
 import { useGithubActivity } from '../hooks/useGithubActivity';
 import React, { useState } from 'react';
 
-const sampleRepositories = [
-    {
-        repositoryName: 'FutureProg/repository-name',
-        repositoryUrl: 'https://github.com/FutureProg/repository-name',
-        commitId: 'x8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitUrl: 'https://github.com/FutureProg/repository-name/commit/b8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitTimestamp: '2028-09-09T17:00:00-05:00',
-    },
-    {
-        repositoryName: 'FutureProg/repository-name-#2',
-        repositoryUrl: 'https://github.com/FutureProg/repository-name-2',
-        commitId: 'b8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitUrl: 'https://github.com/FutureProg/repository-name-2/commit/b8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitTimestamp: '2028-09-09T17:00:00-05:00',
-    },
-    {
-        repositoryName: 'FutureProg/repository-name-#3',
-        repositoryUrl: 'https://github.com/FutureProg/repository-name-3',
-        commitId: 'b8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitUrl: 'https://github.com/FutureProg/repository-name-3/commit/b8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitTimestamp: '2028-09-09T17:00:00-05:00',
-    },
-    {
-        repositoryName: 'FutureProg/repository-name-#4',
-        repositoryUrl: 'https://github.com/FutureProg/repository-name-4',
-        commitId: 'b8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitUrl: 'https://github.com/FutureProg/repository-name-4/commit/b8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitTimestamp: '2028-09-09T17:00:00-05:00',
-    },
-    {
-        repositoryName: 'FutureProg/repository-name-#5',
-        repositoryUrl: 'https://github.com/FutureProg/repository-name-5',
-        commitId: 'b8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitUrl: 'https://github.com/FutureProg/repository-name-5/commit/b8dsa8d3f1a2c4e5f6789012345678901234567',
-        commitTimestamp: '2028-09-09T17:00:00-05:00',
-    },
-];
-
-const sampleFeed = sampleRepositories.map(repo => ({
-    repository: {
-        name: repo.repositoryName,
-        url: repo.repositoryUrl,
-    },
-    commit: {
-        sha: repo.commitId,
-        message: 'Sample commit message for ' + repo.repositoryName,
-        url: repo.commitUrl,
-    },
-    timestamp: repo.commitTimestamp,
-}));
+const sampleFeed = Array.from({length: 5}).map((_, index) => {
+    const repoName = 'FutureProg/repository-name' + (index > 0 ? '-' + (index + 1) : '');
+    const commitSha = crypto.randomUUID().replace(/-/g, '').slice(0, 40);
+    return {
+        repository: {
+            name: repoName,
+            url: 'https://github.com/FutureProg/' + repoName,
+        },
+        commit: {
+            sha: commitSha,
+            message: 'Sample commit message for ' + repoName,
+            url: 'https://github.com/FutureProg/' + repoName + '/commit/' + commitSha,
+        },
+        timestamp: Temporal.Now.instant().add(Temporal.Duration.from({ hours: index * 5 })).toString(),
+    }
+});
 
 const meta = {
     title: 'Views/Github Activity View',
@@ -111,7 +77,7 @@ export const Online: Story = {
         const canvas = within(canvasElement);
         expect(canvas.getByText('ONLINE')).toBeInTheDocument();
         expect(canvas.getByText('FutureProg/repository-name')).toBeInTheDocument();
-        
+
     },
     render: (args, context) => {
         return React.createElement(() => {
