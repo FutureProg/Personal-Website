@@ -87,7 +87,7 @@
     --border-primary: var(--color-gray-200);
 
     /* Status Colors */
-    --status-live: var(--color-red-500);
+    --status-error: var(--color-red-500);
     --status-offline: var(--color-gray-500);
     --status-online: #66FD1B;
 
