@@ -40,8 +40,8 @@
     }
 }
 
-.live {
-    --status-color: var(--status-live);
+.online {
+    --status-color: var(--status-online);
     
 }
 

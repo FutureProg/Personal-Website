@@ -1,6 +1,6 @@
 import styles from './StatusToken.module.css';
 
-export type StatusTokenStatus = 'live' | 'offline';
+export type StatusTokenStatus = 'online' | 'offline';
 
 export interface StatusTokenProps {
     status: StatusTokenStatus;
