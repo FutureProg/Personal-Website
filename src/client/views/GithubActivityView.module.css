@@ -49,10 +49,11 @@
     padding-left: var(--space-4);
 }
 
-.emptyState {
+.statusMessage {
     width: 100%;
     font-family: var(--font-family-primary);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-light);
     text-align: center;
+    white-space: pre-wrap;
 }

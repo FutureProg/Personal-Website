@@ -66,18 +66,28 @@ const meta = {
                 mocked(useGithubActivity).mockImplementation(() => ({
                     items: [],
                     connectionStatus: 'closed',
+                    error: undefined,
                 }));
             }
             else if (name === 'Online') {
                 mocked(useGithubActivity).mockImplementation(() => ({
                     items: sampleFeed.slice(0, 1),
                     connectionStatus: 'connected',
+                    error: undefined,
                 }));
             }
             else if (name === 'Error') {
                 mocked(useGithubActivity).mockImplementation(() => ({
                     items: [],
                     connectionStatus: 'error',
+                    error: 'Error occurred connecting to the Github API',
+                }));
+            }
+            else if (name === 'Connection Failure') {
+                mocked(useGithubActivity).mockImplementation(() => ({
+                    items: [],
+                    connectionStatus: 'error',
+                    error: 'Error occurred connecting to the Activity Stream. \n Please check your internet connection',
                 }));
             }
 
@@ -117,6 +127,7 @@ export const Online: Story = {
                 return {
                     items: activities,
                     connectionStatus: 'connected',
+                    error: undefined,
                 }
             });
 
@@ -131,6 +142,8 @@ export const Online: Story = {
     }
 };
 
+export const Offline: Story = {};
+
 export const Error: Story = {}
 
-export const Offline: Story = {};
+export const ConnectionFailure: Story = {}

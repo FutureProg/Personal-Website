@@ -6,21 +6,24 @@ import { useEffect, useState } from "react";
 
 /**
  * Custom hook to fetch and manage GitHub activity data.
- * @returns An object containing the GitHub activity data and the connection status.
+ * @returns An object containing the GitHub activity data, the connection status, and any error message.
  */
 export const useGithubActivity: (options?: { wrapUpdate?: (update: () => void) => void }) => {
     items: GithubActivityData[];
     connectionStatus: "initializing" | "connected" | "error" | "closed";
-} = (options) => {
+    error: string | undefined;
+} = (options) => { 
     const [connectionStatus, setConnectionStatus] = useState<
         "initializing" | "connected" | "error" | "closed"
     >("initializing");
     const [activity, setActivity] = useState<GithubActivityData[]>([]);
+    const [error, setError] = useState<string | undefined>(undefined);
     useEffect(() => {
         const es = new EventSource("/api/github/activity");        
         es.onerror = (error) => {
             console.debug("Error connecting to GitHub activity stream:", error);
             setConnectionStatus("error");
+            setError("Error occurred connecting to the Activity Stream \n Please check your internet connection");
         };
         es.onopen = () => {
             console.debug("Connected to GitHub activity stream");
@@ -46,6 +49,9 @@ export const useGithubActivity: (options?: { wrapUpdate?: (update: () => void) =
                 } else {
                     applyUpdate();
                 }
+            } else if (payload.type === "error") {
+                setError(payload.data.message);
+                setConnectionStatus("error");
             }
         };
         return () => {
@@ -54,5 +60,5 @@ export const useGithubActivity: (options?: { wrapUpdate?: (update: () => void) =
             setConnectionStatus("closed");
         };
     }, []);
-    return { items: activity, connectionStatus };
+    return { items: activity, connectionStatus, error };
 };
