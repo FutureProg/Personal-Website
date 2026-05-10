@@ -12,7 +12,7 @@ const meta = {
     argTypes: {
         status: {
             control: 'select',
-            options: ['live', 'offline'],
+            options: ['online', 'offline'],
         },
     },
 } satisfies Meta<typeof StatusToken>;
@@ -20,9 +20,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Live: Story = {
+export const Online: Story = {
     args: {
-        status: 'live',
+        status: 'online',
     },
 };
 

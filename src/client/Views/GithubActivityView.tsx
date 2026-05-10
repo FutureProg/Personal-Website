@@ -32,7 +32,7 @@ export const GithubActivityView = () => {
             connectionStatus = 'offline';
             break;
         case 'connected':
-            connectionStatus = 'live';
+            connectionStatus = 'online';
             break;
         case 'closed':
             connectionStatus = 'offline';
