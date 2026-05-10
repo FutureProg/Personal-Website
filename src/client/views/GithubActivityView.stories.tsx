@@ -74,6 +74,12 @@ const meta = {
                     connectionStatus: 'connected',
                 }));
             }
+            else if (name === 'Error') {
+                mocked(useGithubActivity).mockImplementation(() => ({
+                    items: [],
+                    connectionStatus: 'error',
+                }));
+            }
 
             return (<><Story /></>);
         },
@@ -125,5 +131,6 @@ export const Online: Story = {
     }
 };
 
-export const Offline: Story = {
-};
+export const Error: Story = {}
+
+export const Offline: Story = {};
