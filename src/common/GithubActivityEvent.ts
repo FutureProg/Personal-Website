@@ -1,8 +1,15 @@
-export type GithubActivityEvent = GithubActivityInitialEvent | GithubActivityUpdateEvent;
+export type GithubActivityEvent = GithubActivityInitialEvent | GithubActivityUpdateEvent | GithubActivityErrorEvent;
 
 export interface GithubActivityInitialEvent {
     type: "initial";
     data: GithubActivityData[];
+}
+
+export interface GithubActivityErrorEvent {
+    type: "error";
+    data: {
+        message: string;
+    };
 }
 
 export interface GithubActivityUpdateEvent {
@@ -19,6 +26,6 @@ export type GithubActivityData = {
         sha: string;
         message: string;
         url: string;
-    }
+    };
     timestamp: string;
 };

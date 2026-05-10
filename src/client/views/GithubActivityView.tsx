@@ -35,7 +35,7 @@ export const GithubActivityView = () => {
             break;
         case 'error':
             connectionStatus = 'error';
-            messageText = 'Github activity is not available...';
+            messageText = githubActivity.error || 'An error occurred connecting to the Github Activity Stream';
             break;
     }
 
@@ -52,7 +52,7 @@ export const GithubActivityView = () => {
                 />
             ))}
         </div>
-    ) : <div className={styles.emptyState}>{messageText || 'No recent activity'}</div>;
+    ) : <div className={styles.statusMessage}>{messageText || 'No recent activity'}</div>;
     
     return (
         <div className={styles.view}>
