@@ -2,6 +2,9 @@ import type { Preview } from '@storybook/react-vite'
 import React from 'react';
 import '../styles/index.css';
 import '../styles/tokens.css';
+import { sb } from 'storybook/test';
+
+sb.mock(import('../src/client/hooks/useGithubActivity.ts'));
 
 const preview: Preview = {
   parameters: {
