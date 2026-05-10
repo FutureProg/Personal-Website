@@ -11,7 +11,7 @@ export interface GithubActivityViewProps {
 export const GithubActivityView = () => {
     const githubActivity = useGithubActivity();
 
-    const content = githubActivity.items.length > 0 ? (
+    const content = githubActivity.items && githubActivity.items.length > 0 ? (
         <div className={styles.rows}>
             {githubActivity.items.map((repo) => (
                 <GithubActivityRow

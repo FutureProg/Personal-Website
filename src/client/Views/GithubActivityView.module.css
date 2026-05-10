@@ -4,6 +4,8 @@
     align-items: flex-start;
     padding: var(--padding-lg);
     gap: var(--gap-xl);    
+    transition: 1s ease;
+    width: 640px;
 }
 
 .header {
