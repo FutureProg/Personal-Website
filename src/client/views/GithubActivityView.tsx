@@ -21,7 +21,25 @@ function wrapUpdate(update: () => void) {
 export const GithubActivityView = () => {
     const githubActivity = useGithubActivity({ wrapUpdate });
 
-    const content = githubActivity.items && githubActivity.items.length > 0 ? (
+    let connectionStatus: StatusTokenStatus = 'offline';
+    let messageText: string | null = null;
+    switch(githubActivity.connectionStatus) {
+        case 'initializing':
+            connectionStatus = 'offline';
+            break;
+        case 'connected':
+            connectionStatus = 'online';
+            break;
+        case 'closed':
+            connectionStatus = 'offline';
+            break;
+        case 'error':
+            connectionStatus = 'error';
+            messageText = 'Github activity is not available...';
+            break;
+    }
+
+    const content = githubActivity.items.length > 0 ? (
         <div className={styles.rows}>
             {githubActivity.items.map((repo) => (
                 <GithubActivityRow
@@ -34,23 +52,8 @@ export const GithubActivityView = () => {
                 />
             ))}
         </div>
-    ) : <div className={styles.emptyState}>{githubActivity.connectionStatus === 'error'? 'Github activity is not available...': 'No recent activity'}</div>;
-
-    let connectionStatus: StatusTokenStatus = 'offline';
-    switch(githubActivity.connectionStatus) {
-        case 'initializing':
-            connectionStatus = 'offline';
-            break;
-        case 'connected':
-            connectionStatus = 'online';
-            break;
-        case 'closed':
-            connectionStatus = 'offline';
-            break;
-        case 'error':
-            connectionStatus = 'offline';
-            break;
-    }
+    ) : <div className={styles.emptyState}>{messageText || 'No recent activity'}</div>;
+    
     return (
         <div className={styles.view}>
             <div className={styles.header}>
