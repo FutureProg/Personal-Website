@@ -12,7 +12,7 @@ const meta = {
     argTypes: {
         status: {
             control: 'select',
-            options: ['online', 'offline'],
+            options: ['online', 'offline', 'error'],
         },
     },
 } satisfies Meta<typeof StatusToken>;
