@@ -14,7 +14,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test:unit": "vitest run --config vitest.unit.config.ts",
-    "test:unit:watch": "vitest --config vitest.unit.config.ts"
+    "test:unit:watch": "vitest --config vitest.unit.config.ts",
+    "chromatic": "chromatic"
   },
   "eslintConfig": {
     "extends": [
@@ -37,6 +38,7 @@
     "@vitest/browser": "^4.1.5",
     "@vitest/browser-playwright": "^4.0.16",
     "@vitest/coverage-v8": "^4.0.16",
+    "chromatic": "^16.9.1",
     "eslint-plugin-storybook": "^10.3.6",
     "happy-dom": "^20.9.0",
     "jsdom": "^29.1.1",
