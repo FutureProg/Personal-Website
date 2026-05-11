@@ -41,6 +41,11 @@ export default defineConfig({
             configDir: path.join(dirname, '.storybook')
           })
         ],
+        resolve: {
+          alias: {
+            '@common': path.join(dirname, 'src/common'),
+          },
+        },
         test: {
           name: 'storybook',
           browser: {
