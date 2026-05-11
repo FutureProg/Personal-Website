@@ -32,32 +32,41 @@ export const useGithubActivity: (options?: { wrapUpdate?: (update: () => void) =
         es.onmessage = (event) => {
             console.debug("Received GitHub activity:", event.data);
             // You can add logic here to update your application's state based on the received data.
-            const payload = JSON.parse(event.data) as GithubActivityEvent;
-            if (payload.type === "initial") {
-                setActivity(payload.data);
-            } else if (payload.type === "update") {
-                const applyUpdate = () => {
-                    setActivity((prev) => [
-                        payload.data,
-                        ...prev.filter((item) =>
-                            item.repository.url !== payload.data.repository.url
-                        ),
-                    ].slice(0, 5));
-                };
-                if (options?.wrapUpdate) {
-                    options.wrapUpdate(applyUpdate);
+            try {
+                const payload = JSON.parse(event.data) as GithubActivityEvent;
+                if (payload.type === "initial") {
+                    setActivity(payload.data);
+                } else if (payload.type === "update") {
+                    const applyUpdate = () => {
+                        setActivity((prev) => [
+                            payload.data,
+                            ...prev.filter((item) =>
+                                item.repository.url !== payload.data.repository.url
+                            ),
+                        ].slice(0, 5));
+                    };
+                    if (options?.wrapUpdate) {
+                        options.wrapUpdate(applyUpdate);
+                    } else {
+                        applyUpdate();
+                    }
+                } else if (payload.type === "error") {
+                    setError(payload.data.message);
+                    setConnectionStatus("error");
                 } else {
-                    applyUpdate();
+                    console.warn("Received unknown event type from GitHub activity stream:", payload);
+                    setError("Received unexpected event from GitHub activity stream");
+                    setConnectionStatus("error");
                 }
-            } else if (payload.type === "error") {
-                setError(payload.data.message);
+            } catch (e) {
+                console.error("Failed to parse GitHub activity event data:", e);
+                setError("Failed to parse data from GitHub activity stream");
                 setConnectionStatus("error");
             }
         };
         return () => {
             es.close();
             console.debug("Closed connection to GitHub activity stream");
-            setConnectionStatus("closed");
         };
     }, []);
     return { items: activity, connectionStatus, error };
