@@ -67,7 +67,7 @@
     --page-padding-inline: 16px;
 
     /* View Transition */
-    --no-transition-name: 'no-transition';
+    --no-transition-name: no-transition;
   }
 }
 
