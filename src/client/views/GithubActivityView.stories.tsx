@@ -20,9 +20,7 @@ const sampleFeed = Array.from({ length: 5 }).map((_, index) => {
             url: "https://github.com/FutureProg/" + repoName + "/commit/" +
                 commitSha,
         },
-        timestamp: Temporal.Now.instant().add(
-            Temporal.Duration.from({ hours: index * 5 }),
-        ).toString(),
+        timestamp: new Date(Date.now() + index * 5 * 60 * 60 * 1000).toISOString(),
     };
 });
 
