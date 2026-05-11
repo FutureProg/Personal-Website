@@ -10,7 +10,7 @@ main {
 
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
+  column-gap: var(--space-5);
   container-name: about-section;
   container-type: inline-size;
 
@@ -38,7 +38,7 @@ main {
     grid-template-rows: min-content min-content;
     row-gap: 0.5lh;
     grid-template-columns: repeat(2, 1fr);
-    column-gap: 24px;
+    column-gap: var(--space-8);
 
     .bullet-heading {
       grid-row: 1;

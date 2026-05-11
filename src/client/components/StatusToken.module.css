@@ -1,0 +1,55 @@
+.statusToken {
+    --animation: blink 2s infinite ease-in-out;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    padding: var(--padding-xs) var(--padding-sm);
+    gap: var(--space-3);
+    border-radius: var(--radius-md);
+    border: var(--border-width-thin) solid var(--status-color);
+    background-color: color-mix(in srgb, var(--status-color) 30%, transparent);
+    box-sizing: border-box;
+}
+
+.label {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-tight);
+    color: var(--text-primary);
+}
+
+.dot {    
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-full);
+    background-color: var(--status-color);
+    flex-shrink: 0;
+    animation: var(--animation);
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.25;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.online {
+    --status-color: var(--status-online);
+}
+
+.offline {
+    --status-color: var(--status-offline);
+    --animation: none;
+}
+
+.error {
+    --status-color: var(--status-error);
+    --animation: none;
+}

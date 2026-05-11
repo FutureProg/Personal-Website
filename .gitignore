@@ -24,3 +24,5 @@ yarn-error.log*
 MAKEFILE
 
 /dist
+*storybook.log
+storybook-static
