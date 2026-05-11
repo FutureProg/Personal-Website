@@ -58,10 +58,10 @@ export const GithubActivityView = () => {
         <div className={styles.view}>
             <div className={styles.header}>
                 <div className={styles.titleRow}>
-                    <h2 className={styles.title}>Github Activity</h2>
+                    <h2 className={styles.title}>GitHub Activity</h2>
                     <StatusToken status={connectionStatus} />
                 </div>
-                <p className={styles.subtitle}>5 Most Recent Github Repositories with commits</p>
+                <p className={styles.subtitle}>5 Most Recent GitHub Repositories with commits</p>
             </div>
             {content}
         </div>
