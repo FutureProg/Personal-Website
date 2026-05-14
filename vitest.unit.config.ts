@@ -17,6 +17,7 @@ export default defineConfig({
         name: "unit",
         environment: "happy-dom",
         include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
+        exclude: ["src/backend/**", "**/node_modules/**", "**/dist/**"],
         globals: true,
     },
 });
