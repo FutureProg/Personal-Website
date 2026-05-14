@@ -18,7 +18,7 @@
     "chromatic": "chromatic"
   },
   "workspaces": [
-    "src/frontend",
+    "src/common",
     "src/backend"
   ],
   "eslintConfig": {
