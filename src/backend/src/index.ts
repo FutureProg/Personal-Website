@@ -1,19 +1,11 @@
-import { serve } from '@hono/node-server'
-import { logger} from 'hono/logger';
-import { cors } from 'hono/cors';
-import { Hono } from 'hono'
+import { serve } from '@hono/node-server';
+import { createApp } from './app.js';
 
-const app = new Hono().basePath('/api');
-app.use(logger());
-app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
-
-app.get('/status', (c) => {
-  return c.json({ status: 'ok' })
-});
+const app = createApp();
 
 serve({
   fetch: app.fetch,
-  port: Number(process.env.PORT) || 3001
+  port: Number(process.env.PORT) || 3001,
 }, (info) => {
-  console.log(`Server is running on http://localhost:${info.port}`)
+  console.log(`Server is running on http://localhost:${info.port}`);
 });
