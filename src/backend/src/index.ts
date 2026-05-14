@@ -5,7 +5,7 @@ import { Hono } from 'hono'
 
 const app = new Hono().basePath('/api');
 app.use(logger());
-app.use(cors());
+app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 
 app.get('/status', (c) => {
   return c.json({ status: 'ok' })
