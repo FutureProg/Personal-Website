@@ -3,7 +3,7 @@ import { logger} from 'hono/logger';
 import { cors } from 'hono/cors';
 import { Hono } from 'hono'
 
-const app = new Hono();
+const app = new Hono().basePath('/api');
 app.use(logger());
 app.use(cors());
 
