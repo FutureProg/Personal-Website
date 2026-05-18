@@ -9,7 +9,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit -p tsconfig.build.json && vite build",
+    "build:client": "tsc --noEmit -p tsconfig.build.json && vite build",
+    "build:backend": "npm run build -w backend",
+    "build": "npm run build:client && npm run build:backend",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -17,6 +19,10 @@
     "test:unit:watch": "vitest --config vitest.unit.config.ts",
     "chromatic": "chromatic"
   },
+  "workspaces": [
+    "src/common",
+    "src/backend"
+  ],
   "eslintConfig": {
     "extends": [
       "react-app",
