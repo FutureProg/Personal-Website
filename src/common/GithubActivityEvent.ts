@@ -1,8 +1,12 @@
-export type GithubActivityEvent = GithubActivityInitialEvent | GithubActivityUpdateEvent | GithubActivityErrorEvent;
+export type GithubActivityEvent = GithubActivityInitialEvent | GithubActivityUpdateEvent | GithubActivityErrorEvent | GithubActivityCloseEvent;
 
 export interface GithubActivityInitialEvent {
     type: "initial";
     data: GithubActivityData[];
+}
+
+export interface GithubActivityCloseEvent {
+    type: "closed";
 }
 
 export interface GithubActivityErrorEvent {
