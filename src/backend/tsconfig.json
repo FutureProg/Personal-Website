@@ -9,7 +9,7 @@
       "node"
     ],
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "../../dist/backend"
   },
   "exclude": ["node_modules"]
 }
