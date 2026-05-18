@@ -24,9 +24,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Stage backend package.json for deploy
-        run: cp src/backend/package.json dist/backend/package.json
-
       - name: Deploy frontend to DigitalOcean Droplet
         uses: appleboy/scp-action@v1.0.0
         with:
@@ -54,9 +51,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /srv/backend
-            npm install --omit=dev
             pm2 describe backend > /dev/null 2>&1 \
               && pm2 restart backend \
-              || pm2 start index.js --name backend
+              || pm2 start /srv/backend/index.js --name backend
             pm2 save
