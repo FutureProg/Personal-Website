@@ -13,6 +13,10 @@ export function createApp(options?: { githubActivity?: GithubActivityConfig }) {
     return c.json({ status: 'ok' });
   });
 
+  console.debug('GitHub Activity Config:', {
+    username: options?.githubActivity?.username ?? process.env.GITHUB_USERNAME,
+    pollIntervalMs: options?.githubActivity?.pollIntervalMs ?? process.env.GITHUB_POLL_INTERVAL_MS,
+  });
   const githubConfig: GithubActivityConfig = options?.githubActivity ?? {
     client: new Octokit({ auth: process.env.GITHUB_TOKEN }),
     username: process.env.GITHUB_USERNAME ?? '',

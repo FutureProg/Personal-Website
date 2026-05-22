@@ -99,6 +99,7 @@ export function registerGithubActivityRoute(app: Hono, config: GithubActivityCon
               : 'Failed to fetch GitHub activity',
           },
         };
+        console.debug('Error fetching initial GitHub activity:', err);
         await stream.writeSSE({ data: JSON.stringify(errorEvent) });
         return;
       }
