@@ -15,8 +15,8 @@ function makePushEvent(
   return {
     type: 'PushEvent',
     id: sha,
-    repo: { name: repoName, url: `https://api.github.com/repos/${repoName}` },
-    payload: { commits: [{ sha, message }] },
+    repo: { name: repoName, url: `https://api.github.com/repos/${repoName}`, id: 1 },
+    payload: { head: sha, commits: [{ sha, message }] },
     created_at: createdAt,
   };
 }
@@ -25,7 +25,7 @@ function makeNonPushEvent(repoName: string) {
   return {
     type: 'WatchEvent',
     id: 'watch-1',
-    repo: { name: repoName, url: '' },
+    repo: { name: repoName, url: '', id: 1 },
     payload: {},
     created_at: '2024-01-01T00:00:00Z',
   };
@@ -105,8 +105,8 @@ describe('extractActivity', () => {
     const event = {
       type: 'PushEvent',
       id: '1',
-      repo: { name: 'user/repo', url: '' },
-      payload: { commits: [] },
+      repo: { name: 'user/repo', url: '', id: 1 },
+      payload: { head: 'abc123', commits: [] },
       created_at: '2024-01-01T00:00:00Z',
     };
     expect(extractActivity([event])).toEqual([]);
