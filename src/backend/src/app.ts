@@ -2,7 +2,7 @@ import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
 import { Hono } from 'hono';
 import { Octokit } from '@octokit/rest';
-import { registerGithubActivityRoute, type GithubActivityConfig } from './githubActivity.js';
+import { registerGithubActivityRoute, type GithubActivityConfig } from './githubActivity';
 
 export function createApp(options?: { githubActivity?: GithubActivityConfig }) {
   const app = new Hono().basePath('/api');

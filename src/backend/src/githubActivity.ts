@@ -1,22 +1,12 @@
 import { Hono } from 'hono';
 import { streamSSE } from 'hono/streaming';
 import type { GithubActivityData, GithubActivityEvent } from '@site/common/GithubActivityEvent';
+import type { Octokit } from '@octokit/rest';
 
 export interface GithubClient {
   rest: {
     activity: {
-      listPublicEventsForUser(params: {
-        username: string;
-        per_page: number;
-      }): Promise<{
-        data: Array<{
-          type: string | null;
-          id: string;
-          repo: { name: string; url: string };
-          payload: unknown;
-          created_at: string | null;
-        }>;
-      }>;
+      listPublicEventsForUser: Octokit['rest']['activity']['listPublicEventsForUser'];
     };
   };
 }

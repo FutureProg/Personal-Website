@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Hono } from 'hono';
 import { extractActivity, registerGithubActivityRoute } from './githubActivity.js';
-import type { GithubActivityEvent } from '@site/common/GithubActivityEvent.js';
+import type { GithubActivityEvent } from '@site/common/GithubActivityEvent';
 import type { GithubClient, GithubActivityConfig } from './githubActivity.js';
 
 // ── helpers ────────────────────────────────────────────────────────────────
