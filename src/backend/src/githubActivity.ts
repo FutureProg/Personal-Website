@@ -18,39 +18,40 @@ export interface GithubActivityConfig {
 }
 
 type PushPayload = {
-  commits?: Array<{ sha: string; message: string }>;
+  head?: string;
+  before?: string;
+  ref?: string;
 };
 
 type RawEvent = {
   type: string | null;
   id: string;
-  repo: { name: string; url: string };
+  repo: { name: string; url: string, id: number };
   payload: unknown;
   created_at: string | null;
 };
 
 export function extractActivity(events: RawEvent[]): GithubActivityData[] {
-  const byRepo = new Map<string, GithubActivityData>();
+  const byRepo = new Map<number, GithubActivityData>();
 
   for (const event of events) {
-    if (event.type !== 'PushEvent') continue;
+    if (event.type !== 'PushEvent') continue;    
     const repoName = event.repo.name;
-    if (byRepo.has(repoName)) continue;
+    if (byRepo.has(event.repo.id)) continue;
 
     const payload = event.payload as PushPayload;
-    const commits = payload.commits ?? [];
-    const latestCommit = commits[commits.length - 1];
-    if (!latestCommit) continue;
+    const sha = payload.head;
+    if (!sha) continue;    
 
-    byRepo.set(repoName, {
+    byRepo.set(event.repo.id, {
       repository: {
-        name: repoName.split('/')[1] ?? repoName,
+        name: repoName,
         url: `https://github.com/${repoName}`,
       },
       commit: {
-        sha: latestCommit.sha,
-        message: latestCommit.message,
-        url: `https://github.com/${repoName}/commit/${latestCommit.sha}`,
+        sha,
+        message: "", // GitHub API doesn't include commit message in PushEvent payload, would need extra API call to fetch it
+        url: `https://github.com/${repoName}/commit/${sha}`,
       },
       timestamp: event.created_at ?? new Date().toISOString(),
     });
@@ -81,10 +82,11 @@ export function registerGithubActivityRoute(app: Hono, config: GithubActivityCon
       // Initial fetch
       let initialData: GithubActivityData[];
       try {
-        const { data: events } = await config.client.rest.activity.listPublicEventsForUser({
+        const {data: events} = await config.client.rest.activity.listPublicEventsForUser({
           username: config.username,
           per_page: 100,
         });
+        console.log(`Fetched ${events.length} events for user ${config.username}`);        
         const allActivity = extractActivity(events);
         initialData = allActivity.slice(0, 5);
         for (const item of initialData) {
@@ -114,10 +116,10 @@ export function registerGithubActivityRoute(app: Hono, config: GithubActivityCon
         if (aborted) break;
 
         try {
-          const { data: events } = await config.client.rest.activity.listPublicEventsForUser({
+          const {data: events} = await config.client.rest.activity.listPublicEventsForUser({
             username: config.username,
             per_page: 100,
-          });
+          });          
 
           const allActivity = extractActivity(events);
 
