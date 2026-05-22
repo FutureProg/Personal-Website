@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { streamSSE } from 'hono/streaming';
-import type { GithubActivityData, GithubActivityEvent } from '@site/common/GithubActivityEvent.js';
+import type { GithubActivityData, GithubActivityEvent } from '@site/common/GithubActivityEvent';
 
 export interface GithubClient {
   rest: {
