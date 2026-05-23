@@ -61,7 +61,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            printf 'GITHUB_USERNAME=%s\nGITHUB_TOKEN=%s\n' \
+            printf 'GITHUB_USERNAME="%s"\nGITHUB_TOKEN="%s"\n' \
               '${{ vars.MY_GITHUB_USERNAME }}' \
               '${{ secrets.MY_GITHUB_TOKEN }}' \
               > /srv/backend/.env
