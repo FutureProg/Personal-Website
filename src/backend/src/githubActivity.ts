@@ -36,22 +36,22 @@ export function extractActivity(events: RawEvent[]): GithubActivityData[] {
 
   for (const event of events) {
     if (event.type !== 'PushEvent') continue;    
-    const repoName = event.repo.name;
+    const fullRepoName = event.repo.name;
     if (byRepo.has(event.repo.id)) continue;
 
     const payload = event.payload as PushPayload;
     const sha = payload.head;
-    if (!sha) continue;    
-
+    if (!sha) continue;
+    
     byRepo.set(event.repo.id, {
       repository: {
-        name: repoName,
-        url: `https://github.com/${repoName}`,
+        name: fullRepoName,
+        url: `https://github.com/${fullRepoName}`,
       },
       commit: {
         sha,
         message: "", // GitHub API doesn't include commit message in PushEvent payload, would need extra API call to fetch it
-        url: `https://github.com/${repoName}/commit/${sha}`,
+        url: `https://github.com/${fullRepoName}/commit/${sha}`,
       },
       timestamp: event.created_at ?? new Date().toISOString(),
     });

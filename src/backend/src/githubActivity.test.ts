@@ -6,6 +6,10 @@ import type { GithubClient, GithubActivityConfig } from './githubActivity.js';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
+function repoId(name: string): number {
+  return [...name].reduce((acc, c) => acc + c.charCodeAt(0), 0);
+}
+
 function makePushEvent(
   repoName: string,
   sha: string,
@@ -14,7 +18,7 @@ function makePushEvent(
   return {
     type: 'PushEvent',
     id: sha,
-    repo: { name: repoName, url: `https://api.github.com/repos/${repoName}`, id: 1 },
+    repo: { name: repoName, url: `https://api.github.com/repos/${repoName}`, id: repoId(repoName) },
     payload: { head: sha },
     created_at: createdAt,
   };
@@ -105,7 +109,7 @@ describe('extractActivity', () => {
     const result = extractActivity([event]);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual({
-      repository: { name: 'repo-a', url: 'https://github.com/user/repo-a' },
+      repository: { name: 'user/repo-a', url: 'https://github.com/user/repo-a' },
       commit: {
         sha: 'abc123',
         message: '',
@@ -270,7 +274,7 @@ describe('GET /api/github/activity', () => {
 
     expect(updateEvent!.type).toBe('update');
     if (updateEvent!.type === 'update') {
-      expect(updateEvent!.data.repository.name).toBe('repo-b');
+      expect(updateEvent!.data.repository.name).toBe('user/repo-b');
       expect(updateEvent!.data.commit.sha).toBe('sha-2');
     }
 
