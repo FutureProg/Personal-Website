@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'personal-website-api',
-      script: './index.js',
+      script: './index.mjs',
       cwd: __dirname,
       instances: 1,
       autorestart: true,
