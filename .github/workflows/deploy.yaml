@@ -51,7 +51,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export GITHUB_USERNAME=${{ vars.MY_GITHUB_USERNAME }}
-            export GITHUB_TOKEN=${{ secrets.MY_GITHUB_TOKEN }}
+            export GITHUB_USERNAME="${{ vars.MY_GITHUB_USERNAME }}"
+            export GITHUB_TOKEN="${{ secrets.MY_GITHUB_TOKEN }}"
             pm2 startOrRestart /srv/backend/ecosystem.config.cjs --env production --update-env
             pm2 save
