@@ -61,11 +61,13 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            GITHUB_USERNAME="${{ vars.MY_GITHUB_USERNAME }}" \
-            GITHUB_TOKEN="${{ secrets.MY_GITHUB_TOKEN }}" \
+            printf 'GITHUB_USERNAME=%s\nGITHUB_TOKEN=%s\n' \
+              '${{ vars.MY_GITHUB_USERNAME }}' \
+              '${{ secrets.MY_GITHUB_TOKEN }}' \
+              > /srv/backend/.env
             pm2 startOrRestart /srv/backend/ecosystem.config.cjs --env production --update-env
             pm2 save
-            
+
   validate-backend-status:
     needs: build-and-deploy
     runs-on: ubuntu-latest
@@ -97,7 +99,9 @@ jobs:
           script: |
             cp -rp /srv/backend.bak/. /srv/backend/
             cp -rp /var/www/html.bak/. /var/www/html/
-            GITHUB_USERNAME="${{ vars.MY_GITHUB_USERNAME }}" \
-            GITHUB_TOKEN="${{ secrets.MY_GITHUB_TOKEN }}" \
+            printf 'GITHUB_USERNAME=%s\nGITHUB_TOKEN=%s\n' \
+              '${{ vars.MY_GITHUB_USERNAME }}' \
+              '${{ secrets.MY_GITHUB_TOKEN }}' \
+              > /srv/backend/.env
             pm2 startOrRestart /srv/backend/ecosystem.config.cjs --env production --update-env
             pm2 save
