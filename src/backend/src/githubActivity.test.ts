@@ -9,14 +9,13 @@ import type { GithubClient, GithubActivityConfig } from './githubActivity.js';
 function makePushEvent(
   repoName: string,
   sha: string,
-  message = 'test commit',
   createdAt = '2024-01-01T00:00:00Z',
 ) {
   return {
     type: 'PushEvent',
     id: sha,
     repo: { name: repoName, url: `https://api.github.com/repos/${repoName}`, id: 1 },
-    payload: { head: sha, commits: [{ sha, message }] },
+    payload: { head: sha },
     created_at: createdAt,
   };
 }
@@ -101,26 +100,15 @@ describe('extractActivity', () => {
     expect(extractActivity(events)).toEqual([]);
   });
 
-  it('ignores push events with no commits', () => {
-    const event = {
-      type: 'PushEvent',
-      id: '1',
-      repo: { name: 'user/repo', url: '', id: 1 },
-      payload: { head: 'abc123', commits: [] },
-      created_at: '2024-01-01T00:00:00Z',
-    };
-    expect(extractActivity([event])).toEqual([]);
-  });
-
   it('extracts a single PushEvent correctly', () => {
-    const event = makePushEvent('user/repo-a', 'abc123', 'feat: add feature', '2024-06-01T12:00:00Z');
+    const event = makePushEvent('user/repo-a', 'abc123', '2024-06-01T12:00:00Z');
     const result = extractActivity([event]);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual({
       repository: { name: 'repo-a', url: 'https://github.com/user/repo-a' },
       commit: {
         sha: 'abc123',
-        message: 'feat: add feature',
+        message: '',
         url: 'https://github.com/user/repo-a/commit/abc123',
       },
       timestamp: '2024-06-01T12:00:00Z',
@@ -129,8 +117,8 @@ describe('extractActivity', () => {
 
   it('deduplicates by repository — keeps only the first (most recent) entry per repo', () => {
     const events = [
-      makePushEvent('user/repo-a', 'sha-1', 'first'),
-      makePushEvent('user/repo-a', 'sha-2', 'second'),
+      makePushEvent('user/repo-a', 'sha-1'),
+      makePushEvent('user/repo-a', 'sha-2'),
     ];
     const result = extractActivity(events);
     expect(result).toHaveLength(1);
