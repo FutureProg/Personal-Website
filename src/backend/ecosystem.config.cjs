@@ -2,7 +2,8 @@ module.exports = {
   apps: [
     {
       name: 'personal-website-api',
-      script: 'dist/index.js',
+      script: './index.js',
+      cwd: __dirname,
       instances: 1,
       autorestart: true,
       watch: false,
