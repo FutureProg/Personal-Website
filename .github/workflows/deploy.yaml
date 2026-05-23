@@ -24,6 +24,16 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Backup current deployment
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cp -rp /srv/backend /srv/backend.bak || true
+            cp -rp /var/www/html /var/www/html.bak || true
+
       - name: Deploy frontend to DigitalOcean Droplet
         uses: appleboy/scp-action@v1.0.0
         with:
@@ -51,6 +61,42 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            export GITHUB_USERNAME="${{ vars.MY_GITHUB_USERNAME }}"
+            export GITHUB_TOKEN="${{ secrets.MY_GITHUB_TOKEN }}"
+            pm2 startOrRestart /srv/backend/ecosystem.config.cjs --env production --update-env
+            pm2 save
+            
+  validate-backend-status:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check backend status
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            pm2 show personal-website-api | grep -q "status.*online" || exit 1
+      - name: Ping backend health endpoint
+        run: curl -f ${{ vars.API_DOMAIN_NAME }}/api/status || exit 1
+
+  rollback:
+    needs: [build-and-deploy, validate-backend-status]
+    if: needs.build-and-deploy.result == 'success' && needs.validate-backend-status.result == 'failure'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Rollback deployment
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cp -rp /srv/backend.bak/. /srv/backend/
+            cp -rp /var/www/html.bak/. /var/www/html/
             export GITHUB_USERNAME="${{ vars.MY_GITHUB_USERNAME }}"
             export GITHUB_TOKEN="${{ secrets.MY_GITHUB_TOKEN }}"
             pm2 startOrRestart /srv/backend/ecosystem.config.cjs --env production --update-env
