@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc --noEmit && esbuild src/index.ts --bundle --platform=node --format=esm --outfile=../../dist/backend/index.js",
+    "build": "tsc --noEmit && esbuild src/index.ts --bundle --platform=node --format=esm --outfile=../../dist/backend/index.js && cp ./ecosystem.config.cjs ../../dist/backend/ecosystem.config.cjs",
     "start": "node ../../dist/backend/index.js",
     "test": "vitest run"
   },
