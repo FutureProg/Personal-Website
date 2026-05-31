@@ -1,0 +1,6 @@
+packages:
+  - src/common
+  - src/backend
+
+allowBuilds:
+  esbuild: true

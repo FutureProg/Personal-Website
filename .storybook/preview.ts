@@ -44,7 +44,7 @@ const preview: Preview = {
   decorators: [
     (Story, context) => {
       const theme = context.globals.theme || 'light';
-      const backgroundColor = theme === 'dark' ? '#1a1a1a' : '#FFFFFF';
+      const backgroundColor = theme === 'dark' ? '#1a1a1a' : 'var(--bg-page)';
       
       // Apply theme to the document
       if (typeof document !== 'undefined') {

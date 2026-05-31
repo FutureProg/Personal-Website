@@ -19,10 +19,6 @@
     "test:unit:watch": "vitest --config vitest.unit.config.ts",
     "chromatic": "chromatic"
   },
-  "workspaces": [
-    "src/common",
-    "src/backend"
-  ],
   "eslintConfig": {
     "extends": [
       "react-app",

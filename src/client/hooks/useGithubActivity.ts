@@ -3,6 +3,7 @@ import type {
     GithubActivityEvent,
 } from "@common/GithubActivityEvent";
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../util/config";
 
 /**
  * Custom hook to fetch and manage GitHub activity data.
@@ -19,11 +20,11 @@ export const useGithubActivity: (options?: { wrapUpdate?: (update: () => void) =
     const [activity, setActivity] = useState<GithubActivityData[]>([]);
     const [error, setError] = useState<string | undefined>(undefined);
     useEffect(() => {
-        const es = new EventSource("/api/github/activity");        
+        const es = new EventSource(`${API_BASE_URL}/github/activity`);        
         es.onerror = (error) => {
             console.debug("Error connecting to GitHub activity stream:", error);
             setConnectionStatus("error");
-            setError("Error occurred connecting to the Activity Stream \n Please check your internet connection");
+            setError("An error occurred connecting to the Activity Stream. \n Please check your internet connection.");
         };
         es.onopen = () => {
             console.debug("Connected to GitHub activity stream");

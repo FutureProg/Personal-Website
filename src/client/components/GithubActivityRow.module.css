@@ -3,12 +3,18 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
-    padding: 0 var(--space-2);
-    padding-bottom: var(--space-5);
+    padding: var(--space-5);
     gap: var(--space-7);
-    border-bottom: var(--border-width-thin) solid var(--border-primary);
-    border-bottom-color: var(--border-primary);
+    border-radius: 18px;
+
+    background: var(--glass-bg-strong);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-inset-top), var(--glass-inset-bottom), var(--glass-shadow);
+
     transition: 300ms ease;
+
     &:last-child {
         border-bottom: none;
     }
@@ -16,7 +22,7 @@
 
 @starting-style {
     .row {
-        opacity: 0;        
+        opacity: 0;
     }
 }
 
@@ -28,10 +34,10 @@
 }
 
 .repoName {
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-sm);
+    font-weight: 500;
+    font-size: 16px;
     color: var(--text-primary);
+    line-height: 24px;
     text-decoration: none;
 }
 
@@ -43,23 +49,23 @@
 }
 
 .lastCommitLabel {
-    font-weight: var(--font-weight-light);
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-sm);
+    font-weight: 200;
+    font-size: 16px;
+    line-height: 24px;
     color: var(--text-primary);
 }
 
 .commitId {
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-lg);
-    line-height: var(--line-height-sm);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
     color: var(--text-primary);
     text-decoration: none;
 }
 
 .timestamp {
-    font-weight: var(--font-weight-light);
-    font-size: var(--font-size-sm);
-    line-height: var(--line-height-sm);
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 24px;
     color: var(--text-primary);
 }

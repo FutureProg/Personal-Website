@@ -1,8 +1,16 @@
 main {
-  display: grid;
+  /* display: grid; */
   grid: subgrid / subgrid;
   grid-area: content / main;
 }
+
+.github-activity {
+  position: relative;
+  display: flex;  
+  width: 100%;
+  justify-content: center;
+}
+
 
 .about {
   position: relative;
