@@ -24,7 +24,7 @@ export const useGithubActivity: (options?: { wrapUpdate?: (update: () => void) =
         es.onerror = (error) => {
             console.debug("Error connecting to GitHub activity stream:", error);
             setConnectionStatus("error");
-            setError("Error occurred connecting to the Activity Stream \n Please check your internet connection");
+            setError("An error occurred connecting to the Activity Stream. \n Please check your internet connection.");
         };
         es.onopen = () => {
             console.debug("Connected to GitHub activity stream");
