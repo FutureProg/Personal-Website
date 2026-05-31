@@ -10,8 +10,8 @@
   "scripts": {
     "dev": "vite",
     "build:client": "tsc --noEmit -p tsconfig.build.json && vite build",
-    "build:backend": "npm run build -w backend",
-    "build": "npm run build:client && npm run build:backend",
+    "build:backend": "pnpm --filter backend run build",
+    "build": "pnpm run build:client && pnpm run build:backend",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

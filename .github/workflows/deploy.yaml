@@ -18,11 +18,16 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build project
-        run: npm run build
+        run: pnpm run build
 
       - name: Backup current deployment
         uses: appleboy/ssh-action@v1.0.0
