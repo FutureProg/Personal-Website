@@ -206,6 +206,14 @@
       
       /* Border Colors */
       --border-primary: #3a3a3a;
+
+      /* Glass surfaces — dark variants */
+      --glass-bg: rgba(30, 30, 35, 0.65);
+      --glass-bg-strong: rgba(30, 30, 35, 0.82);
+      --glass-border: rgba(255, 255, 255, 0.10);
+      --glass-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      --glass-inset-bottom: inset 0 -1px 0 rgba(0, 0, 0, 0.20);
+      --glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.30), 0 1px 3px rgba(0, 0, 0, 0.20);
     }
   }
 

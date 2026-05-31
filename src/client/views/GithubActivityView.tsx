@@ -1,13 +1,8 @@
 import styles from './GithubActivityView.module.css';
 import { StatusToken, type StatusTokenStatus } from '../components/StatusToken';
-import { GithubActivityRow, type GithubActivityRowProps } from '../components/GithubActivityRow';
+import { GithubActivityRow } from '../components/GithubActivityRow';
 import { useGithubActivity } from '../hooks/useGithubActivity';
 import { flushSync } from 'react-dom';
-
-export interface GithubActivityViewProps {
-    status: StatusTokenStatus;
-    repositories: GithubActivityRowProps[];
-}
 
 function wrapUpdate(update: () => void) {
     const doUpdate = () => flushSync(update);
@@ -39,6 +34,7 @@ export const GithubActivityView = () => {
             break;
     }
 
+    const isLoading = githubActivity.connectionStatus === 'initializing' && githubActivity.items.length === 0;
     const content = githubActivity.items.length > 0 ? (
         <div className={styles.rows}>
             {githubActivity.items.map((repo) => (
@@ -52,7 +48,7 @@ export const GithubActivityView = () => {
                 />
             ))}
         </div>
-    ) : <div className={styles.statusMessage}>{messageText || 'No recent activity'}</div>;
+    ) : <div className={styles.statusMessage}>{isLoading ? 'Loading...' : messageText || 'No recent activity'}</div>;
     
     return (
         <div className={styles.view}>

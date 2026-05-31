@@ -5,7 +5,8 @@
     padding: var(--padding-lg);
     gap: var(--gap-xl);    
     transition: 1s ease;
-    width: 640px;
+    max-width: 640px;
+    width: 100%;
     overflow-y: auto;
     view-transition-name: var(--no-transition-name);
 
@@ -36,7 +37,7 @@
 .title {
     font-weight: var(--font-weight-semibold);
     font-size: 32px;
-    line-height: auto;
+    line-height: normal;
     color: var(--text-primary);
     margin: 0;
 }
@@ -60,7 +61,7 @@
     width: 100%;
     box-sizing: border-box;
     font-family: var(--font-family-primary);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
     font-weight: var(--font-weight-light);
     text-align: center;
     white-space: pre-wrap;
