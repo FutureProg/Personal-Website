@@ -93,6 +93,7 @@
     --text-primary: var(--color-black);
     --text-secondary: var(--color-gray-500);
     --text-body: var(--color-body);
+    --text-subtitle: var(--color-gray-500);
     --text-label: var(--color-gray-400);
     --text-inverse: var(--color-white);
 
