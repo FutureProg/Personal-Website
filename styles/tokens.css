@@ -119,6 +119,34 @@
     --padding-md: var(--space-5);
     --padding-lg: var(--space-8);
     --padding-xl: var(--space-9);
+
+  /* Glass surfaces */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-bg-dark: rgba(24, 24, 27, 0.88);
+
+  /* Glass borders */
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-border-dark: rgba(255, 255, 255, 0.10);
+
+  /* Backdrop filters */
+  --glass-blur: blur(20px) saturate(180%);
+  --glass-blur-nav: blur(24px) saturate(180%);
+  --glass-blur-sm: blur(8px);
+
+  /* Glass shadows */
+  --glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --glass-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05);
+  --glass-shadow-dark: 0 2px 16px rgba(0, 0, 0, 0.12);
+
+  /* Glass inset highlights — the key detail that makes surfaces feel physical */
+  --glass-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --glass-inset-bottom: inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+  --glass-inset-dark: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  /* Background blobs */
+  --blob-blue: rgba(78, 166, 210, 0.09);
+  --blob-purple: rgba(145, 56, 203, 0.07);
   }
 
   /* Dark Mode */
