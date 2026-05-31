@@ -10,7 +10,7 @@
   "dependencies": {
     "@hono/node-server": "^1.19.14",
     "@octokit/rest": "^21.1.1",
-    "@site/common": "*",
+    "@site/common": "workspace:*",
     "hono": "^4.12.18"
   },
   "devDependencies": {
