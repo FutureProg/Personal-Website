@@ -23,6 +23,7 @@
     --color-purple-600: #9138CB;
 
     /* Font Families */
+    --font-family-nunito: 'Nunito', sans-serif;
     --font-family-primary: 'DM Sans', sans-serif;
     --font-family-display: 'Playfair Display', serif;
     --font-family-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
