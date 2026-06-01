@@ -24,6 +24,10 @@ body {
   color: var(--text-primary);
 }
 
+#root {
+  display: contents;
+}
+
 
 h1 {
   font-family: var(--font-family-display);
