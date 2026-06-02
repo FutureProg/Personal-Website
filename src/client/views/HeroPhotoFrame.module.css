@@ -1,0 +1,297 @@
+/* ============================================
+   HeroPhotoFrame
+   ============================================ */
+
+.view {
+    container-type: inline-size;
+    position: relative;
+    width: min(608px, 100%);
+    height: 576px;
+}
+
+/* ── Photo ring ─────────────────────────────── */
+.photoRing {
+    position: relative;
+    margin-top: 7.5px;
+    height: calc(100% - 8px);
+    border: var(--border-width-thin) solid rgba(78, 166, 210, 0.2);
+    border-radius: 34px;
+}
+
+/* ── Photo frame ────────────────────────────── */
+.photoFrame {
+    position: absolute;
+    inset: 14px;
+    border-radius: 24px;
+    overflow: hidden;
+    background: linear-gradient(28.15deg, rgb(194, 212, 222) 0%, rgb(158, 184, 204) 32.847%, rgb(122, 156, 181) 72.993%);
+}
+
+.photoWrapper {
+    position: absolute;
+    left: calc(50% - 0.5px);
+    top: calc(50% - 0.5px);
+    transform: translate(-50%, -50%);
+    width: 259px;
+    height: 259px;
+}
+
+.photoInner {
+    position: absolute;
+    inset: -1.54%;
+}
+
+.photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+}
+
+/* ── Location pill ──────────────────────────── */
+/*
+ * Stays a child of .view (not the ring) — it visually straddles the ring's
+ * top edge. top: calc(50% - 266.75px) lands it at ~21px from the view top.
+ */
+.locationPill {
+    position: absolute;
+    left: 50%;
+    top: calc(50% - 266.75px);
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 13px 16px;
+    border: var(--border-width-thin) solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.18);
+    white-space: nowrap;
+}
+
+.locationPillBg {
+    position: absolute;
+    inset: 0;
+    background: rgba(24, 24, 27, 0.85);
+    border-radius: var(--radius-pill);
+    pointer-events: none;
+}
+
+.locationDotWrapper {
+    position: relative;
+    flex-shrink: 0;
+    width: 7px;
+    height: 7px;
+}
+
+.locationDotInner {
+    position: absolute;
+    inset: -85.71%;
+}
+
+.locationDotImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+}
+
+.locationText {
+    position: relative;
+    flex-shrink: 0;
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    line-height: normal;
+    color: var(--text-inverse);
+    font-variation-settings: 'opsz' 14;
+    margin: 0;
+}
+
+.locationPillInset {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+}
+
+/* ── Info pills ─────────────────────────────── */
+/*
+ * display: contents on desktop — pills position relative to .photoRing
+ * (the nearest positioned ancestor). On mobile the container query switches
+ * it to a real positioned box that moves all 4 pills together.
+ */
+.infoPills {
+    display: contents;
+}
+
+/* Shared pill base */
+.infoPill {
+    position: absolute;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    grid-template-rows: repeat(2, fit-content(100%));
+    column-gap: 7px;
+    row-gap: 5px;
+    padding: 6px 14px;
+    width: 228px;
+    border: var(--border-width-thin) solid rgba(255, 255, 255, 0.75);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    box-shadow:
+        0px 1px 3px 0px rgba(0, 0, 0, 0.04),
+        0px 2px 16px 0px rgba(0, 0, 0, 0.06);
+    will-change: transform;
+}
+
+/* Variant: taller vertical padding (Pokémon, Cycling) */
+.infoPillLg {
+    padding-block: 8px;
+}
+
+.infoPillBg {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.72);
+    border-radius: var(--radius-pill);
+    pointer-events: none;
+}
+
+.infoPillEmoji {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: stretch;
+    font-size: 15px;
+    line-height: 0;
+    position: relative;
+}
+
+.infoPillTitle {
+    grid-column: 2;
+    grid-row: 1;
+    font-family: var(--font-family-primary);
+    font-size: 13px;
+    font-weight: var(--font-weight-medium);
+    line-height: normal;
+    color: var(--text-primary);
+    font-variation-settings: 'opsz' 14;
+    margin: 0;
+    white-space: nowrap;
+    position: relative;
+}
+
+.infoPillSubtitle {
+    grid-column: 2;
+    grid-row: 2;
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: normal;
+    color: var(--text-secondary);
+    font-variation-settings: 'opsz' 14;
+    margin: 0;
+    position: relative;
+}
+
+.infoPillInset {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+        inset 0px 1px 0px 0px rgba(255, 255, 255, 0.95),
+        inset 0px -1px 0px 0px rgba(0, 0, 0, 0.03);
+    pointer-events: none;
+}
+
+/* ── Desktop pill positions (relative to .photoRing) ── */
+
+/* Left side — bleed outside the ring */
+.pillPokemon {
+    left: -37px;
+    top: 173px;   /* 180.5 − 7.5 */
+}
+
+.pillCycling {
+    left: -22px;
+    top: 446px;   /* 453.5 − 7.5 */
+}
+
+/* Right side — bleed outside the ring */
+.pillCities {
+    left: 453px;
+    top: 332px;   /* 339.5 − 7.5 */
+}
+
+.pillStreets {
+    left: 404px;
+    top: 57px;    /* 64.5 − 7.5 */
+}
+
+@keyframes float {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-4px); }
+    100% { transform: translateY(0); }
+}
+
+/* ============================================
+   Mobile layout  (@container)
+   ============================================ */
+
+@container (max-width: 479px) {
+
+    .view {
+        height: 600px;
+    }
+
+    /* Photo circle shifts up to leave room for pills below */
+    .photoWrapper {
+        top: calc(50% - 104.5px);
+        left: calc(50% + 0.5px);
+    }
+
+    .photoRing {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Location pill sits flush at the top of .view */
+    .locationPill {
+        top: 0;
+        transform: translateX(-50%);
+    }
+
+    .infoPills {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        top: 316.5px;
+        height: 228px;
+        padding: 0 20px;
+    }
+
+    /* Pills fill the flex container width and float gently */
+    .infoPill {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 240px;
+        min-width: fit-content;
+        animation: float 3s ease-in-out infinite;
+        animation-delay: calc(var(--pill-index) * 0.5s); /* Firefox fallback */
+        animation-delay: calc(sibling-index() * 0.5s);   /* stagger via CSS */
+    }
+
+    /* Reset absolute desktop positions — pills flow in the flex column */
+    .pillStreets,
+    .pillPokemon,
+    .pillCities,
+    .pillCycling {
+        position: static;        
+    }
+}
