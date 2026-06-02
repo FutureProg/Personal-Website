@@ -1,11 +1,12 @@
 import { useRef } from 'react';
+import { HeroInfoPill } from '../components/HeroInfoPill';
 import styles from './HeroPhotoFrame.module.css';
 
 export const HeroPhotoFrame = () => {
     const viewRef = useRef<HTMLDivElement>(null);
     const rateRef = useRef(1);
     const rafRef = useRef<number | null>(null);
-    const slowAnimationDuration = 300; 
+    const slowAnimationDuration = 300;
 
     const rampOrbitRate = (target: number) => {
         if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
@@ -47,34 +48,36 @@ export const HeroPhotoFrame = () => {
                 </div>
 
                 <div className={styles.infoPills}>
-                    <div className={`${styles.infoPill} ${styles.pillStreets}`} style={{ '--pill-index': 0 } as React.CSSProperties} data-pill="streets">
-                        <div aria-hidden className={styles.infoPillBg} />
-                        <div className={styles.infoPillEmoji}>🚲</div>
-                        <p className={styles.infoPillTitle}>Safe Streets Halton</p>
-                        <p className={styles.infoPillSubtitle}>President</p>
-                        <div aria-hidden className={styles.infoPillInset} />
-                    </div>
-                    <div className={`${styles.infoPill} ${styles.infoPillLg} ${styles.pillPokemon}`} style={{ '--pill-index': 1 } as React.CSSProperties} data-pill="pokemon">
-                        <div aria-hidden className={styles.infoPillBg} />
-                        <div className={styles.infoPillEmoji}>🃏</div>
-                        <p className={styles.infoPillTitle}>Pokémon TCG</p>
-                        <p className={styles.infoPillSubtitle}>Deck builder</p>
-                        <div aria-hidden className={styles.infoPillInset} />
-                    </div>
-                    <div className={`${styles.infoPill} ${styles.pillCities}`} style={{ '--pill-index': 2 } as React.CSSProperties} data-pill="cities">
-                        <div aria-hidden className={styles.infoPillBg} />
-                        <div className={styles.infoPillEmoji}>🏙️</div>
-                        <p className={styles.infoPillTitle}>Cities: Skylines 2</p>
-                        <p className={styles.infoPillSubtitle}>Off the clock</p>
-                        <div aria-hidden className={styles.infoPillInset} />
-                    </div>
-                    <div className={`${styles.infoPill} ${styles.infoPillLg} ${styles.pillCycling}`} style={{ '--pill-index': 3 } as React.CSSProperties} data-pill="cycling">
-                        <div aria-hidden className={styles.infoPillBg} />
-                        <div className={styles.infoPillEmoji}>🚴</div>
-                        <p className={styles.infoPillTitle}>Cycling</p>
-                        <p className={styles.infoPillSubtitle}>Burlington trails</p>
-                        <div aria-hidden className={styles.infoPillInset} />
-                    </div>
+                    <HeroInfoPill
+                        emoji="🚲"
+                        title="Safe Streets Halton"
+                        subtitle="President"
+                        className={`${styles.infoPill} ${styles.pillStreets}`}
+                        style={{ '--pill-index': 0 } as React.CSSProperties}
+                    />
+                    <HeroInfoPill
+                        emoji="🃏"
+                        title="Pokémon TCG"
+                        subtitle="Deck builder"
+                        size="lg"
+                        className={`${styles.infoPill} ${styles.pillPokemon}`}
+                        style={{ '--pill-index': 1 } as React.CSSProperties}
+                    />
+                    <HeroInfoPill
+                        emoji="🏙️"
+                        title="Cities: Skylines 2"
+                        subtitle="Off the clock"
+                        className={`${styles.infoPill} ${styles.pillCities}`}
+                        style={{ '--pill-index': 2 } as React.CSSProperties}
+                    />
+                    <HeroInfoPill
+                        emoji="🚴"
+                        title="Cycling"
+                        subtitle="Burlington trails"
+                        size="lg"
+                        className={`${styles.infoPill} ${styles.pillCycling}`}
+                        style={{ '--pill-index': 3 } as React.CSSProperties}
+                    />
                 </div>
             </div>
 
