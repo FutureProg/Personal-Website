@@ -282,9 +282,11 @@
         width: 100%;
         max-width: 240px;
         min-width: fit-content;
-        animation: float 3s ease-in-out infinite;
-        animation-delay: calc(var(--pill-index) * 0.5s); /* Firefox fallback */
-        animation-delay: calc(sibling-index() * 0.5s);   /* stagger via CSS */
+        @media (prefers-reduced-motion: no-preference) {
+            animation: float 3s ease-in-out infinite;
+            animation-delay: calc(var(--pill-index) * 0.5s); /* Firefox fallback */
+            animation-delay: calc(sibling-index() * 0.5s);   /* stagger via CSS */
+        }
     }
 
     /* Reset absolute desktop positions — pills flow in the flex column */
