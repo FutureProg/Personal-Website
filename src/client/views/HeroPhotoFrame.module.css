@@ -148,9 +148,9 @@
         @property --animation-length {
             syntax: '<time>';
             inherits: false;
-            initial-value: 32s;
+            initial-value: 64s;
         }
-        --animation-length: 32s;
+        --animation-length: 120s;
         position-anchor: var(--photo-anchor-name);
         place-self: anchor-center;
         will-change: transform;
