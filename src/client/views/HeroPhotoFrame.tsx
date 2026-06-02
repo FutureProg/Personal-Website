@@ -59,7 +59,6 @@ export const HeroPhotoFrame = () => {
                         emoji="🃏"
                         title="Pokémon TCG"
                         subtitle="Deck builder"
-                        size="lg"
                         className={`${styles.infoPill} ${styles.pillPokemon}`}
                         style={{ '--pill-index': 1 } as React.CSSProperties}
                     />
@@ -74,7 +73,6 @@ export const HeroPhotoFrame = () => {
                         emoji="🚴"
                         title="Cycling"
                         subtitle="Burlington trails"
-                        size="lg"
                         className={`${styles.infoPill} ${styles.pillCycling}`}
                         style={{ '--pill-index': 3 } as React.CSSProperties}
                     />

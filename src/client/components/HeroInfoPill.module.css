@@ -3,25 +3,46 @@
    ============================================ */
 
 .pill {
+    display: flex;
+    width: fit-content;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+
     position: relative;
-    display: grid;
-    grid-template-columns: 20px 1fr;
-    grid-template-rows: repeat(2, fit-content(100%));
-    column-gap: 7px;
-    row-gap: 5px;
-    padding: 6px 14px;
-    width: 228px;
+    display: flex;    
+    column-gap: 0px;
+    row-gap: 0px;
+    padding: 8px 8px;
+    
     border: var(--border-width-thin) solid rgba(255, 255, 255, 0.75);
     border-radius: var(--radius-pill);
     overflow: hidden;
     box-shadow:
         0px 1px 3px 0px rgba(0, 0, 0, 0.04),
         0px 2px 16px 0px rgba(0, 0, 0, 0.06);
+    
+    transition: none;
+
+    &.expanded, &:hover {
+        .pillTextContainer {
+            max-width: 280px;
+            opacity: 1;
+        }
+    }
 }
 
-/* Variant: taller vertical padding */
-.pillLg {
-    padding-block: 8px;
+.pillTextContainer {
+    display: grid;
+    transition: max-width 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+
+    grid-template-columns: auto;
+    grid-template-rows: repeat(2, fit-content(100%));
+    row-gap: 5px;
+
 }
 
 .pillBg {
@@ -39,36 +60,36 @@
     flex-direction: column;
     justify-content: center;
     align-self: stretch;
-    font-size: 15px;
+    font-size: 24px;
+    text-align: center;
     line-height: 0;
     position: relative;
+    width: 48px;
+    height: 48px;
 }
 
 .pillTitle {
-    grid-column: 2;
     grid-row: 1;
     font-family: var(--font-family-primary);
     font-size: 13px;
     font-weight: var(--font-weight-medium);
     line-height: normal;
     color: var(--text-primary);
-    font-variation-settings: 'opsz' 14;
     margin: 0;
     white-space: nowrap;
-    position: relative;
+    position: relative;    
 }
 
 .pillSubtitle {
-    grid-column: 2;
     grid-row: 2;
     font-family: var(--font-family-primary);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
     line-height: normal;
     color: var(--text-secondary);
-    font-variation-settings: 'opsz' 14;
     margin: 0;
     position: relative;
+    white-space: nowrap;
 }
 
 .pillInset {

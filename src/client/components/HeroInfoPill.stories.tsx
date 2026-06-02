@@ -18,12 +18,3 @@ export const Default: Story = {
         subtitle: 'President',
     },
 };
-
-export const Large: Story = {
-    args: {
-        emoji: '🃏',
-        title: 'Pokémon TCG',
-        subtitle: 'Deck builder',
-        size: 'lg',
-    },
-};
