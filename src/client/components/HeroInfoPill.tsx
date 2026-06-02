@@ -4,12 +4,13 @@ export interface HeroInfoPillProps {
     emoji: string;
     title: string;
     subtitle: string;
+    expanded?: boolean;
     className?: string;
     style?: React.CSSProperties;
 }
 
-export const HeroInfoPill = ({ emoji, title, subtitle, className, style }: HeroInfoPillProps) => {
-    const classes = [styles.pill, className]
+export const HeroInfoPill = ({ emoji, title, subtitle, expanded, className, style }: HeroInfoPillProps) => {
+    const classes = [styles.pill, expanded && styles.expanded, className]
         .filter(Boolean)
         .join(' ');
 

@@ -1,11 +1,23 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { HeroInfoPill } from '../components/HeroInfoPill';
 import styles from './HeroPhotoFrame.module.css';
 
 export const HeroPhotoFrame = () => {
     const viewRef = useRef<HTMLDivElement>(null);
+    const [isMobile, setIsMobile] = useState(false);
     const rateRef = useRef(1);
     const rafRef = useRef<number | null>(null);
+
+    useEffect(() => {
+        const el = viewRef.current;
+        if (!el) return;
+        const observer = new ResizeObserver(([entry]) => {
+            if (!entry) return;
+            setIsMobile(entry.contentRect.width < 480);
+        });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
     const slowAnimationDuration = 300;
 
     const rampOrbitRate = (target: number) => {
@@ -52,6 +64,7 @@ export const HeroPhotoFrame = () => {
                         emoji="🚲"
                         title="Safe Streets Halton"
                         subtitle="President"
+                        expanded={isMobile}
                         className={`${styles.infoPill} ${styles.pillStreets}`}
                         style={{ '--pill-index': 0 } as React.CSSProperties}
                     />
@@ -59,6 +72,7 @@ export const HeroPhotoFrame = () => {
                         emoji="🃏"
                         title="Pokémon TCG"
                         subtitle="Deck builder"
+                        expanded={isMobile}
                         className={`${styles.infoPill} ${styles.pillPokemon}`}
                         style={{ '--pill-index': 1 } as React.CSSProperties}
                     />
@@ -66,6 +80,7 @@ export const HeroPhotoFrame = () => {
                         emoji="🏙️"
                         title="Cities: Skylines 2"
                         subtitle="Off the clock"
+                        expanded={isMobile}
                         className={`${styles.infoPill} ${styles.pillCities}`}
                         style={{ '--pill-index': 2 } as React.CSSProperties}
                     />
@@ -73,6 +88,7 @@ export const HeroPhotoFrame = () => {
                         emoji="🚴"
                         title="Cycling"
                         subtitle="Burlington trails"
+                        expanded={isMobile}
                         className={`${styles.infoPill} ${styles.pillCycling}`}
                         style={{ '--pill-index': 3 } as React.CSSProperties}
                     />
