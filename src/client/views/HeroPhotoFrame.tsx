@@ -1,8 +1,42 @@
+import { useRef } from 'react';
 import styles from './HeroPhotoFrame.module.css';
 
 export const HeroPhotoFrame = () => {
+    const viewRef = useRef<HTMLDivElement>(null);
+    const rateRef = useRef(1);
+    const rafRef = useRef<number | null>(null);
+    const slowAnimationDuration = 300; 
+
+    const rampOrbitRate = (target: number) => {
+        if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+
+        const anims = Array.from(
+            viewRef.current?.querySelectorAll(`.${styles.infoPill}`) ?? []
+        ).flatMap(pill => pill.getAnimations());
+
+        const startRate = rateRef.current;
+        const startTime = performance.now();
+
+        const step = (now: number) => {
+            const t = Math.min((now - startTime) / slowAnimationDuration, 1);
+            const eased = t * t * (3 - 2 * t); // smoothstep
+            const rate = startRate + (target - startRate) * eased;
+            rateRef.current = rate;
+            anims.forEach(anim => anim.updatePlaybackRate(rate));
+            if (t < 1) rafRef.current = requestAnimationFrame(step);
+            else rafRef.current = null;
+        };
+
+        rafRef.current = requestAnimationFrame(step);
+    };
+
     return (
-        <div className={styles.view}>
+        <div
+            className={styles.view}
+            ref={viewRef}
+            onMouseEnter={() => rampOrbitRate(0.4)}
+            onMouseLeave={() => rampOrbitRate(1)}
+        >
             <div className={styles.photoRing}>
                 <div className={styles.photoFrame}>
                     <div className={styles.photoWrapper}>

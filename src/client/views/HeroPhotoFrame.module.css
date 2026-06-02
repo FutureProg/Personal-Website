@@ -3,10 +3,13 @@
    ============================================ */
 
 .view {
+    --photo-anchor-name: --hero-photo;    
+
     container-type: inline-size;
     position: relative;
     width: min(608px, 100%);
     height: 576px;
+
 }
 
 /* ── Photo ring ─────────────────────────────── */
@@ -46,6 +49,7 @@
     width: 100%;
     height: 100%;
     max-width: none;
+    anchor-name: var(--photo-anchor-name); 
 }
 
 /* ── Location pill ──────────────────────────── */
@@ -126,8 +130,18 @@
     display: contents;
 }
 
+@keyframes orbit {
+    from {
+        transform: rotate(0deg) translateX(var(--info-pill-width)) rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg) translateX(var(--info-pill-width)) rotate(-360deg);
+    }
+}
+
 /* Shared pill base */
 .infoPill {
+    --info-pill-width: 228px;
     position: absolute;
     display: grid;
     grid-template-columns: 20px 1fr;
@@ -141,8 +155,22 @@
     overflow: hidden;
     box-shadow:
         0px 1px 3px 0px rgba(0, 0, 0, 0.04),
-        0px 2px 16px 0px rgba(0, 0, 0, 0.06);
-    will-change: transform;
+        0px 2px 16px 0px rgba(0, 0, 0, 0.06);    
+
+    @media (prefers-reduced-motion: no-preference) {       
+        @property --animation-length {
+            syntax: '<time>';
+            inherits: false;
+            initial-value: 32s;
+        }             
+        --animation-length: 32s;
+        position-anchor: var(--photo-anchor-name);
+        place-self: anchor-center;
+        will-change: transform;
+        animation: orbit var(--animation-length) linear infinite;
+        animation-delay: calc(var(--pill-index) * (var(--animation-length)/4) * -1); /* Firefox fallback */
+        animation-delay: calc(sibling-index() * (var(--animation-length)/4) * -1);   /* stagger via CSS */
+    }
 }
 
 /* Variant: taller vertical padding (Pokémon, Cycling) */
@@ -208,27 +236,29 @@
 }
 
 /* ── Desktop pill positions (relative to .photoRing) ── */
+@media (prefers-reduced-motion: reduce)
+{
+    /* Left side — bleed outside the ring */
+    .pillPokemon {
+        left: -37px;
+        top: 173px;   /* 180.5 − 7.5 */
+    }
 
-/* Left side — bleed outside the ring */
-.pillPokemon {
-    left: -37px;
-    top: 173px;   /* 180.5 − 7.5 */
-}
+    .pillCycling {
+        left: -22px;
+        top: 446px;   /* 453.5 − 7.5 */
+    }
 
-.pillCycling {
-    left: -22px;
-    top: 446px;   /* 453.5 − 7.5 */
-}
+    /* Right side — bleed outside the ring */
+    .pillCities {
+        left: 453px;
+        top: 332px;   /* 339.5 − 7.5 */
+    }
 
-/* Right side — bleed outside the ring */
-.pillCities {
-    left: 453px;
-    top: 332px;   /* 339.5 − 7.5 */
-}
-
-.pillStreets {
-    left: 404px;
-    top: 57px;    /* 64.5 − 7.5 */
+    .pillStreets {
+        left: 404px;
+        top: 57px;    /* 64.5 − 7.5 */
+    }
 }
 
 @keyframes float {
