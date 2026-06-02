@@ -1,3 +1,10 @@
+@property --hero-frame-mobile-breakpoint {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 479px;
+}
+
+
 /* ============================================
    HeroPhotoFrame
    ============================================ */
@@ -132,16 +139,16 @@
 
 @keyframes orbit {
     from {
-        transform: rotate(0deg) translateX(var(--info-pill-width)) rotate(0deg);
+        transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg);
     }
     to {
-        transform: rotate(360deg) translateX(var(--info-pill-width)) rotate(-360deg);
+        transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg);
     }
 }
 
 /* Orbit positioning — applied to HeroInfoPill via className */
 .infoPill {
-    --info-pill-width: 228px;
+    --orbit-radius: 180px;
     position: absolute;
 
     @media (prefers-reduced-motion: no-preference) {
@@ -196,7 +203,7 @@
    Mobile layout  (@container)
    ============================================ */
 
-@container (max-width: 479px) {
+@container (max-width: 479px) { /* keep in sync with --hero-frame-mobile-breakpoint initial-value */
 
     .view {
         height: 600px;
@@ -240,7 +247,7 @@
         @media (prefers-reduced-motion: no-preference) {
             animation: float 3s ease-in-out infinite;
             animation-delay: calc(var(--pill-index) * 0.5s); /* Firefox fallback */
-            animation-delay: calc(sibling-index() * 0.5s);   /* stagger via CSS */
+            animation-delay: calc(sibling-index() * -0.5s);   /* stagger via CSS */
         }
     }
 

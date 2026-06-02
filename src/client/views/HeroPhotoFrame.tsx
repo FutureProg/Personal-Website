@@ -11,9 +11,12 @@ export const HeroPhotoFrame = () => {
     useEffect(() => {
         const el = viewRef.current;
         if (!el) return;
+        const breakpoint = parseFloat(
+            getComputedStyle(el).getPropertyValue('--hero-frame-mobile-breakpoint')
+        ) || 479;
         const observer = new ResizeObserver(([entry]) => {
             if (!entry) return;
-            setIsMobile(entry.contentRect.width < 480);
+            setIsMobile(entry.contentRect.width <= breakpoint);
         });
         observer.observe(el);
         return () => observer.disconnect();
