@@ -13,7 +13,7 @@ body {
   display: grid;
   grid-template-columns: 
     [fullbleed-start] minmax(var(--page-padding-inline), 1fr)
-    [main-start] minmax(auto, var(--max-width-content))
+    [main-start] min(var(--max-width-content), 100% - 2rem)
     [main-end] minmax(var(--page-padding-inline), 1fr) 
     [fullbleed-end];  
   grid-template-rows: 
