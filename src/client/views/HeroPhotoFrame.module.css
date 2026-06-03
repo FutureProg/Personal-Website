@@ -154,7 +154,6 @@
     offset-rotate: 0deg;
 
     @media (prefers-reduced-motion: no-preference) {
-        --pill-animation-length: 120s;
         will-change: offset-distance;
         animation: orbit var(--pill-animation-length) linear infinite;
         animation-delay: calc(var(--pill-index) * (var(--pill-animation-length)/4) * -1); /* Firefox fallback */

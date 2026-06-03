@@ -7,7 +7,7 @@ import PokeballIcon from '../images/pokeball-icon.svg';
 import Cities2Logo from '../images/cs2-logo.png'
 import BoardgameIcon from '../images/boardgame-icon.svg';
 
-export const HeroPhotoFrame = () => {
+export const HeroPhotoFrame = ({className}: {className?: string}) => {
     const viewRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = useState(false);
     const rateRef = useRef(1);
@@ -56,7 +56,7 @@ export const HeroPhotoFrame = () => {
 
     return (
         <div
-            className={styles.view}
+            className={`${styles.view} ${className ?? ''}`}
             ref={viewRef}
             onMouseEnter={() => rampOrbitRate(0.4)}
             onMouseLeave={() => rampOrbitRate(1)}

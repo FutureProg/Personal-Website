@@ -25,7 +25,7 @@ export const App = () => {
                             as having good code behind it</strong>, because long-term, you can't have one without the other.
                         </div>
                     </div>
-                    <HeroPhotoFrame />
+                    <HeroPhotoFrame className={styles.heroPhotoFrame} />
                 </section>
                 <section className="github-activity">
                     <GithubActivityView />
