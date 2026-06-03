@@ -5,6 +5,7 @@ import styles from './HeroPhotoFrame.module.css';
 import SafeStreetsIcon from '../images/safe-streets-halton.svg';
 import PokeballIcon from '../images/pokeball-icon.svg';
 import Cities2Logo from '../images/cs2-logo.png'
+import BoardgameIcon from '../images/boardgame-icon.svg';
 
 export const HeroPhotoFrame = () => {
     const viewRef = useRef<HTMLDivElement>(null);
@@ -95,9 +96,9 @@ export const HeroPhotoFrame = () => {
                         style={{ '--pill-index': 2 } as React.CSSProperties}
                     />
                     <HeroInfoPill
-                        icon="🚴"
-                        title="Cycling"
-                        subtitle="Burlington trails"
+                        icon={<img alt="Board Game Icon" src={BoardgameIcon} className={styles.boardgameIcon} />}
+                        title="Board Game Player"
+                        subtitle="Too many to list"
                         expanded={isMobile}
                         className={`${styles.infoPill} ${styles.pillCycling}`}
                         style={{ '--pill-index': 3 } as React.CSSProperties}
