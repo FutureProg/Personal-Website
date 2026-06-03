@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
-import { GithubActivityView } from "./views/GithubActivityView";
+import { App } from "./App";
 
-const root = createRoot(document.getElementById("app")!);
+const root = createRoot(document.getElementById("root")!);
 root.render(
-    <GithubActivityView />
+    <App />
 );

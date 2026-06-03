@@ -1,0 +1,138 @@
+/* ============================================
+   HeroInfoPill
+   ============================================ */
+
+.pill {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+    position: relative;
+    width: fit-content;
+    padding: 8px;
+
+    border: var(--border-width-thin) solid rgba(255, 255, 255, 0.75);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    box-shadow:
+        0px 1px 3px 0px rgba(0, 0, 0, 0.04),
+        0px 2px 16px 0px rgba(0, 0, 0, 0.06);
+
+    transition: none;
+    cursor: default;
+    text-decoration: none;
+
+    &.hasLink {
+        cursor: pointer;
+    }
+
+    &.expanded,
+    &:hover {
+        .pillTextContainer {
+            padding-right: 8px;
+            padding-left: 8px;
+            max-width: 280px;
+            opacity: 1;
+        }
+
+        .pillArrow {
+            opacity: 1;
+            max-width: 40px;
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+    }
+}
+
+.pillTextContainer {
+    display: grid;
+
+    transition: max-width 0.3s ease, opacity 0.3s ease, padding-right 0.3s ease, padding-left 0.3s ease;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    grid-template-columns: auto;
+    grid-template-rows: repeat(2, fit-content(100%));
+    row-gap: 5px;
+
+}
+
+.pillBg {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.72);
+    border-radius: var(--radius-pill);
+    pointer-events: none;
+}
+
+.pillEmoji {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    position: relative;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.pillTitle {
+    grid-row: 1;
+    font-family: var(--font-family-primary);
+    font-size: 13px;
+    font-weight: var(--font-weight-medium);
+    line-height: normal;
+    color: var(--text-primary);
+    margin: 0;
+    white-space: nowrap;
+    position: relative;
+}
+
+.pillSubtitle {
+    grid-row: 2;
+    font-family: var(--font-family-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: normal;
+    text-align: start;
+    color: var(--text-secondary);
+    margin: 0;
+    position: relative;
+    white-space: nowrap;
+}
+
+.pillArrow {
+    flex-shrink: 0;
+    margin-left: auto;
+    font-size: 26px;
+    line-height: 1;
+    position: relative;
+
+    /* gradient text */
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    /* animate in alongside text container */
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    padding: 0;
+    transition: opacity 0.3s ease, max-width 0.3s ease, padding 0.3s ease;
+}
+
+.pillInset {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow:
+        inset 0px 1px 0px 0px rgba(255, 255, 255, 0.95),
+        inset 0px -1px 0px 0px rgba(0, 0, 0, 0.03);
+    pointer-events: none;
+}

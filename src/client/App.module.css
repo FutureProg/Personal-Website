@@ -1,0 +1,41 @@
+.hero {
+    grid-column: main-start / fullbleed-end;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    column-gap: var(--space-8);
+
+    .heroPhotoFrame { /* the photo frame */
+        grid-column: 2;
+        justify-self: center;
+    }
+
+    .intro {
+        align-self: center;
+    }    
+
+    .bio {
+        margin-top: var(--space-2);
+    }
+
+    @media (max-width: 800px) {
+        grid-template-columns: 1fr;
+        grid-column: main-start / main-end;
+        grid-template-rows: auto auto;
+        gap: var(--space-5);
+
+        .intro { /* the text */
+            grid-row: 1;
+        }
+
+        .heroPhotoFrame { /* the photo frame */
+            grid-row: 2; 
+            grid-column: 1;         
+        }
+    }
+    
+    .lastName {
+        background: var(--gradient-brand);
+        background-clip: text;
+        color: transparent;
+    }
+}
