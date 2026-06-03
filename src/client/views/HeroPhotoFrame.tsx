@@ -4,7 +4,7 @@ import styles from './HeroPhotoFrame.module.css';
 
 import SafeStreetsIcon from '../images/safe-streets-halton.svg';
 import PokeballIcon from '../images/pokeball-icon.svg';
-import Cities2Logo from '../images/cs2-logo.png'
+import Cities2Logo from '../images/cs2-logo.png';
 import BoardgameIcon from '../images/boardgame-icon.svg';
 
 export const HeroPhotoFrame = ({className}: {className?: string}) => {
@@ -32,6 +32,7 @@ export const HeroPhotoFrame = ({className}: {className?: string}) => {
     const slowAnimationDuration = 300;
 
     const rampOrbitRate = (target: number) => {
+        if (isMobile) return;
         if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
 
         const anims = Array.from(

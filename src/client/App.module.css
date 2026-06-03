@@ -1,8 +1,9 @@
 .hero {
     grid-column: main-start / fullbleed-end;
     display: grid;
-    grid-template-columns: 1fr 2fr;    
-    
+    grid-template-columns: 1fr 2fr;
+    column-gap: var(--space-8);
+
     .heroPhotoFrame { /* the photo frame */
         grid-column: 2;
         justify-self: center;

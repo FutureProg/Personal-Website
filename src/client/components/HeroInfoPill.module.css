@@ -4,16 +4,12 @@
 
 .pill {
     display: flex;
-    width: fit-content;
     flex-direction: row;
     align-items: center;
     box-sizing: border-box;
-
     position: relative;
-    display: flex;
-    column-gap: 0px;
-    row-gap: 0px;
-    padding: 8px 8px;
+    width: fit-content;
+    padding: 8px;
 
     border: var(--border-width-thin) solid rgba(255, 255, 255, 0.75);
     border-radius: var(--radius-pill);
