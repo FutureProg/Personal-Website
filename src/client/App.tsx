@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { GithubActivityView } from "./views/GithubActivityView";
 import { WritingPostPage } from "./views/WritingPostPage";
 import { WorkItemPage } from "./views/WorkItemPage";
@@ -43,6 +43,7 @@ export const App = () => (
             <Route path="/" element={<HomePage />} />
             <Route path="/writing/:slug" element={<WritingPostPage />} />
             <Route path="/work/:slug" element={<WorkItemPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     </BrowserRouter>
 );
