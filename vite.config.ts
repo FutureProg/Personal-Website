@@ -1,5 +1,8 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
+import mdx from '@mdx-js/rollup';
+import remarkFrontmatter from 'remark-frontmatter';
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +12,10 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    mdx({ remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] }),
+    react(),
+  ],
   resolve: {
     alias: {
       '@common': path.join(dirname, 'src/common'),
@@ -33,11 +39,6 @@ export default defineConfig({
           include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
           globals: true,
         },
-        resolve: {
-          alias: {
-            '@common': path.join(dirname, 'src/common'),
-          },
-        },
       },
       {
         extends: true,
@@ -46,11 +47,6 @@ export default defineConfig({
             configDir: path.join(dirname, '.storybook')
           })
         ],
-        resolve: {
-          alias: {
-            '@common': path.join(dirname, 'src/common'),
-          },
-        },
         test: {
           name: 'storybook',
           browser: {
