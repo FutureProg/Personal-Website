@@ -1,5 +1,5 @@
 import { GithubActivityView } from "./views/GithubActivityView";
-import styles from "./app.module.css";
+import styles from "./App.module.css";
 import { HeroPhotoFrame } from "./views/HeroPhotoFrame";
 
 export const App = () => {

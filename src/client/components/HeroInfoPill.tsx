@@ -15,7 +15,7 @@ export const HeroInfoPill = ({ icon, title, subtitle, expanded, href, className,
         .filter(Boolean)
         .join(' ');
 
-    const Tag = (href ? 'a' : 'div') as 'div';
+    const Tag = (href ? 'a' : 'div');
 
     return (
         <Tag
