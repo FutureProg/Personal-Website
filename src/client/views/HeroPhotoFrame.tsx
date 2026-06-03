@@ -4,6 +4,7 @@ import styles from './HeroPhotoFrame.module.css';
 
 import SafeStreetsIcon from '../images/safe-streets-halton.svg';
 import PokeballIcon from '../images/pokeball-icon.svg';
+import Cities2Logo from '../images/cs2-logo.png'
 
 export const HeroPhotoFrame = () => {
     const viewRef = useRef<HTMLDivElement>(null);
@@ -71,22 +72,25 @@ export const HeroPhotoFrame = () => {
                         title="Safe Streets Halton"
                         subtitle="Founder & President"
                         expanded={isMobile}
+                        href="https://safestreetshalton.ca"
                         className={`${styles.infoPill} ${styles.pillStreets}`}
                         style={{ '--pill-index': 0 } as React.CSSProperties}
                     />
                     <HeroInfoPill
                         icon={<img alt="Pokeball Icon" src={PokeballIcon} className={styles.pokeballIcon} />}
                         title="Pokémon"
+                        href="https://play.pokemon.com"
                         subtitle="TCG and Video Games"
                         expanded={isMobile}
                         className={`${styles.infoPill} ${styles.pillPokemon}`}
                         style={{ '--pill-index': 1 } as React.CSSProperties}
                     />
                     <HeroInfoPill
-                        icon="🏙️"
+                        icon={<img alt="Cities: Skylines 2 Logo" src={Cities2Logo} className={styles.cities2Icon} />}
                         title="Cities: Skylines 2"
                         subtitle="Off the clock"
                         expanded={isMobile}
+                        href="https://www.paradoxinteractive.com/games/cities-skylines-ii"
                         className={`${styles.infoPill} ${styles.pillCities}`}
                         style={{ '--pill-index': 2 } as React.CSSProperties}
                     />

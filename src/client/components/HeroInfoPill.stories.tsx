@@ -13,8 +13,36 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        emoji: '🚲',
+        icon: '🚲',
         title: 'Safe Streets Halton',
         subtitle: 'President',
+    },
+};
+
+export const Expanded: Story = {
+    args: {
+        icon: '🚲',
+        title: 'Safe Streets Halton',
+        subtitle: 'President',
+        expanded: true,
+    },
+};
+
+export const WithLink: Story = {
+    args: {
+        icon: '🚲',
+        title: 'Safe Streets Halton',
+        subtitle: 'President',
+        href: 'https://safestreetshalton.ca',
+    },
+};
+
+export const WithLinkExpanded: Story = {
+    args: {
+        icon: '🚲',
+        title: 'Safe Streets Halton',
+        subtitle: 'President',
+        href: 'https://safestreetshalton.ca',
+        expanded: true,
     },
 };

@@ -24,6 +24,11 @@
 
     transition: none;
     cursor: default;
+    text-decoration: none;
+
+    &.hasLink {
+        cursor: pointer;
+    }
 
     &.expanded,
     &:hover {
@@ -32,6 +37,13 @@
             padding-left: 8px;
             max-width: 280px;
             opacity: 1;
+        }
+
+        .pillArrow {
+            opacity: 1;
+            max-width: 40px;
+            padding-left: 4px;
+            padding-right: 4px;
         }
     }
 }
@@ -95,6 +107,27 @@
     margin: 0;
     position: relative;
     white-space: nowrap;
+}
+
+.pillArrow {
+    flex-shrink: 0;
+    margin-left: auto;
+    font-size: 26px;
+    line-height: 1;
+    position: relative;
+
+    /* gradient text */
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    /* animate in alongside text container */
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    padding: 0;
+    transition: opacity 0.3s ease, max-width 0.3s ease, padding 0.3s ease;
 }
 
 .pillInset {
