@@ -1,0 +1,31 @@
+---
+title: "When the Codebase Becomes the UX Problem"
+category: "Case Study"
+description: "How technical debt at Element quietly degraded the product experience — and what we did about it."
+cardColor: "#EDE9F8"
+icon: "/icons/codebase-ux.svg"
+---
+
+# When the Codebase Becomes the UX Problem
+
+Most UX problems are visible. A confusing flow, a broken state, a missing affordance. But some of the worst UX problems are invisible to designers — because they live in the code.
+
+## The problem
+
+Over 18 months of fast shipping, our data layer had accumulated enough inconsistency that certain user-facing operations were slow by architectural necessity. Not "we should optimize this" slow. "This will require a refactor to fix" slow.
+
+Users felt it. Support tickets cited it. But because the cause was structural, it kept falling off the sprint board — no ticket captures "the way we store this data makes sorting feel sluggish."
+
+## What we did
+
+We ran a mapping exercise: every user complaint we'd dismissed as "performance" got traced back to a specific technical cause. Half of them were the same root issue.
+
+That gave us a shape. One focused refactor — not a rewrite — that unblocked four separate UX improvements at once.
+
+## The outcome
+
+Sorting went from 400ms to under 50ms. The filtering panel stopped flickering. Two features that had been deprioritized because they were "too slow to be worth it" shipped in the following sprint.
+
+---
+
+*This is an example work item to demonstrate the content system.*
