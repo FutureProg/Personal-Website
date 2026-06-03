@@ -1,0 +1,32 @@
+.hero {
+    grid-column: main-start / fullbleed-end;
+    display: grid;
+    grid-template-columns: 1fr 2fr;    
+    
+    :last-child { /* the photo frame */
+        grid-column: 2;
+        justify-self: center;
+    }
+
+    @media (max-width: 800px) {
+        grid-template-columns: 1fr;
+        grid-column: main-start / main-end;
+        grid-template-rows: auto auto;
+        gap: var(--space-5);
+
+        :first-child { /* the text */
+            grid-row: 1;
+        }
+
+        :last-child {
+            grid-row: 2; 
+            grid-column: 1;         
+        }
+    }
+    
+    .lastName {
+        background: var(--gradient-brand);
+        background-clip: text;
+        color: transparent;
+    }
+}

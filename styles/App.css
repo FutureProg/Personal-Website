@@ -1,7 +1,13 @@
 main {
-  /* display: grid; */
-  grid: subgrid / subgrid;
-  grid-area: content / main;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: fullbleed-start / fullbleed-end;
+  grid-row: content;
+  row-gap: var(--gap-xl);
+}
+
+section {
+  grid-column: main-start / main-end;
 }
 
 .github-activity {

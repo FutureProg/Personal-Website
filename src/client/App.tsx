@@ -1,4 +1,6 @@
 import { GithubActivityView } from "./views/GithubActivityView";
+import styles from "./app.module.css";
+import { HeroPhotoFrame } from "./views/HeroPhotoFrame";
 
 export const App = () => {
     return (
@@ -10,51 +12,20 @@ export const App = () => {
                 />
             </header>
 
-            <main className="content">
-                <section className="about">
-                    <img
-                        className="collage"
-                        src="/images/Collage.png"
-                        alt="collage of images showing Nick's hobbies, the city of Burlington, and his dog charlie"
-                    />
-                    <div className="about-content">
-                        <h1>Nick Morrison</h1>
-                        <p>
-                            Using my understanding of software development,
-                            machine learning, business, and design, I am working
-                            towards making a positive impact on people by{" "}
-                            <i>Building what Matters</i>.
-                        </p>
-                        <div className="bullets">
-                            <div className="bullet-heading">
-                                <b>Passions:</b>
-                            </div>
-                            <ul>
-                                <li>🏙️ urban design</li>
-                                <li>🌲 environmentalism</li>
-                            </ul>
-                            <div className="bullet-heading">
-                                <b>Hobbies:</b>
-                            </div>
-                            <ul>
-                                <li>🎮 video games</li>
-                                <li>✍️ writing</li>
-                                <li>💖 volunteering</li>
-                            </ul>
+            <main>
+                <section className={styles.hero}>
+                    <div className={styles.intro}>
+                        <h1>
+                            Nick<br/>
+                            <span className={styles.lastName}>Morrison</span>
+                        </h1>
+                        <span className='subtitle'>Full Stack Software Developer — Burlington, ON</span>
+                        <div>
+                            I'm a full stack developer with a decade across the stack. <strong>I care as much about the user's experience 
+                            as the code behind it</strong>, because long-term, you can't have one without the other.
                         </div>
-                        <p>
-                            <strong>Email:</strong>{" "}
-                            <a href="mailto:nickmorrison09@gmail.com">
-                                nickmorrison09@gmail.com
-                            </a>
-                            <br />
-                            <strong>Github:</strong>{" "}
-                            <a href="https://github.com/FutureProg">
-                                github.com/FutureProg
-                            </a>
-                            <br />
-                        </p>
                     </div>
+                    <HeroPhotoFrame />
                 </section>
                 <section className="github-activity">
                     <GithubActivityView />
