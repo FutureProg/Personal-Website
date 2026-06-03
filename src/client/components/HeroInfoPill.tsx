@@ -1,7 +1,7 @@
 import styles from './HeroInfoPill.module.css';
 
 export interface HeroInfoPillProps {
-    emoji: string;
+    icon: string | React.ReactNode;
     title: string;
     subtitle: string;
     expanded?: boolean;
@@ -9,7 +9,7 @@ export interface HeroInfoPillProps {
     style?: React.CSSProperties;
 }
 
-export const HeroInfoPill = ({ emoji, title, subtitle, expanded, className, style }: HeroInfoPillProps) => {
+export const HeroInfoPill = ({ icon, title, subtitle, expanded, className, style }: HeroInfoPillProps) => {
     const classes = [styles.pill, expanded && styles.expanded, className]
         .filter(Boolean)
         .join(' ');
@@ -17,7 +17,7 @@ export const HeroInfoPill = ({ emoji, title, subtitle, expanded, className, styl
     return (
         <div className={classes} style={style}>
             <div aria-hidden className={styles.pillBg} />
-            <div className={styles.pillEmoji}>{emoji}</div>
+            <div className={styles.pillEmoji}>{icon}</div>
             <div className={styles.pillTextContainer}>
                 <p className={styles.pillTitle}>{title}</p>
                 <p className={styles.pillSubtitle}>{subtitle}</p>

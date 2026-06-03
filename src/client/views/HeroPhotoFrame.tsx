@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { HeroInfoPill } from '../components/HeroInfoPill';
 import styles from './HeroPhotoFrame.module.css';
 
+import SafeStreetsIcon from '../images/safe-streets-halton.svg';
+import PokeballIcon from '../images/pokeball-icon.svg';
+
 export const HeroPhotoFrame = () => {
     const viewRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = useState(false);
@@ -64,23 +67,23 @@ export const HeroPhotoFrame = () => {
 
                 <div className={styles.infoPills}>
                     <HeroInfoPill
-                        emoji="🚲"
+                        icon={<img alt="Safe Streets Halton's Logo" src={SafeStreetsIcon} className={styles.streetsIcon} />}
                         title="Safe Streets Halton"
-                        subtitle="President"
+                        subtitle="Founder & President"
                         expanded={isMobile}
                         className={`${styles.infoPill} ${styles.pillStreets}`}
                         style={{ '--pill-index': 0 } as React.CSSProperties}
                     />
                     <HeroInfoPill
-                        emoji="🃏"
-                        title="Pokémon TCG"
-                        subtitle="Deck builder"
+                        icon={<img alt="Pokeball Icon" src={PokeballIcon} className={styles.pokeballIcon} />}
+                        title="Pokémon"
+                        subtitle="TCG and Video Games"
                         expanded={isMobile}
                         className={`${styles.infoPill} ${styles.pillPokemon}`}
                         style={{ '--pill-index': 1 } as React.CSSProperties}
                     />
                     <HeroInfoPill
-                        emoji="🏙️"
+                        icon="🏙️"
                         title="Cities: Skylines 2"
                         subtitle="Off the clock"
                         expanded={isMobile}
@@ -88,7 +91,7 @@ export const HeroPhotoFrame = () => {
                         style={{ '--pill-index': 2 } as React.CSSProperties}
                     />
                     <HeroInfoPill
-                        emoji="🚴"
+                        icon="🚴"
                         title="Cycling"
                         subtitle="Burlington trails"
                         expanded={isMobile}
