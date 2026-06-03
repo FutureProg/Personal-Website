@@ -16,8 +16,6 @@
    ============================================ */
 
 .view {
-    --photo-anchor-name: --hero-photo;    
-
     container-type: inline-size;
     position: relative;
     width: min(608px, 100%);
@@ -62,7 +60,6 @@
     width: 100%;
     height: 100%;
     max-width: none;
-    anchor-name: var(--photo-anchor-name); 
 }
 
 /* ── Location pill ──────────────────────────── */
@@ -144,24 +141,21 @@
 }
 
 @keyframes orbit {
-    from {
-        transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg);
-    }
+    from { offset-distance: 0%; }
+    to   { offset-distance: 100%; }
 }
 
 /* Orbit positioning — applied to HeroInfoPill via className */
 .infoPill {
     --orbit-radius: 180px;
     position: absolute;
+    offset-path: circle(var(--orbit-radius) at 50% 50%);
+    offset-anchor: center;
+    offset-rotate: 0deg;
 
-    @media (prefers-reduced-motion: no-preference) {        
+    @media (prefers-reduced-motion: no-preference) {
         --pill-animation-length: 120s;
-        position-anchor: var(--photo-anchor-name);
-        place-self: anchor-center;
-        will-change: transform;
+        will-change: offset-distance;
         animation: orbit var(--pill-animation-length) linear infinite;
         animation-delay: calc(var(--pill-index) * (var(--pill-animation-length)/4) * -1); /* Firefox fallback */
         animation-delay: calc(sibling-index() * (var(--pill-animation-length)/4) * -1);   /* stagger via CSS */
@@ -257,6 +251,7 @@
     .pillPokemon,
     .pillCities,
     .pillCycling {
-        position: static;        
+        position: static;
+        offset-path: none;
     }
 }
