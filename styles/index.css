@@ -12,11 +12,11 @@ body {
   background-color: var(--bg-page);
 
   display: grid;
-  grid-template-columns: 
+  grid-template-columns:
     [fullbleed-start] minmax(var(--page-padding-inline), 1fr)
-    [main-start] min(var(--max-width-content), 100% - 2rem)
-    [main-end] minmax(var(--page-padding-inline), 1fr) 
-    [fullbleed-end];  
+    [main-start] min(var(--max-width-content), 100% - 2 * var(--page-padding-inline))
+    [main-end] minmax(var(--page-padding-inline), 1fr)
+    [fullbleed-end];
   grid-template-rows: 
     [nav] auto
     [content] 1fr
@@ -34,7 +34,7 @@ h1 {
   font-family: var(--font-family-display);
   font-style: normal;
   font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-2xl);
+  font-size: clamp(2.5rem, 11vw, var(--font-size-2xl));
   line-height: var(--line-height-tight);
   color: var(--text-primary);
   margin-block: 0;
