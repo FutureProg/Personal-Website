@@ -24,7 +24,10 @@ export const HeroPhotoFrame = () => {
             setIsMobile(entry.contentRect.width <= breakpoint);
         });
         observer.observe(el);
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        }
     }, []);
     const slowAnimationDuration = 300;
 
