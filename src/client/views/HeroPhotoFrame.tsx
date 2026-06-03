@@ -10,8 +10,17 @@ import BoardgameIcon from '../images/boardgame-icon.svg';
 export const HeroPhotoFrame = ({className}: {className?: string}) => {
     const viewRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = useState(false);
+    const [hintExpanded, setHintExpanded] = useState(false);
     const rateRef = useRef(1);
     const rafRef = useRef<number | null>(null);
+
+    // Briefly expand pills on load to hint they're interactive (desktop only)
+    useEffect(() => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const t1 = setTimeout(() => setHintExpanded(true), 200);
+        const t2 = setTimeout(() => setHintExpanded(false), 1500);
+        return () => { clearTimeout(t1); clearTimeout(t2); };
+    }, []);
 
     useEffect(() => {
         const el = viewRef.current;
@@ -76,7 +85,7 @@ export const HeroPhotoFrame = ({className}: {className?: string}) => {
                         icon={<img alt="Safe Streets Halton's Logo" src={SafeStreetsIcon} className={styles.streetsIcon} />}
                         title="Safe Streets Halton"
                         subtitle="Founder & President"
-                        expanded={isMobile}
+                        expanded={isMobile || hintExpanded}
                         href="https://safestreetshalton.ca"
                         className={`${styles.infoPill} ${styles.pillStreets}`}
                         style={{ '--pill-index': 0 } as React.CSSProperties}
@@ -86,7 +95,7 @@ export const HeroPhotoFrame = ({className}: {className?: string}) => {
                         title="Pokémon"
                         href="https://play.pokemon.com"
                         subtitle="TCG and Video Games"
-                        expanded={isMobile}
+                        expanded={isMobile || hintExpanded}
                         className={`${styles.infoPill} ${styles.pillPokemon}`}
                         style={{ '--pill-index': 1 } as React.CSSProperties}
                     />
@@ -94,7 +103,7 @@ export const HeroPhotoFrame = ({className}: {className?: string}) => {
                         icon={<img alt="Cities: Skylines 2 Logo" src={Cities2Logo} className={styles.cities2Icon} />}
                         title="Cities: Skylines 2"
                         subtitle="Off the clock"
-                        expanded={isMobile}
+                        expanded={isMobile || hintExpanded}
                         href="https://www.paradoxinteractive.com/games/cities-skylines-ii"
                         className={`${styles.infoPill} ${styles.pillCities}`}
                         style={{ '--pill-index': 2 } as React.CSSProperties}
@@ -103,7 +112,7 @@ export const HeroPhotoFrame = ({className}: {className?: string}) => {
                         icon={<img alt="Board Game Icon" src={BoardgameIcon} className={styles.boardgameIcon} />}
                         title="Board Game Player"
                         subtitle="Too many to list"
-                        expanded={isMobile}
+                        expanded={isMobile || hintExpanded}
                         className={`${styles.infoPill} ${styles.pillCycling}`}
                         style={{ '--pill-index': 3 } as React.CSSProperties}
                     />
