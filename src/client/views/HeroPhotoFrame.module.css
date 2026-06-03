@@ -4,6 +4,12 @@
     initial-value: 479px;
 }
 
+@property --pill-animation-length {
+    syntax: '<time>';
+    inherits: false;
+    initial-value: 64s;
+}
+
 
 /* ============================================
    HeroPhotoFrame
@@ -151,19 +157,14 @@
     --orbit-radius: 180px;
     position: absolute;
 
-    @media (prefers-reduced-motion: no-preference) {
-        @property --animation-length {
-            syntax: '<time>';
-            inherits: false;
-            initial-value: 64s;
-        }
-        --animation-length: 120s;
+    @media (prefers-reduced-motion: no-preference) {        
+        --pill-animation-length: 120s;
         position-anchor: var(--photo-anchor-name);
         place-self: anchor-center;
         will-change: transform;
-        animation: orbit var(--animation-length) linear infinite;
-        animation-delay: calc(var(--pill-index) * (var(--animation-length)/4) * -1); /* Firefox fallback */
-        animation-delay: calc(sibling-index() * (var(--animation-length)/4) * -1);   /* stagger via CSS */
+        animation: orbit var(--pill-animation-length) linear infinite;
+        animation-delay: calc(var(--pill-index) * (var(--pill-animation-length)/4) * -1); /* Firefox fallback */
+        animation-delay: calc(sibling-index() * (var(--pill-animation-length)/4) * -1);   /* stagger via CSS */
     }
 }
 
