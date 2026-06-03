@@ -1,8 +1,5 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
-import mdx from '@mdx-js/rollup';
-import remarkFrontmatter from 'remark-frontmatter';
-import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,10 +9,12 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-  plugins: [
-    mdx({ remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] }),
-    react(),
-  ],
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@common': path.join(dirname, 'src/common'),
+    },
+  },
   server: {
     port: 3000,
     open: true
