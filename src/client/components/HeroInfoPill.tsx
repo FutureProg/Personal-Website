@@ -23,13 +23,15 @@ export const HeroInfoPill = ({ icon, title, subtitle, expanded, href, className,
             style={style}
             {...(href ? { href, target: '_blank', rel: 'noopener noreferrer' } : {})}
         >
-            <div aria-hidden className={styles.pillBg} />
+            <div aria-hidden className={styles.pillBg}>
+                <div aria-hidden className={styles.pillInset} />
+            </div>
             <div className={styles.pillEmoji}>{icon}</div>
             <div className={styles.pillTextContainer}>
                 <p className={styles.pillTitle}>{title}</p>
-                <p className={styles.pillSubtitle}>{subtitle}</p>
-                <div aria-hidden className={styles.pillInset} />
+                <p className={styles.pillSubtitle}>{subtitle}</p>                
             </div>
+
             {href && <div aria-hidden className={styles.pillArrow}>→</div>}
         </Tag>
     );

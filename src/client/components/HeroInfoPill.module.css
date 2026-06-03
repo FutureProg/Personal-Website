@@ -103,6 +103,7 @@
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-regular);
     line-height: normal;
+    text-align: start;
     color: var(--text-secondary);
     margin: 0;
     position: relative;
