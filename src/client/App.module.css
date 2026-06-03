@@ -10,6 +10,10 @@
 
     .intro {
         align-self: center;
+    }    
+
+    .bio {
+        margin-top: var(--space-2);
     }
 
     @media (max-width: 800px) {
