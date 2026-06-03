@@ -1,13 +1,14 @@
 import { GithubActivityView } from "./views/GithubActivityView";
 import styles from "./App.module.css";
 import { HeroPhotoFrame } from "./views/HeroPhotoFrame";
+import SiteIcon from './images/icon.png';
 
 export const App = () => {
     return (
         <>
             <header>
                 <img
-                    src="/images/icon.png"
+                    src={SiteIcon}
                     alt="website logo, a butterfly with the wings spelling N and M"
                 />
             </header>
