@@ -3,7 +3,7 @@ import React from 'react';
 import '../styles/index.css';
 import { sb } from 'storybook/test';
 
-sb.mock(import('../src/client/hooks/useGithubActivity.ts'));
+sb.mock(import('../hooks/useGithubActivity.ts'));
 
 const preview: Preview = {
   parameters: {
@@ -45,7 +45,7 @@ const preview: Preview = {
     (Story, context) => {
       const theme = context.globals.theme || 'light';
       const backgroundColor = theme === 'dark' ? '#1a1a1a' : 'var(--bg-page)';
-      
+
       // Apply theme to the document
       if (typeof document !== 'undefined') {
         document.documentElement.setAttribute('data-theme', theme);

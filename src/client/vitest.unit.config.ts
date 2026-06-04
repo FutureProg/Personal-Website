@@ -10,14 +10,14 @@ export default defineConfig({
     plugins: [react()],
     resolve: {
         alias: {
-            "@common": path.join(dirname, "src/common"),
+            "@common": path.join(dirname, "../common"),
         },
     },
     test: {
         name: "unit",
         environment: "happy-dom",
-        include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
-        exclude: ["src/backend/**", "**/node_modules/**", "**/dist/**"],
+        include: ["**/*.test.ts", "**/*.test.tsx"],
+        exclude: ["**/node_modules/**", "**/dist/**"],
         globals: true,
     },
 });
