@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@varlock/vite-integration':
+        specifier: ^1.1.2
+        version: 1.1.2(varlock@1.4.0)(vite@7.3.3(@types/node@25.9.1)(tsx@4.22.3)(yaml@2.9.0))
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -135,7 +138,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.0.16
-        version: 4.1.7(@types/node@20.19.41)(@vitest/browser-playwright@4.1.7)(@vitest/coverage-v8@4.1.7)(happy-dom@20.9.0)(jsdom@29.1.1)(vite@7.3.3(@types/node@20.19.41)(tsx@4.22.3)(yaml@2.9.0))
+        version: 4.1.7(@types/node@20.19.41)(vite@7.3.3(@types/node@20.19.41)(tsx@4.22.3))
 
   src/common: {}
 
@@ -1481,6 +1484,13 @@ packages:
     resolution: {integrity: sha512-Y3pPVibbIOHzohrlxSINvO7w/bvXkoYS3BQHoImV9ynE+bXKf171bdMucPurV2zp7gdmt0L1HCcNAsbo7cFRQw==}
     peerDependencies:
       valibot: ^1.4.0
+
+  '@varlock/vite-integration@1.1.2':
+    resolution: {integrity: sha512-d7IqGknnztfNyfW0fusxH4XXGRA9MqlhlgH8UmkH9djh+2N8Vr9ifD4wuAEifwGMRjgq5+RB7Cu/Ye/16HSJeQ==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      varlock: ^1.3.0
+      vite: '>=5'
 
   '@vitejs/plugin-react@5.2.0':
     resolution: {integrity: sha512-YmKkfhOAi3wsB1PhJq5Scj3GXMn3WvtQ/JC0xoopuHoXSdmtdStOpFrYaT1kie2YgFBcIe64ROzMYRjCrYOdYw==}
@@ -4114,6 +4124,11 @@ snapshots:
     dependencies:
       valibot: 1.2.0(typescript@6.0.3)
 
+  '@varlock/vite-integration@1.1.2(varlock@1.4.0)(vite@7.3.3(@types/node@25.9.1)(tsx@4.22.3)(yaml@2.9.0))':
+    dependencies:
+      varlock: 1.4.0
+      vite: 7.3.3(@types/node@25.9.1)(tsx@4.22.3)(yaml@2.9.0)
+
   '@vitejs/plugin-react@5.2.0(vite@7.3.3(@types/node@25.9.1)(tsx@4.22.3)(yaml@2.9.0))':
     dependencies:
       '@babel/core': 7.29.7
@@ -4228,6 +4243,14 @@ snapshots:
       magic-string: 0.30.21
     optionalDependencies:
       vite: 7.3.3(@types/node@20.19.41)(tsx@4.22.3)(yaml@2.9.0)
+
+  '@vitest/mocker@4.1.7(vite@7.3.3(@types/node@20.19.41)(tsx@4.22.3))':
+    dependencies:
+      '@vitest/spy': 4.1.7
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 7.3.3(@types/node@20.19.41)(tsx@4.22.3)
 
   '@vitest/mocker@4.1.7(vite@7.3.3(@types/node@25.9.1)(tsx@4.22.3)(yaml@2.9.0))':
     dependencies:
@@ -5886,6 +5909,19 @@ snapshots:
       - supports-color
       - typescript
 
+  vite@7.3.3(@types/node@20.19.41)(tsx@4.22.3):
+    dependencies:
+      esbuild: 0.27.7
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
+      postcss: 8.5.15
+      rollup: 4.60.4
+      tinyglobby: 0.2.16
+    optionalDependencies:
+      '@types/node': 20.19.41
+      fsevents: 2.3.3
+      tsx: 4.22.3
+
   vite@7.3.3(@types/node@20.19.41)(tsx@4.22.3)(yaml@2.9.0):
     dependencies:
       esbuild: 0.27.7
@@ -5942,6 +5978,33 @@ snapshots:
       '@vitest/coverage-v8': 4.1.7(@vitest/browser@4.1.7)(vitest@4.1.7)
       happy-dom: 20.9.0
       jsdom: 29.1.1
+    transitivePeerDependencies:
+      - msw
+
+  vitest@4.1.7(@types/node@20.19.41)(vite@7.3.3(@types/node@20.19.41)(tsx@4.22.3)):
+    dependencies:
+      '@vitest/expect': 4.1.7
+      '@vitest/mocker': 4.1.7(vite@7.3.3(@types/node@20.19.41)(tsx@4.22.3))
+      '@vitest/pretty-format': 4.1.7
+      '@vitest/runner': 4.1.7
+      '@vitest/snapshot': 4.1.7
+      '@vitest/spy': 4.1.7
+      '@vitest/utils': 4.1.7
+      es-module-lexer: 2.1.0
+      expect-type: 1.3.0
+      magic-string: 0.30.21
+      obug: 2.1.1
+      pathe: 2.0.3
+      picomatch: 4.0.4
+      std-env: 4.1.0
+      tinybench: 2.9.0
+      tinyexec: 1.2.3
+      tinyglobby: 0.2.16
+      tinyrainbow: 3.1.0
+      vite: 7.3.3(@types/node@20.19.41)(tsx@4.22.3)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      '@types/node': 20.19.41
     transitivePeerDependencies:
       - msw
 
