@@ -1,13 +1,13 @@
 import type { ComponentType } from 'react';
-import type { WritingPost, WorkItem } from '../../content/types';
+import type { WritingPost, WorkItem } from '../content/types';
 
 type MDXModule = {
   default: ComponentType;
   frontmatter: Record<string, unknown>;
 };
 
-const writingModules = import.meta.glob<MDXModule>('../../content/writing/*.mdx', { eager: true });
-const workModules = import.meta.glob<MDXModule>('../../content/work/*.mdx', { eager: true });
+const writingModules = import.meta.glob<MDXModule>('../content/writing/*.mdx', { eager: true });
+const workModules = import.meta.glob<MDXModule>('../content/work/*.mdx', { eager: true });
 
 function slugFromPath(path: string): string {
   const filename = path.split('/').at(-1) ?? '';
