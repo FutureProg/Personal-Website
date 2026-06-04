@@ -3,56 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^7.16.0"
-  },
   "scripts": {
-    "dev": "vite",
-    "build:client": "tsc --noEmit -p tsconfig.build.json && vite build",
+    "dev": "pnpm --filter client run dev",
+    "build:client": "pnpm --filter client run build",
     "build:backend": "pnpm --filter backend run build",
     "build": "pnpm run build:client && pnpm run build:backend",
-    "preview": "vite preview",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "test:unit": "vitest run --config vitest.unit.config.ts",
-    "test:unit:watch": "vitest --config vitest.unit.config.ts",
-    "chromatic": "chromatic"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest",
-      "plugin:storybook/recommended"
-    ]
-  },
-  "devDependencies": {
-    "@mdx-js/rollup": "^3.1.1",
-    "@chromatic-com/storybook": "^5.2.1",
-    "@storybook/addon-a11y": "^10.4.0",
-    "@storybook/addon-docs": "^10.4.0",
-    "@storybook/addon-mcp": "^0.6.0",
-    "@storybook/addon-vitest": "^10.4.0",
-    "@storybook/react-vite": "^10.4.0",
-    "@testing-library/react": "^16.3.2",
-    "remark-frontmatter": "^5.0.0",
-    "remark-mdx-frontmatter": "^5.2.0",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.2",
-    "@vitest/browser": "^4.1.5",
-    "@vitest/browser-playwright": "^4.0.16",
-    "@vitest/coverage-v8": "^4.0.16",
-    "chromatic": "^16.9.1",
-    "eslint-plugin-storybook": "^10.4.0",
-    "happy-dom": "^20.9.0",
-    "jsdom": "^29.1.1",
-    "playwright": "^1.59.1",
-    "storybook": "^10.4.0",
-    "typescript": "^6.0.3",
-    "vite": "^7.3.0",
-    "vite-tsconfig-paths": "^6.0.3",
-    "vitest": "^4.0.16"
+    "preview": "pnpm --filter client run preview",
+    "storybook": "pnpm --filter client run storybook",
+    "build-storybook": "pnpm --filter client run build-storybook",
+    "test:unit": "pnpm --filter client run test:unit",
+    "test:unit:watch": "pnpm --filter client run test:unit:watch",
+    "chromatic": "pnpm --filter client run chromatic"
   }
 }

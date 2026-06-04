@@ -1,4 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "exclude": ["**/*.stories.tsx", "**/*.stories.ts", "**/*.stories.jsx", "**/*.stories.js", "vite.config.ts", "storybook-static", "src/backend/**"]
-}
