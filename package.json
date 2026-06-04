@@ -6,7 +6,8 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^7.16.0"
+    "react-router-dom": "^7.16.0",
+    "varlock": "^1.4.0"
   },
   "scripts": {
     "dev": "vite",
@@ -28,16 +29,14 @@
     ]
   },
   "devDependencies": {
-    "@mdx-js/rollup": "^3.1.1",
     "@chromatic-com/storybook": "^5.2.1",
+    "@mdx-js/rollup": "^3.1.1",
     "@storybook/addon-a11y": "^10.4.0",
     "@storybook/addon-docs": "^10.4.0",
     "@storybook/addon-mcp": "^0.6.0",
     "@storybook/addon-vitest": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",
     "@testing-library/react": "^16.3.2",
-    "remark-frontmatter": "^5.0.0",
-    "remark-mdx-frontmatter": "^5.2.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
@@ -49,6 +48,8 @@
     "happy-dom": "^20.9.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.59.1",
+    "remark-frontmatter": "^5.0.0",
+    "remark-mdx-frontmatter": "^5.2.0",
     "storybook": "^10.4.0",
     "typescript": "^6.0.3",
     "vite": "^7.3.0",
