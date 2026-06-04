@@ -16,14 +16,14 @@ export default defineConfig({
   plugins: [
     varlockVitePlugin(),
     mdx({ remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] }),
-    react(),    
+    react(),
   ],
   server: {
     port: 3000,
     open: true
   },
   build: {
-    outDir: 'dist/client',
+    outDir: '../../dist/client',
     sourcemap: true
   },
   test: {
@@ -33,12 +33,12 @@ export default defineConfig({
         test: {
           name: 'unit',
           environment: 'happy-dom',
-          include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+          include: ['**/*.test.ts', '**/*.test.tsx'],
           globals: true,
         },
         resolve: {
           alias: {
-            '@common': path.join(dirname, 'src/common'),
+            '@common': path.join(dirname, '../common'),
           },
         },
       },
@@ -51,7 +51,7 @@ export default defineConfig({
         ],
         resolve: {
           alias: {
-            '@common': path.join(dirname, 'src/common'),
+            '@common': path.join(dirname, '../common'),
           },
         },
         test: {
