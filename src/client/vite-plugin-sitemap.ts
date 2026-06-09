@@ -1,6 +1,30 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+// Vike's prerender step runs as a plain Node.js process from dist/, which is
+// outside the pnpm workspace. It can't find node_modules there, so we symlink
+// dist/node_modules → this workspace's node_modules at build time.
+// The symlink is gitignored (/dist) and never deployed — only dist/client/* ships.
+export function prerenderNodeModulesPlugin(): Plugin {
+  return {
+    name: 'prerender-node-modules',
+    apply: 'build',
+    buildStart() {
+      const dirname = typeof __dirname !== 'undefined'
+        ? __dirname
+        : path.dirname(fileURLToPath(import.meta.url))
+      const distDir = path.resolve(dirname, '../../dist')
+      const symlink = path.join(distDir, 'node_modules')
+      const target = path.resolve(dirname, 'node_modules')
+      if (!fs.existsSync(symlink)) {
+        fs.mkdirSync(distDir, { recursive: true })
+        fs.symlinkSync(target, symlink, 'junction')
+      }
+    }
+  }
+}
 
 const BASE_URL = 'https://nickmorrison.me'
 
