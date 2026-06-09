@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter client run dev",
-    "build:client": "pnpm --filter client run build",
+    "build:client": "pnpm --filter client run build && rm -rf dist/client && cp -r src/client/dist/client dist/client",
     "build:backend": "pnpm --filter backend run build",
     "build": "pnpm run build:client && pnpm run build:backend",
     "preview": "pnpm --filter client run preview",
