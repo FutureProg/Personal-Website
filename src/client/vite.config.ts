@@ -1,22 +1,44 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
+import vike from 'vike/plugin';
 import mdx from '@mdx-js/rollup';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
+import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { varlockVitePlugin } from '@varlock/vite-integration';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
+import { sitemapPlugin } from './vite-plugin-sitemap';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+
+// Ensure dist/node_modules symlink exists so Vike's prerender can resolve packages
+// when the outDir is outside the project root (pnpm workspace layout)
+function ensureDistNodeModulesSymlink(): void {
+  const distDir = path.resolve(dirname, '../../dist');
+  const distNodeModules = path.join(distDir, 'node_modules');
+  const clientNodeModules = path.resolve(dirname, 'node_modules');
+  if (!fs.existsSync(distNodeModules)) {
+    try {
+      fs.mkdirSync(distDir, { recursive: true });
+      fs.symlinkSync(clientNodeModules, distNodeModules, 'junction');
+    } catch {
+      // Symlink already exists or permission error — ignore
+    }
+  }
+}
+ensureDistNodeModulesSymlink();
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [
+    vike({ prerender: true }),
     varlockVitePlugin(),
     mdx({ remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] }),
     react(),
+    sitemapPlugin(),
   ],
   server: {
     port: 3000,
