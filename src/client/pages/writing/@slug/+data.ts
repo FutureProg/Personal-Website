@@ -6,7 +6,8 @@ export async function data(pageContext: PageContextServer) {
   if (!slug) throw new Error('Writing post slug is missing')
   const post = getWritingPost(slug)
   if (!post) throw new Error(`Writing post not found: ${slug}`)
-  return post
+  const { component: _, ...rest } = post
+  return rest
 }
 
 export type Data = Awaited<ReturnType<typeof data>>
