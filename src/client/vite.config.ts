@@ -18,6 +18,11 @@ export default defineConfig({
     mdx({ remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] }),
     react(),
   ],
+  resolve: {
+    alias: {
+      '@common': path.join(dirname, '../common'),
+    },
+  },
   server: {
     port: 3000,
     open: true
@@ -36,11 +41,6 @@ export default defineConfig({
           include: ['**/*.test.ts', '**/*.test.tsx'],
           globals: true,
         },
-        resolve: {
-          alias: {
-            '@common': path.join(dirname, '../common'),
-          },
-        },
       },
       {
         extends: true,
@@ -49,11 +49,6 @@ export default defineConfig({
             configDir: path.join(dirname, '.storybook')
           })
         ],
-        resolve: {
-          alias: {
-            '@common': path.join(dirname, '../common'),
-          },
-        },
         test: {
           name: 'storybook',
           browser: {
