@@ -1,5 +1,6 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
+import vike from 'vike/plugin';
 import mdx from '@mdx-js/rollup';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
@@ -9,14 +10,18 @@ import { fileURLToPath } from 'node:url';
 import { varlockVitePlugin } from '@varlock/vite-integration';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
+import { sitemapPlugin, prerenderNodeModulesPlugin } from './vite-plugin-sitemap';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [
+    vike({ prerender: true }),
     varlockVitePlugin(),
     mdx({ remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] }),
     react(),
+    sitemapPlugin(),
+    prerenderNodeModulesPlugin(),
   ],
   server: {
     port: 3000,
