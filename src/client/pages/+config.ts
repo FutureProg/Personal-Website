@@ -6,4 +6,4 @@ const config: Config = {
   prerender: true,
 }
 
-export default config
+export default config;
