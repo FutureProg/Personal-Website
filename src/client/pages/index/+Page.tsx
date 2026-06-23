@@ -34,6 +34,9 @@ export default function Page() {
             <h1>Who I <span className="brand-gradient-text">am</span></h1>
           </div>          
           <GithubActivityView className={styles.githubActivityView} />
+          <div className={`${styles.howIThink} ${styles.bento}`}>
+            
+          </div>
         </section>
       </main>
     </>

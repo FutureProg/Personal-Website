@@ -46,24 +46,43 @@
   width: 100%;
   grid-template-columns: 1fr;
   grid-auto-rows: auto;
-  margin-top: 40px;      
+  margin-top: 40px;
+  gap: 8px;
 }
 .githubActivityView {
     grid-column: 1;
+    grid-row: 2;
 }
-
-@media (min-width: 800px) {
-    .whoIAmSection {
-        grid-template-columns: repeat(4, 1fr);
-    }    
-    .githubActivityView {
-        grid-column: span 2;
-        grid-row: 2 / 100;
-    }
+.bento {
+    display: block;
+    padding: var(--padding-lg);
+    border-radius: var(--radius-card);
+    
+    background: var(--glass-bg-strong);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-inset-top), var(--glass-inset-bottom), var(--glass-shadow);
+}
+.howIThink {
+    grid-column: 2;
+    grid-row: 2;
 }
 
 .sectionHeader {
     display: block;
     grid-row: 1;
     grid-column: 1 / -1;
+}
+
+
+@media (min-width: 800px) {
+    .whoIAmSection {
+        grid-template-columns: repeat(2, 1fr);
+    }    
+    .githubActivityView {
+        grid-column: 1;
+        width: auto;
+        grid-row: 2;
+    }
 }
