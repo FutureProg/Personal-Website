@@ -58,6 +58,7 @@
     }    
     .githubActivityView {
         grid-column: span 2;
+        grid-row: 2 / 100;
     }
 }
 
