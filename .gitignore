@@ -29,6 +29,7 @@ src/client/dist
 *storybook.log
 storybook-static
 .design-sync/sb-reference/
+.design-sync/sb-build.log
 .design-sync/learnings/
 .design-sync/.cache/
 .design-sync/node_modules
