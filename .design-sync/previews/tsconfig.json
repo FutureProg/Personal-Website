@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "typeRoots": ["../../src/client/node_modules/@types"],
+    "types": ["react"],
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "noUnusedLocals": false
+  },
+  "include": ["*.tsx", "*.ts", "env.d.ts"]
+}
