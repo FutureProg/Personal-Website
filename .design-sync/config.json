@@ -1,0 +1,25 @@
+{
+  "projectId": "dae8b5ee-60c5-4209-8371-50f198454276",
+  "shape": "storybook",
+  "storybookConfigDir": "src/client/.storybook",
+  "storybookStatic": ".design-sync/sb-reference",
+  "pkg": "client",
+  "globalName": "personalSite",
+  "buildCmd": "pnpm --filter client run build && (cd src/client && npx tsc --emitDeclarationOnly --outDir dist)",
+  "cssEntry": "styles/tokens.css",
+  "storyImports": {
+    "loaders": {
+      ".svg": "dataurl",
+      ".png": "dataurl"
+    }
+  },
+  "libOverrides": {
+    "story-imports.mjs": "add 'sb' to INERT_STUB named exports — preview.ts calls sb.mock() from storybook/test at module scope",
+    "source-storybook.mjs": "import story-imports from sibling override so decorator bundler gets the sb-aware INERT_STUB"
+  },
+  "overrides": {
+    "GithubActivityView": {
+      "skip": ["Online", "Offline", "Error", "ConnectionFailure"]
+    }
+  }
+}

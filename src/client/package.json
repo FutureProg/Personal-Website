@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "types": "dist/client/components/index.d.ts",
   "dependencies": {
     "@varlock/vite-integration": "^1.1.2",
     "react": "^18.2.0",
