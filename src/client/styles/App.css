@@ -9,10 +9,3 @@ main {
 section {
   grid-column: main-start / main-end;
 }
-
-.github-activity {
-  position: relative;
-  display: flex;  
-  width: 100%;
-  justify-content: center;
-}

@@ -28,7 +28,7 @@ export default function Page() {
           </div>
           <HeroPhotoFrame className={styles.heroPhotoFrame} />
         </section>
-        <section className="github-activity">
+        <section className={styles.whoIAmSection}>
           <GithubActivityView />
         </section>
       </main>
