@@ -7,7 +7,7 @@ import PokeballIcon from '../images/pokeball-icon.svg';
 import Cities2Logo from '../images/cs2-logo.png';
 import BoardgameIcon from '../images/boardgame-icon.svg';
 
-export const HeroPhotoFrame = ({className}: {className?: string}) => {
+export const HeroPhotoFrame = ({className, photo = '/hero-photo.png'}: {className?: string; photo?: string}) => {
     const viewRef = useRef<HTMLDivElement>(null);
     const [isMobile, setIsMobile] = useState(false);
     const [hintExpanded, setHintExpanded] = useState(false);
@@ -75,7 +75,7 @@ export const HeroPhotoFrame = ({className}: {className?: string}) => {
                 <div className={styles.photoFrame}>
                     <div className={styles.photoWrapper}>
                         <div className={styles.photoInner}>
-                            <img alt="" className={styles.photo} src="/hero-photo.png" />
+                            <img alt="" className={styles.photo} src={photo} />
                         </div>
                     </div>
                 </div>

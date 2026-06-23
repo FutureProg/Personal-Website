@@ -15,7 +15,8 @@
   },
   "libOverrides": {
     "story-imports.mjs": "add 'sb' to INERT_STUB named exports — preview.ts calls sb.mock() from storybook/test at module scope",
-    "source-storybook.mjs": "import story-imports from sibling override so decorator bundler gets the sb-aware INERT_STUB"
+    "source-storybook.mjs": "import story-imports from sibling override so decorator bundler gets the sb-aware INERT_STUB",
+    "css-fallback.mjs": "extend scrapeRemoteImports to read locally-linked CSS files for @import url(https://...) — Vite bundles Google Fonts into assets/iframe-*.css, not as <link> tags"
   },
   "overrides": {
     "GithubActivityView": {

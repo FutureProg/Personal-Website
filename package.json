@@ -13,6 +13,8 @@
     "build-storybook": "pnpm --filter client run build-storybook",
     "test:unit": "pnpm --filter client run test:unit",
     "test:unit:watch": "pnpm --filter client run test:unit:watch",
-    "chromatic": "pnpm --filter client run chromatic"
+    "chromatic": "pnpm --filter client run chromatic",
+    "design-sync:build": "node .ds-sync/package-build.mjs --config .design-sync/config.json --node-modules src/client/node_modules --entry src/client/components/index.ts --out ds-bundle",
+    "design-sync:resync": "node .ds-sync/resync.mjs --config .design-sync/config.json --node-modules src/client/node_modules --entry src/client/components/index.ts --out ds-bundle"
   }
 }
