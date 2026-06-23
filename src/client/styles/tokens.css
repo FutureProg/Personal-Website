@@ -200,3 +200,9 @@
   --blob-purple: rgba(145, 56, 203, 0.07);
   }
 }
+
+/* Baseline typography — establishes font inheritance for components that rely
+   on body as the root. Mirrors index.css so design-tool previews match the site. */
+body {
+  font-family: var(--font-family-primary);
+}
