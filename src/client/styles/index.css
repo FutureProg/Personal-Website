@@ -30,7 +30,8 @@ body {
 }
 
 
-h1 {
+.display,
+.site-title {
   font-family: var(--font-family-display);
   font-style: normal;
   font-weight: var(--font-weight-bold);
@@ -39,6 +40,16 @@ h1 {
   color: var(--text-primary);
   margin-block: 0;
   margin-bottom: var(--space-4);  
+}
+
+h1 {
+  font-family: var(--font-family-display);
+  font-size: clamp(2rem, 8vw, var(--font-size-xl));
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--text-primary);
+  margin-block: 0;
+  margin-bottom: var(--space-4);
 }
 
 code {
@@ -79,6 +90,12 @@ header {
   font-size: var(--text-subtitle-size);
   line-height: var(--text-subtitle-line-height);
   font-weight: var(--text-subtitle-weight);
+}
+
+.brand-gradient-text {
+  background: var(--gradient-brand);
+  background-clip: text;
+  color: transparent;
 }
 
 ::view-transition-group(root),
