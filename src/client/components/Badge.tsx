@@ -15,9 +15,9 @@ export const Badge = (props: BadgeProps) => {
             [styles.circular]: props.iconShape === 'circle'? styles.circular : ''
         }, styles.icon);
         icon = typeof props.icon === 'string'
-            ? <img className={className} src={props.icon} />
+            ? <img className={className} src={props.icon} alt="" />
             : isValidElement(props.icon)
-                ? cloneElement(props.icon, { className } as object)
+                ? cloneElement(props.icon, { className, alt: '' } as object)
                 : props.icon;
     }
     return (
