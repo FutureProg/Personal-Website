@@ -78,6 +78,9 @@ export default function Page() {
               </li>
             </ol>
           </div>
+          <div className={`${styles.bento} ${styles.skillsBento}`}>
+            <h2>Current Stack</h2>
+          </div>
         </section>
       </main>
     </>
