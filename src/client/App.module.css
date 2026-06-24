@@ -126,6 +126,12 @@
     position: relative;
     grid-column: 1 / -1;
 }
+.skillBadges {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+}
 
 
 @media (min-width: 800px) {

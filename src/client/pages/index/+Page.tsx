@@ -2,6 +2,7 @@ import { GithubActivityView } from "../../views/GithubActivityView";
 import { HeroPhotoFrame } from "../../views/HeroPhotoFrame";
 import styles from "../../App.module.css";
 import SiteIcon from "../../images/icon.png";
+import { Badge } from "../../components/Badge";
 
 export default function Page() {
   return (
@@ -80,6 +81,20 @@ export default function Page() {
           </div>
           <div className={`${styles.bento} ${styles.skillsBento}`}>
             <h2>Current Stack</h2>
+            <div className={styles.skillBadges}>
+              <Badge>TypeScript</Badge>
+              <Badge>React</Badge>
+              <Badge>NextJS</Badge>
+              <Badge>NodeJS</Badge>
+              <Badge>Deno</Badge>
+              <Badge>Claude</Badge>
+              <Badge>Vite</Badge>
+              <Badge>CSS</Badge>
+              <Badge>Vite</Badge>
+              <Badge>Storybook</Badge>
+              <Badge>AWS</Badge>
+              <Badge>PostgreSQL</Badge>
+            </div>
           </div>
         </section>
       </main>
