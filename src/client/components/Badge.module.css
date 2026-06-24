@@ -17,7 +17,7 @@
         grid-template-columns: auto auto;
     }
 
-    border: 1px solid oklch(0 0 0 / 0.5);
+    border: 1px solid oklch(0 0 0 / 0.2);
     background: var(--bg-primary);
 
     .icon, img {
