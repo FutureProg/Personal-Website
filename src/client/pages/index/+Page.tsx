@@ -44,39 +44,28 @@ export default function Page() {
             </h1>
           </div>
           <GithubActivityView className={styles.githubActivityView} />
-          <div className={`${styles.howIThink} ${styles.bento}`}>
-            <h2>My Approach</h2>
+          <div className={`${styles.howIWork} ${styles.bento}`}>
+            <h2>How I Work</h2>
             <ol>
               <li>
-                <span>
-                  <strong>The interface is the product</strong>
+                  <strong>Pragmatism over novelty</strong>
                   <p>
-                    Most users never see the architecture. They see the loading
-                    state, the error message, the transition. That's where
-                    quality is felt.
+                    New tools are worth exploring, but production decisions have long-term consequences. Good tests, automated pipelines, and reliable choices are what let teams move fast without breaking things.
                   </p>
-                </span>
               </li>
               <li>
-                <span>
                   <strong>
-                    Design and engineering belong in the same conversation
+                    A team that learns together
                   </strong>
                   <p>
-                    I work from Figma early and often. Constraints surface
-                    faster, and the code ends up more composable for it.
+                    Keeping up with the industry is a dev's responsibility. But knowledge only grows when it spreads. Sharing what you learn — in a PR, a retro, a Slack thread — lifts everyone's floor.
                   </p>
-                </span>
               </li>
               <li>
-                <span>
-                  <strong>Good teams ship better products</strong>
+                  <strong>Good environments make good products</strong>
                   <p>
-                    The best frontend work I've done came out of tight loops
-                    with designers and clear handoffs with backend. Shared
-                    context is a multiplier.
+                    I care about rooms where everyone gets heard. Sticky notes on a wall beat a loud voice in a meeting. When people feel safe enough to be honest, you catch problems earlier, and the work gets better.
                   </p>
-                </span>
               </li>
             </ol>
           </div>
