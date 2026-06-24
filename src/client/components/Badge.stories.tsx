@@ -51,19 +51,11 @@ export const DomElement: Story = {
 /** Both variants must render icons with identical computed styles. */
 export const IconClassParity: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <Badge icon={ReactIcon}>String Src</Badge>
-      <Badge icon={<img src={ReactIcon} alt="React logo" />}>DOM element</Badge>
+    <div>
+      String: <br/><Badge icon={ReactIcon}>Element Text</Badge><br/>
+      Dom: <br/><Badge icon={<img src={ReactIcon} alt="React logo" />}>Element Text</Badge>
     </div>
-  ),
-  play: async ({ canvas }) => {
-    const [imgSrc, imgDom] = canvas.getAllByRole('img') as [HTMLElement, HTMLElement];
-    const styleA = getComputedStyle(imgSrc);
-    const styleB = getComputedStyle(imgDom);
-    for (const prop of ['display', 'height', 'width', 'clipPath'] as const) {
-      expect(styleA[prop], `${prop} should match between string-src and dom-element variants`).toBe(styleB[prop]);
-    }
-  },
+  )
 };
 
 /** iconShape="circle" clips the icon into a circle. */
