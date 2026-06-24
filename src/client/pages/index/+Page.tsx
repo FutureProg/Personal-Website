@@ -45,24 +45,24 @@ export default function Page() {
           </div>
           <GithubActivityView className={styles.githubActivityView} />
           <div className={`${styles.howIWork} ${styles.bento}`}>
-            <h2>How I Work</h2>
+            <h2>How I work</h2>
             <ol>
               <li>
-                  <strong>Pragmatism over novelty</strong>
+                  <h3>Pragmatism over novelty</h3>
                   <p>
                     New tools are worth exploring, but production decisions have long-term consequences. Good tests, automated pipelines, and reliable choices are what let teams move fast without breaking things.
                   </p>
               </li>
               <li>
-                  <strong>
+                  <h3>
                     A team that learns together
-                  </strong>
+                  </h3>
                   <p>
                     Keeping up with the industry is a dev's responsibility. But knowledge only grows when it spreads. Sharing what you learn — in a PR, a retro, a Slack thread — lifts everyone's floor.
                   </p>
               </li>
               <li>
-                  <strong>Good environments make good products</strong>
+                  <h3>Good environments make good products</h3>
                   <p>
                     I care about rooms where everyone gets heard. Sticky notes on a wall beat a loud voice in a meeting. When people feel safe enough to be honest, you catch problems earlier, and the work gets better.
                   </p>

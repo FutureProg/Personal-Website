@@ -94,6 +94,7 @@
                 grid-column: 1;
                 grid-row: 1 / -1;
                 /* spans both title and body rows */
+                line-height: 1;
                 padding-top: 2px;
                 color: var(--color-gray-400);
                 font-size: 0.85em;
@@ -107,6 +108,7 @@
             p {
                 grid-column: 2;
                 grid-row: 2;
+                margin-block: 0;
             }
         }
 

@@ -62,6 +62,16 @@ h2 {
   margin-bottom: var(--space-4);
 }
 
+h3 {
+  font-family: var(--font-family-primary);
+  font-size: clamp(1rem, 4vw, var(--font-size-base));
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--text-primary);
+  margin-block: 0;
+  margin-bottom: var(--space-4);
+}
+
 code {
   font-family: var(--font-family-mono);
 }
