@@ -3,7 +3,7 @@
 
     display: inline-grid;   
     position: relative;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto;
     justify-content: center;    
     font-family: var(--text-caption-family);
     font-size: var(--text-caption-size);
@@ -12,6 +12,10 @@
     border-radius: 100px;
     max-height: var(--max-height);
     column-gap: var(--gap-xs);
+
+    &:has(:nth-child(2)) {
+        grid-template-columns: auto auto;
+    }
 
     border: 1px solid oklch(0 0 0 / 0.5);
     background: var(--bg-primary);
