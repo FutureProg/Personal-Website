@@ -1,6 +1,7 @@
 import { cloneElement, isValidElement } from "react";
 import type { PropsWithChildren, ReactNode } from "react";
 import styles from './Badge.module.css';
+import { calcClassNames } from "../util/domUtil";
 
 type BadgeProps = {
     icon?: string | ReactNode;
@@ -10,10 +11,13 @@ type BadgeProps = {
 export const Badge = (props: BadgeProps) => {
     let icon;
     if (props.icon) {
+        const className = calcClassNames({            
+            [styles.circular]: props.iconShape === 'circle'? styles.circular : ''
+        }, styles.icon);
         icon = typeof props.icon === 'string'
-            ? <img className={styles.icon} src={props.icon} />
+            ? <img className={className} src={props.icon} />
             : isValidElement(props.icon)
-                ? cloneElement(props.icon, { className: styles.icon } as object)
+                ? cloneElement(props.icon, { className } as object)
                 : props.icon;
     }
     return (
