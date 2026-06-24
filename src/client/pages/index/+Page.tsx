@@ -3,6 +3,8 @@ import { HeroPhotoFrame } from "../../views/HeroPhotoFrame";
 import styles from "../../App.module.css";
 import SiteIcon from "../../images/icon.png";
 import { Badge } from "../../components/Badge";
+import TypescriptIcon from '../../images/ts-logo-round-128.svg';
+import ReactIcon from '../../images/react-logo.svg';
 
 export default function Page() {
   return (
@@ -82,8 +84,8 @@ export default function Page() {
           <div className={`${styles.bento} ${styles.skillsBento}`}>
             <h2>Current Stack</h2>
             <div className={styles.skillBadges}>
-              <Badge>TypeScript</Badge>
-              <Badge>React</Badge>
+              <Badge icon={TypescriptIcon}>TypeScript</Badge>
+              <Badge icon={ReactIcon}>React</Badge>
               <Badge>NextJS</Badge>
               <Badge>NodeJS</Badge>
               <Badge>Deno</Badge>
