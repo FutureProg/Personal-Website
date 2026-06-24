@@ -1,0 +1,27 @@
+.view {
+    --max-height: 1lh;
+
+    display: inline-grid;   
+    position: relative;
+    grid-template-columns: auto auto;
+    justify-content: center;    
+    font-family: var(--text-caption-family);
+    font-size: var(--text-caption-size);
+    font-weight: var(--text-caption-weight);
+    padding: 10px 14px;
+    border-radius: 100px;
+    max-height: var(--max-height);
+    column-gap: var(--gap-xs);
+
+    border: 1px solid oklch(0 0 0 / 0.5);
+    background: var(--bg-primary);
+
+    .icon, img {
+        display: inline-block;
+        width: auto;
+        height: var(--max-height);        
+        &.circular {
+            clip-path: circle(100%);            
+        }
+    }    
+}
