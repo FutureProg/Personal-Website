@@ -3,13 +3,17 @@ import type { PropsWithChildren, ReactNode } from "react";
 import styles from './Badge.module.css';
 import { calcClassNames } from "../util/domUtil";
 
-type BadgeProps = {
+type BadgeProps = {    
+    /**
+     * When providing a react image node, any alt text provided will be removed as any images 
+     * should be purely decorative
+     */
     icon?: string | ReactNode;
     iconShape?: 'circle';
 } & PropsWithChildren;
 
 export const Badge = (props: BadgeProps) => {
-    let icon;
+    let icon;        
     if (props.icon) {
         const className = calcClassNames({
             [styles.circular]: props.iconShape === 'circle'

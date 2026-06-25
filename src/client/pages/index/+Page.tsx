@@ -16,7 +16,7 @@ export default function Page() {
       </header>
 
       <main>
-        <section className={styles.hero}>
+        <section className={styles.hero} aria-label="introduction">
           <div className={styles.intro}>
             <div className="site-title">
               Nick<br />
@@ -36,10 +36,10 @@ export default function Page() {
           </div>
           <HeroPhotoFrame className={styles.heroPhotoFrame} />
         </section>
-        <section className={styles.whoIAmSection}>
+        <section className={styles.whoIAmSection} aria-labelledby="who-i-am-heading">
           <div className={styles.sectionHeader}>
             <div className="subtitle">AT A GLANCE</div>
-            <h1>
+            <h1 id="who-i-am-heading">
               Who I <span className="brand-gradient-text">am</span>
             </h1>
           </div>
