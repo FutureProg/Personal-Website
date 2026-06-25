@@ -4,14 +4,15 @@
     grid-template-columns: 1fr 2fr;
     column-gap: var(--space-8);
 
-    .heroPhotoFrame { /* the photo frame */
+    .heroPhotoFrame {
+        /* the photo frame */
         grid-column: 2;
         justify-self: center;
     }
 
     .intro {
         align-self: center;
-    }    
+    }
 
     .bio {
         margin-top: var(--space-2);
@@ -23,19 +24,133 @@
         grid-template-rows: auto auto;
         gap: var(--space-5);
 
-        .intro { /* the text */
+        .intro {
+            /* the text */
             grid-row: 1;
         }
 
-        .heroPhotoFrame { /* the photo frame */
-            grid-row: 2; 
-            grid-column: 1;         
+        .heroPhotoFrame {
+            /* the photo frame */
+            grid-row: 2;
+            grid-column: 1;
         }
     }
-    
+
     .lastName {
         background: var(--gradient-brand);
         background-clip: text;
         color: transparent;
+    }
+}
+
+.whoIAmSection {
+    position: relative;
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    margin-top: 40px;
+    gap: 8px;
+}
+
+.githubActivityView {
+    grid-column: 1;
+    grid-row: 3;
+    width: auto;
+}
+
+.bento {
+    display: block;
+    padding: var(--padding-lg);
+    border-radius: var(--radius-card);
+
+    background: var(--glass-bg-strong);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-inset-top), var(--glass-inset-bottom), var(--glass-shadow);
+}
+
+.howIWork {
+    grid-row: 2;
+
+    ol {
+        margin: 0;
+        margin-block: 0;
+        padding-inline: 0;
+        counter-reset: approaches;
+
+        li {
+            display: grid;
+            grid-template-columns: 3ch 1fr;
+            grid-template-rows: auto;
+            list-style: none;            
+            padding-block: var(--space-3);
+            border-bottom: 1px solid var(--color-gray-200);
+            counter-increment: approaches;
+
+            &::before {
+                content: counter(approaches, decimal-leading-zero) ".";
+                grid-column: 1;
+                grid-row: 1 / -1;
+                /* spans both title and body rows */
+                line-height: 1;
+                padding-top: 2px;
+                color: var(--color-gray-400);
+                font-size: 0.85em;
+            }
+
+            h3 {
+                grid-column: 2;
+                grid-row: 1;
+            }
+
+            p {
+                grid-column: 2;
+                grid-row: 2;
+                margin-block: 0;
+            }
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+    }
+}
+
+.sectionHeader {
+    display: block;
+    grid-row: 1;
+    grid-column: 1 / -1;
+}
+
+.skillsBento {
+    position: relative;
+    grid-column: 1 / -1;
+}
+.skillBadges {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    
+    margin: 0 auto;
+    width: fit-content;
+}
+
+
+@media (min-width: 800px) {
+    .whoIAmSection {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .githubActivityView {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .howIWork {
+        grid-column: 2;
+        grid-row: 2;
     }
 }

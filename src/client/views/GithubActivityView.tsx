@@ -3,6 +3,7 @@ import { StatusToken, type StatusTokenStatus } from '../components/StatusToken';
 import { GithubActivityRow } from '../components/GithubActivityRow';
 import { useGithubActivity } from '../hooks/useGithubActivity';
 import { flushSync } from 'react-dom';
+import type { CSSProperties } from 'react';
 
 function wrapUpdate(update: () => void) {
     const doUpdate = () => flushSync(update);
@@ -13,7 +14,12 @@ function wrapUpdate(update: () => void) {
     }
 }
 
-export const GithubActivityView = () => {
+type GithubActivityViewProps = {
+    className?: string;
+    style?: CSSProperties;
+}
+
+export const GithubActivityView = (props: GithubActivityViewProps) => {
     const githubActivity = useGithubActivity({ wrapUpdate });
 
     let connectionStatus: StatusTokenStatus = 'offline';
@@ -51,7 +57,7 @@ export const GithubActivityView = () => {
     ) : <div className={styles.statusMessage}>{isLoading ? 'Loading...' : messageText || 'No recent activity'}</div>;
     
     return (
-        <div className={styles.view}>
+        <div className={`${styles.view} ${props.className ?? ''}`} style={props.style ?? {}}>
             <div className={styles.header}>
                 <div className={styles.titleRow}>
                     <h2 className={styles.title}>GitHub Activity</h2>

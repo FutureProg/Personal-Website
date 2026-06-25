@@ -33,4 +33,5 @@
     
     /* Border Colors */
     --border-primary: #3a3a3a;
+    --border-color-light: oklch(100% 0.00011 271.152 / 0.2);
   }
