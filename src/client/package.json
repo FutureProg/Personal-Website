@@ -12,6 +12,11 @@
     "vike": "^0.4.259",
     "vike-react": "^0.6.24"
   },
+  "pnpm": {
+    "overrides": {
+      "@vitest/browser@>=4.0.0 <=4.1.8": "^4.1.9"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit -p tsconfig.build.json && vite build",
