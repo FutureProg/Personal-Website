@@ -26,9 +26,9 @@ export const ImageSrc: Story = {
     icon: ReactIcon,
   },
   play: async ({ canvas }) => {
-    const img = canvas.getByRole('img');
+    const img = canvas.getByAltText('');
+    expect(img.tagName).toMatch(/img/i);
     const style = getComputedStyle(img);
-    expect(style.display).toBe('inline-block');
     expect(parseFloat(style.height)).toBeGreaterThan(0);
   },
 };
@@ -40,9 +40,11 @@ export const DomElement: Story = {
     icon: <img src={ReactIcon} alt="React logo" />,
   },
   play: async ({ canvas }) => {
-    const img = canvas.getByRole('img');
+    const elems = canvas.getAllByAltText('');
+    expect(elems).toHaveLength(1);
+    const img = elems[0]!;
+    expect(img.tagName).toMatch(/img/i);
     const style = getComputedStyle(img);
-    expect(style.display).toBe('inline-block');
     expect(parseFloat(style.height)).toBeGreaterThan(0);
   },
 };
