@@ -16,7 +16,11 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     children: 'TypeScript',
-  }
+  },
+  play: async ({ canvas }) => {
+    expect(canvas.getByText('TypeScript')).toBeInTheDocument();
+    expect(canvas.queryByRole('img')).not.toBeInTheDocument();
+  },
 };
 
 /** Icon passed as a string src — rendered via <img>. */
@@ -65,5 +69,23 @@ export const CircularIcon: Story = {
     children: 'TypeScript',
     icon: TypescriptIcon,
     iconShape: 'circle',
+  },
+  play: async ({ canvas }) => {
+    const img = canvas.getByAltText('');
+    expect(img.className).toMatch(/circular/);
+  },
+};
+
+/** Icon passed as a non-element, non-string value — rendered as-is (passthrough branch). */
+export const IconPassthrough: Story = {
+  args: {
+    children: 'Raw node',
+    icon: <span data-testid="custom-icon">★</span>,
+  },
+  play: async ({ canvas }) => {
+    // cloneElement merges className onto the span
+    const icon = canvas.getByTestId('custom-icon');
+    expect(icon).toBeInTheDocument();
+    expect(icon.className).toMatch(/icon/);
   },
 };
