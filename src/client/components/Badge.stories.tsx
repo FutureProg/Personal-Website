@@ -76,8 +76,8 @@ export const CircularIcon: Story = {
   },
 };
 
-/** Icon passed as a non-element, non-string value — rendered as-is (passthrough branch). */
-export const IconPassthrough: Story = {
+/** Icon passed as a non-image, non-string value — rendered as-is (passthrough branch). */
+export const TextElementPassthrough: Story = {
   args: {
     children: 'Raw node',
     icon: <span data-testid="custom-icon">★</span>,
