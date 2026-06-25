@@ -9,9 +9,9 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - esbuild@0.28.1
   - vite@7.3.5
-  - '@vitest/browser@4.1.8'
+  - '@vitest/browser@4.1.9'
   - hono@4.12.25
   - undici@7.28.0
 
 overrides:
-  '@vitest/browser@>=4.0.0 <=4.1.7': ^4.1.8
+  '@vitest/browser@<=4.1.8': ^4.1.9
