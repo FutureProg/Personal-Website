@@ -52,7 +52,7 @@ export const RecentCommit: Story = {
         repositoryUrl: 'https://github.com/FutureProg/personal-website',
         commitId: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',
         commitUrl: 'https://github.com/FutureProg/personal-website/commit/a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',
-        commitTimestamp: new Date(2026, 5, 1, 23, 4, 22).toISOString(),
+        commitTimestamp: '2026-06-01T23:04:22.000Z',
     },
     play: async ({ canvas, args, canvasElement }) => {
         const commitLink = canvas.getByRole('link', { name: 'a1b2c3d' });
