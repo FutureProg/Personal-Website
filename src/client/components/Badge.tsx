@@ -11,8 +11,8 @@ type BadgeProps = {
 export const Badge = (props: BadgeProps) => {
     let icon;
     if (props.icon) {
-        const className = calcClassNames({            
-            [styles.circular]: props.iconShape === 'circle'? styles.circular : ''
+        const className = calcClassNames({
+            [styles.circular]: props.iconShape === 'circle'
         }, styles.icon);
         icon = typeof props.icon === 'string'
             ? <img className={className} src={props.icon} alt="" />

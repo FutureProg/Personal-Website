@@ -72,8 +72,8 @@ export default function Page() {
           <div className={`${styles.bento} ${styles.skillsBento}`}>
             <h2>Current Stack</h2>
             <div className={styles.skillBadges}>
-              {skillsList.map((skill, idx) => (
-                <Badge key={idx} icon={skill.icon}>{skill.name}</Badge>
+              {skillsList.map((skill) => (
+                <Badge key={skill.name} icon={skill.icon}>{skill.name}</Badge>
               ))}              
             </div>
           </div>
