@@ -10,7 +10,6 @@
     font-weight: var(--text-caption-weight);
     padding: 10px 14px;
     border-radius: 100px;
-    max-height: var(--max-height);
     column-gap: var(--gap-xs);
 
     &:has(:nth-child(2)) {
