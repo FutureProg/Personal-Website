@@ -12,3 +12,6 @@ minimumReleaseAgeExclude:
   - '@vitest/browser@4.1.8'
   - hono@4.12.25
   - undici@7.28.0
+
+overrides:
+  '@vitest/browser@>=4.0.0 <=4.1.7': ^4.1.8
