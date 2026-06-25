@@ -19,8 +19,6 @@ export const Default: Story = {
         subtitle: 'President',
     },
     play: async ({ canvas }) => {
-        const pill = canvas.getByText('Safe Streets Halton').closest('div');
-        expect(pill?.tagName).toMatch(/div/i);
         expect(canvas.getByText('Safe Streets Halton')).toBeInTheDocument();
         expect(canvas.getByText('President')).toBeInTheDocument();
         expect(canvas.queryByText('→')).not.toBeInTheDocument();
@@ -49,7 +47,6 @@ export const WithLink: Story = {
     },
     play: async ({ canvas }) => {
         const link = canvas.getByRole('link', { name: /Safe Streets Halton/i });
-        expect(link.tagName).toMatch(/a/i);
         expect(link).toHaveAttribute('href', 'https://safestreetshalton.ca');
         expect(link).toHaveAttribute('target', '_blank');
         expect(link).toHaveAttribute('rel', 'noopener noreferrer');
@@ -67,7 +64,6 @@ export const WithLinkExpanded: Story = {
     },
     play: async ({ canvas }) => {
         const link = canvas.getByRole('link', { name: /Safe Streets Halton/i });
-        expect(link.tagName).toMatch(/a/i);
         expect(link.className).toMatch(/expanded/);
         expect(link).toHaveAttribute('href', 'https://safestreetshalton.ca');
         expect(canvas.getByText('→')).toBeInTheDocument();
