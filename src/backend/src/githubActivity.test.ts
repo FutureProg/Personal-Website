@@ -274,6 +274,33 @@ describe('GET /api/github/activity', () => {
     }
   });
 
+  it('sends a rate-limit error message on HTTP 429 (secondary rate limit) from the GitHub client', async () => {
+    const secondaryRateLimitError = Object.assign(new Error('secondary rate limited'), { status: 429 });
+    const client: GithubClient = {
+      rest: {
+        repos: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listForUser: vi.fn().mockRejectedValue(secondaryRateLimitError) as any,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listCommits: vi.fn() as any,
+        },
+      },
+    };
+    const app = createTestApp(client);
+
+    const res = await app.request('/api/github/activity');
+    const reader = res.body!.getReader();
+    const buffer = { current: '' };
+
+    const event = await readNextSSEEvent(reader, buffer);
+    reader.cancel();
+
+    expect(event!.type).toBe('error');
+    if (event!.type === 'error') {
+      expect(event!.data.message).toMatch(/rate limit/i);
+    }
+  });
+
   it('sends an update event when a new commit appears on poll', async () => {
     vi.useFakeTimers();
 

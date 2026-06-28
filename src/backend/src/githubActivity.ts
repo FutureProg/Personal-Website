@@ -20,6 +20,8 @@ export interface GithubActivityConfig {
 
 /** Number of repositories surfaced by the activity stream. */
 const REPO_LIMIT = 5;
+/** Extra slots fetched beyond the limit to account for empty/inaccessible repos. */
+const REPO_FETCH_HEADROOM = 3;
 
 /**
  * Builds the activity list from the user's most-recently-pushed repositories.
@@ -44,7 +46,7 @@ export async function fetchRepoActivity(
     username,
     sort: 'pushed',
     direction: 'desc',
-    per_page: limit + 3,
+    per_page: limit + REPO_FETCH_HEADROOM,
     type: 'all',
   });
 
@@ -58,8 +60,10 @@ export async function fetchRepoActivity(
           per_page: 1,
         });
         commit = commits[0];
-      } catch {
-        // Empty repository (GitHub returns 409) or no accessible commits.
+      } catch (err) {
+        if ((err as { status?: number }).status !== 409) {
+          console.debug(`Skipping ${repo.full_name}:`, err);
+        }
         return null;
       }
       if (!commit) return null;
@@ -83,12 +87,10 @@ export async function fetchRepoActivity(
 }
 
 function isRateLimitError(err: unknown): boolean {
-  return (
-    typeof err === 'object' &&
-    err !== null &&
-    'status' in err &&
-    (err as { status: number }).status === 403
-  );
+  if (typeof err !== 'object' || err === null || !('status' in err)) return false;
+  const status = (err as { status: number }).status;
+  // 403 = primary rate limit; 429 = secondary (burst/concurrency) rate limit.
+  return status === 403 || status === 429;
 }
 
 export function registerGithubActivityRoute(app: Hono, config: GithubActivityConfig): void {
