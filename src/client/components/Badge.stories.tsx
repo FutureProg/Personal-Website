@@ -16,7 +16,11 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     children: 'TypeScript',
-  }
+  },
+  play: async ({ canvas }) => {
+    expect(canvas.getByText('TypeScript')).toBeInTheDocument();
+    expect(canvas.queryByRole('img')).not.toBeInTheDocument();
+  },
 };
 
 /** Icon passed as a string src — rendered via <img>. */
@@ -26,10 +30,9 @@ export const ImageSrc: Story = {
     icon: ReactIcon,
   },
   play: async ({ canvas }) => {
-    const img = canvas.getByRole('img');
-    const style = getComputedStyle(img);
-    expect(style.display).toBe('inline-block');
-    expect(parseFloat(style.height)).toBeGreaterThan(0);
+    const img = canvas.getByAltText('');
+    expect(img.tagName).toMatch(/img/i);
+    expect(img.className).toMatch(/icon/);
   },
 };
 
@@ -40,10 +43,11 @@ export const DomElement: Story = {
     icon: <img src={ReactIcon} alt="React logo" />,
   },
   play: async ({ canvas }) => {
-    const img = canvas.getByRole('img');
-    const style = getComputedStyle(img);
-    expect(style.display).toBe('inline-block');
-    expect(parseFloat(style.height)).toBeGreaterThan(0);
+    const elems = canvas.getAllByAltText('');
+    expect(elems).toHaveLength(1);
+    const img = elems[0]!;
+    expect(img.tagName).toMatch(/img/i);
+    expect(img.className).toMatch(/icon/);
   },
 };
 
@@ -63,5 +67,23 @@ export const CircularIcon: Story = {
     children: 'TypeScript',
     icon: TypescriptIcon,
     iconShape: 'circle',
+  },
+  play: async ({ canvas }) => {
+    const img = canvas.getByAltText('');
+    expect(img.className).toMatch(/circular/);
+  },
+};
+
+/** Icon passed as a React element — cloneElement merges className and resets alt. */
+export const ReactElementIcon: Story = {
+  args: {
+    children: 'Raw node',
+    icon: <span data-testid="custom-icon">★</span>,
+  },
+  play: async ({ canvas }) => {
+    // cloneElement merges className onto the span
+    const icon = canvas.getByTestId('custom-icon');
+    expect(icon).toBeInTheDocument();
+    expect(icon.className).toMatch(/icon/);
   },
 };

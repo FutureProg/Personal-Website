@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 
 import { HeroInfoPill } from './HeroInfoPill';
 
@@ -17,6 +18,11 @@ export const Default: Story = {
         title: 'Safe Streets Halton',
         subtitle: 'President',
     },
+    play: async ({ canvas }) => {
+        expect(canvas.getByText('Safe Streets Halton')).toBeInTheDocument();
+        expect(canvas.getByText('President')).toBeInTheDocument();
+        expect(canvas.queryByText('→')).not.toBeInTheDocument();
+    },
 };
 
 export const Expanded: Story = {
@@ -25,6 +31,10 @@ export const Expanded: Story = {
         title: 'Safe Streets Halton',
         subtitle: 'President',
         expanded: true,
+    },
+    play: async ({ canvasElement }) => {
+        const pill = canvasElement.querySelector('[class*="expanded"]');
+        expect(pill).not.toBeNull();
     },
 };
 
@@ -35,6 +45,13 @@ export const WithLink: Story = {
         subtitle: 'President',
         href: 'https://safestreetshalton.ca',
     },
+    play: async ({ canvas }) => {
+        const link = canvas.getByRole('link', { name: /Safe Streets Halton/i });
+        expect(link).toHaveAttribute('href', 'https://safestreetshalton.ca');
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(canvas.getByText('→')).toBeInTheDocument();
+    },
 };
 
 export const WithLinkExpanded: Story = {
@@ -44,5 +61,13 @@ export const WithLinkExpanded: Story = {
         subtitle: 'President',
         href: 'https://safestreetshalton.ca',
         expanded: true,
+    },
+    play: async ({ canvas }) => {
+        const link = canvas.getByRole('link', { name: /Safe Streets Halton/i });
+        expect(link.className).toMatch(/expanded/);
+        expect(link).toHaveAttribute('href', 'https://safestreetshalton.ca');
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(canvas.getByText('→')).toBeInTheDocument();
     },
 };
