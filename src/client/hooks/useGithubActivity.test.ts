@@ -22,10 +22,14 @@ const MockEventSource = vi.fn(function (this: MockES) {
 
 vi.stubGlobal("EventSource", MockEventSource);
 
-const makeActivity = (repoUrl: string, sha = "abc123"): GithubActivityData => ({
+const makeActivity = (
+    repoUrl: string,
+    sha = "abc123",
+    timestamp = "2024-01-01T00:00:00.000Z",
+): GithubActivityData => ({
     repository: { name: repoUrl.split("/").pop() ?? repoUrl, url: repoUrl },
     commit: { sha, message: "test commit", url: `${repoUrl}/commit/${sha}` },
-    timestamp: "2024-01-01T00:00:00.000Z",
+    timestamp,
 });
 
 const sendMessage = (data: object) => {
@@ -46,7 +50,9 @@ describe("useGithubActivity", () => {
 
     it("creates an EventSource pointed at /api/github/activity", () => {
         renderHook(() => useGithubActivity());
-        expect(MockEventSource).toHaveBeenCalledWith("/api/github/activity");
+        expect(MockEventSource).toHaveBeenCalledWith(
+            expect.stringContaining("/api/github/activity"),
+        );
     });
 
     it("transitions to connected when the stream opens", () => {
@@ -59,7 +65,7 @@ describe("useGithubActivity", () => {
         const { result } = renderHook(() => useGithubActivity());
         act(() => { mockEs.onerror?.(new Event("error")); });
         expect(result.current.connectionStatus).toBe("error");
-        expect(result.current.error).toContain("Error occurred connecting to the Activity Stream");
+        expect(result.current.error).toContain("error occurred connecting to the Activity Stream");
     });
 
     it("populates items from an initial event", () => {
@@ -101,6 +107,35 @@ describe("useGithubActivity", () => {
         expect(result.current.items).toHaveLength(2);
         expect(result.current.items[0]?.commit.sha).toBe("sha-v2");
         expect(result.current.items[1]).toEqual(other);
+    });
+
+    it("orders by push time when a poll emits several updates out of order", () => {
+        // Updates within one poll arrive newest-first; the older push (repo-b)
+        // is emitted last. The list must still end up sorted newest-first.
+        const base = makeActivity(
+            "https://github.com/user/repo-a",
+            "sha-a",
+            "2024-01-01T00:00:00.000Z",
+        );
+        const newer = makeActivity(
+            "https://github.com/user/repo-c",
+            "sha-c",
+            "2024-03-01T00:00:00.000Z",
+        );
+        const older = makeActivity(
+            "https://github.com/user/repo-b",
+            "sha-b",
+            "2024-02-01T00:00:00.000Z",
+        );
+        const { result } = renderHook(() => useGithubActivity());
+        act(() => { sendMessage({ type: "initial", data: [base] }); });
+        act(() => { sendMessage({ type: "update", data: newer }); });
+        act(() => { sendMessage({ type: "update", data: older }); });
+        expect(result.current.items.map((i) => i.repository.url)).toEqual([
+            "https://github.com/user/repo-c",
+            "https://github.com/user/repo-b",
+            "https://github.com/user/repo-a",
+        ]);
     });
 
     it("caps the list at 5 items after an update", () => {

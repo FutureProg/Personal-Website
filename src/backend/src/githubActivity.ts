@@ -5,8 +5,9 @@ import type { Octokit } from '@octokit/rest';
 
 export interface GithubClient {
   rest: {
-    activity: {
-      listPublicEventsForUser: Octokit['rest']['activity']['listPublicEventsForUser'];
+    repos: {
+      listForUser: Octokit['rest']['repos']['listForUser'];
+      listCommits: Octokit['rest']['repos']['listCommits'];
     };
   };
 }
@@ -17,47 +18,67 @@ export interface GithubActivityConfig {
   pollIntervalMs: number;
 }
 
-type PushPayload = {
-  head?: string;
-  before?: string;
-  ref?: string;
-};
+/** Number of repositories surfaced by the activity stream. */
+const REPO_LIMIT = 5;
 
-type RawEvent = {
-  type: string | null;
-  id: string;
-  repo: { name: string; url: string, id: number };
-  payload: unknown;
-  created_at: string | null;
-};
+/**
+ * Builds the activity list from the user's most-recently-pushed repositories.
+ *
+ * The previous implementation read the public *events* feed and counted only
+ * `PushEvent`s, deduped by repo. For a focused contributor whose recent pushes
+ * cluster into a handful of repos, that feed contains fewer than 5 distinct
+ * repositories — so the stream listed fewer than 5 no matter what. Listing
+ * repositories sorted by `pushed` reliably yields up to `limit` repos, and the
+ * per-repo commit lookup lets us include the real commit message (the events
+ * payload never carried it).
+ */
+export async function fetchRepoActivity(
+  client: GithubClient,
+  username: string,
+  limit: number = REPO_LIMIT,
+): Promise<GithubActivityData[]> {
+  // Fetch a few extra repos as headroom: some may be empty (no commits) and
+  // get skipped below, and we still want to fill `limit` slots when possible.
+  const { data: repos } = await client.rest.repos.listForUser({
+    username,
+    sort: 'pushed',
+    direction: 'desc',
+    per_page: limit + 3,
+    type: 'owner',
+  });
 
-export function extractActivity(events: RawEvent[]): GithubActivityData[] {
-  const byRepo = new Map<number, GithubActivityData>();
+  const activity = await Promise.all(
+    repos.map(async (repo): Promise<GithubActivityData | null> => {
+      let commit;
+      try {
+        const { data: commits } = await client.rest.repos.listCommits({
+          owner: repo.owner.login,
+          repo: repo.name,
+          per_page: 1,
+        });
+        commit = commits[0];
+      } catch {
+        // Empty repository (GitHub returns 409) or no accessible commits.
+        return null;
+      }
+      if (!commit) return null;
 
-  for (const event of events) {
-    if (event.type !== 'PushEvent') continue;    
-    const fullRepoName = event.repo.name;
-    if (byRepo.has(event.repo.id)) continue;
+      return {
+        repository: {
+          name: repo.full_name,
+          url: repo.html_url,
+        },
+        commit: {
+          sha: commit.sha,
+          message: commit.commit.message,
+          url: commit.html_url,
+        },
+        timestamp: repo.pushed_at ?? commit.commit.author?.date ?? new Date().toISOString(),
+      };
+    }),
+  );
 
-    const payload = event.payload as PushPayload;
-    const sha = payload.head;
-    if (!sha) continue;
-    
-    byRepo.set(event.repo.id, {
-      repository: {
-        name: fullRepoName,
-        url: `https://github.com/${fullRepoName}`,
-      },
-      commit: {
-        sha,
-        message: "", // GitHub API doesn't include commit message in PushEvent payload, would need extra API call to fetch it
-        url: `https://github.com/${fullRepoName}/commit/${sha}`,
-      },
-      timestamp: event.created_at ?? new Date().toISOString(),
-    });
-  }
-
-  return Array.from(byRepo.values());
+  return activity.filter((item): item is GithubActivityData => item !== null).slice(0, limit);
 }
 
 function isRateLimitError(err: unknown): boolean {
@@ -82,13 +103,8 @@ export function registerGithubActivityRoute(app: Hono, config: GithubActivityCon
       // Initial fetch
       let initialData: GithubActivityData[];
       try {
-        const {data: events} = await config.client.rest.activity.listPublicEventsForUser({
-          username: config.username,
-          per_page: 100,
-        });
-        console.log(`Fetched ${events.length} events for user ${config.username}`);        
-        const allActivity = extractActivity(events);
-        initialData = allActivity.slice(0, 5);
+        initialData = await fetchRepoActivity(config.client, config.username);
+        console.log(`Fetched ${initialData.length} repositories for user ${config.username}`);
         for (const item of initialData) {
           knownShas.add(item.commit.sha);
         }
@@ -116,12 +132,7 @@ export function registerGithubActivityRoute(app: Hono, config: GithubActivityCon
         if (aborted) break;
 
         try {
-          const {data: events} = await config.client.rest.activity.listPublicEventsForUser({
-            username: config.username,
-            per_page: 100,
-          });          
-
-          const allActivity = extractActivity(events);
+          const allActivity = await fetchRepoActivity(config.client, config.username);
 
           for (const item of allActivity) {
             if (!knownShas.has(item.commit.sha)) {

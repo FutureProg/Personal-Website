@@ -1,48 +1,59 @@
 import { describe, it, expect, vi } from 'vitest';
 import { Hono } from 'hono';
-import { extractActivity, registerGithubActivityRoute } from './githubActivity.js';
+import { fetchRepoActivity, registerGithubActivityRoute } from './githubActivity.js';
 import type { GithubActivityEvent } from '@site/common/GithubActivityEvent';
 import type { GithubClient, GithubActivityConfig } from './githubActivity.js';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
-function repoId(name: string): number {
-  return [...name].reduce((acc, c) => acc + c.charCodeAt(0), 0);
-}
-
-function makePushEvent(
-  repoName: string,
-  sha: string,
-  createdAt = '2024-01-01T00:00:00Z',
-) {
+function makeRepo(fullName: string, pushedAt = '2024-01-01T00:00:00Z') {
+  const [owner, name] = fullName.split('/');
   return {
-    type: 'PushEvent',
-    id: sha,
-    repo: { name: repoName, url: `https://api.github.com/repos/${repoName}`, id: repoId(repoName) },
-    payload: { head: sha },
-    created_at: createdAt,
+    name,
+    full_name: fullName,
+    html_url: `https://github.com/${fullName}`,
+    owner: { login: owner },
+    pushed_at: pushedAt,
   };
 }
 
-function makeNonPushEvent(repoName: string) {
+function makeCommit(sha: string, message = 'a commit', date = '2024-01-01T00:00:00Z') {
   return {
-    type: 'WatchEvent',
-    id: 'watch-1',
-    repo: { name: repoName, url: '', id: 1 },
-    payload: {},
-    created_at: '2024-01-01T00:00:00Z',
+    sha,
+    html_url: `https://github.com/commit/${sha}`,
+    commit: { message, author: { date } },
   };
 }
 
-function makeMockClient(responses: Array<{ data: ReturnType<typeof makePushEvent>[] }>): GithubClient {
+/**
+ * Builds a mock GithubClient. `repoResponses` is the sequence of repo lists
+ * returned by successive listForUser calls (the last entry repeats). `shaByRepo`
+ * maps a repo's full_name to the latest commit SHA listCommits should return;
+ * a repo absent from the map (or mapped to null) behaves like an empty repo.
+ */
+function makeMockClient(
+  repoResponses: Array<ReturnType<typeof makeRepo>[]>,
+  shaByRepo: Record<string, string | null>,
+): GithubClient {
   let call = 0;
   return {
     rest: {
-      activity: {
-        listPublicEventsForUser: vi.fn(async () => {
-          const response = responses[call] ?? responses[responses.length - 1]!;
+      repos: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        listForUser: vi.fn(async () => {
+          const data = repoResponses[call] ?? repoResponses[repoResponses.length - 1]!;
           call++;
-          return response;
+          return { data } as any;
+        }),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        listCommits: vi.fn(async ({ owner, repo }: { owner: string; repo: string }) => {
+          const fullName = `${owner}/${repo}`;
+          const sha = shaByRepo[fullName];
+          if (!sha) {
+            // Mirror GitHub's 409 for an empty repository.
+            throw Object.assign(new Error('Git Repository is empty.'), { status: 409 });
+          }
+          return { data: [makeCommit(sha)] } as any;
         }),
       },
     },
@@ -92,51 +103,56 @@ async function readNextSSEEvent(
   }
 }
 
-// ── extractActivity ────────────────────────────────────────────────────────
+// ── fetchRepoActivity ────────────────────────────────────────────────────────
 
-describe('extractActivity', () => {
-  it('returns an empty array when given no events', () => {
-    expect(extractActivity([])).toEqual([]);
+describe('fetchRepoActivity', () => {
+  it('returns an empty array when the user has no repos', async () => {
+    const client = makeMockClient([[]], {});
+    expect(await fetchRepoActivity(client, 'testuser')).toEqual([]);
   });
 
-  it('ignores non-PushEvent events', () => {
-    const events = [makeNonPushEvent('user/repo-a')];
-    expect(extractActivity(events)).toEqual([]);
-  });
-
-  it('extracts a single PushEvent correctly', () => {
-    const event = makePushEvent('user/repo-a', 'abc123', '2024-06-01T12:00:00Z');
-    const result = extractActivity([event]);
+  it('maps a repo and its latest commit into activity data', async () => {
+    const client = makeMockClient(
+      [[makeRepo('user/repo-a', '2024-06-01T12:00:00Z')]],
+      { 'user/repo-a': 'abc123' },
+    );
+    const result = await fetchRepoActivity(client, 'testuser');
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual({
       repository: { name: 'user/repo-a', url: 'https://github.com/user/repo-a' },
       commit: {
         sha: 'abc123',
-        message: '',
-        url: 'https://github.com/user/repo-a/commit/abc123',
+        message: 'a commit',
+        url: 'https://github.com/commit/abc123',
       },
       timestamp: '2024-06-01T12:00:00Z',
     });
   });
 
-  it('deduplicates by repository — keeps only the first (most recent) entry per repo', () => {
-    const events = [
-      makePushEvent('user/repo-a', 'sha-1'),
-      makePushEvent('user/repo-a', 'sha-2'),
-    ];
-    const result = extractActivity(events);
+  it('skips empty repositories (listCommits 409)', async () => {
+    const client = makeMockClient(
+      [[makeRepo('user/repo-a'), makeRepo('user/empty')]],
+      { 'user/repo-a': 'sha-1', 'user/empty': null },
+    );
+    const result = await fetchRepoActivity(client, 'testuser');
     expect(result).toHaveLength(1);
-    expect(result[0]?.commit.sha).toBe('sha-1');
+    expect(result[0]?.repository.name).toBe('user/repo-a');
   });
 
-  it('returns multiple repositories when events span different repos', () => {
-    const events = [
-      makePushEvent('user/repo-a', 'sha-1'),
-      makePushEvent('user/repo-b', 'sha-2'),
-      makePushEvent('user/repo-c', 'sha-3'),
-    ];
-    const result = extractActivity(events);
-    expect(result).toHaveLength(3);
+  it('caps the result at the requested limit', async () => {
+    const repos = Array.from({ length: 8 }, (_, i) => makeRepo(`user/repo-${i}`));
+    const shas = Object.fromEntries(repos.map((r, i) => [r.full_name, `sha-${i}`]));
+    const client = makeMockClient([repos], shas);
+    const result = await fetchRepoActivity(client, 'testuser', 5);
+    expect(result).toHaveLength(5);
+  });
+
+  it('requests repos sorted by most-recently-pushed', async () => {
+    const client = makeMockClient([[makeRepo('user/repo-a')]], { 'user/repo-a': 'sha-1' });
+    await fetchRepoActivity(client, 'testuser');
+    expect(client.rest.repos.listForUser).toHaveBeenCalledWith(
+      expect.objectContaining({ username: 'testuser', sort: 'pushed', direction: 'desc' }),
+    );
   });
 });
 
@@ -144,7 +160,7 @@ describe('extractActivity', () => {
 
 describe('GET /api/github/activity', () => {
   it('returns Content-Type: text/event-stream', async () => {
-    const client = makeMockClient([{ data: [] }]);
+    const client = makeMockClient([[]], {});
     const app = createTestApp(client);
 
     const res = await app.request('/api/github/activity');
@@ -154,16 +170,10 @@ describe('GET /api/github/activity', () => {
     res.body?.cancel();
   });
 
-  it('sends an initial event with the 5 most recent repositories', async () => {
-    const events = [
-      makePushEvent('user/repo-1', 'sha-1'),
-      makePushEvent('user/repo-2', 'sha-2'),
-      makePushEvent('user/repo-3', 'sha-3'),
-      makePushEvent('user/repo-4', 'sha-4'),
-      makePushEvent('user/repo-5', 'sha-5'),
-      makePushEvent('user/repo-6', 'sha-6'), // should be excluded
-    ];
-    const client = makeMockClient([{ data: events }]);
+  it('sends an initial event with up to 5 repositories', async () => {
+    const repos = Array.from({ length: 6 }, (_, i) => makeRepo(`user/repo-${i}`));
+    const shas = Object.fromEntries(repos.map((r, i) => [r.full_name, `sha-${i}`]));
+    const client = makeMockClient([repos], shas);
     const app = createTestApp(client);
 
     const res = await app.request('/api/github/activity');
@@ -180,9 +190,11 @@ describe('GET /api/github/activity', () => {
     }
   });
 
-  it('sends an initial event with fewer items when fewer than 5 repos are found', async () => {
-    const events = [makePushEvent('user/repo-1', 'sha-1'), makePushEvent('user/repo-2', 'sha-2')];
-    const client = makeMockClient([{ data: events }]);
+  it('sends an initial event with fewer items when fewer than 5 repos exist', async () => {
+    const client = makeMockClient(
+      [[makeRepo('user/repo-1'), makeRepo('user/repo-2')]],
+      { 'user/repo-1': 'sha-1', 'user/repo-2': 'sha-2' },
+    );
     const app = createTestApp(client);
 
     const res = await app.request('/api/github/activity');
@@ -201,8 +213,11 @@ describe('GET /api/github/activity', () => {
   it('sends an error event when the GitHub client throws', async () => {
     const client: GithubClient = {
       rest: {
-        activity: {
-          listPublicEventsForUser: vi.fn().mockRejectedValue(new Error('network error')),
+        repos: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listForUser: vi.fn().mockRejectedValue(new Error('network error')) as any,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listCommits: vi.fn() as any,
         },
       },
     };
@@ -225,8 +240,11 @@ describe('GET /api/github/activity', () => {
     const rateLimitError = Object.assign(new Error('rate limited'), { status: 403 });
     const client: GithubClient = {
       rest: {
-        activity: {
-          listPublicEventsForUser: vi.fn().mockRejectedValue(rateLimitError),
+        repos: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listForUser: vi.fn().mockRejectedValue(rateLimitError) as any,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listCommits: vi.fn() as any,
         },
       },
     };
@@ -248,27 +266,25 @@ describe('GET /api/github/activity', () => {
   it('sends an update event when a new commit appears on poll', async () => {
     vi.useFakeTimers();
 
-    const initialEvents = [makePushEvent('user/repo-a', 'sha-1')];
-    const updatedEvents = [
-      makePushEvent('user/repo-a', 'sha-1'),
-      makePushEvent('user/repo-b', 'sha-2'),
-    ];
-
-    const client = makeMockClient([{ data: initialEvents }, { data: updatedEvents }]);
+    // Initial: repo-a at sha-1. Poll: repo-b pushed more recently at sha-2.
+    const client = makeMockClient(
+      [
+        [makeRepo('user/repo-a')],
+        [makeRepo('user/repo-b', '2024-02-01T00:00:00Z'), makeRepo('user/repo-a')],
+      ],
+      { 'user/repo-a': 'sha-1', 'user/repo-b': 'sha-2' },
+    );
     const app = createTestApp(client, { pollIntervalMs: 1000 });
 
     const res = await app.request('/api/github/activity');
     const reader = res.body!.getReader();
     const buffer = { current: '' };
 
-    // Grab the initial event (already buffered before any timers run)
     const initialEvent = await readNextSSEEvent(reader, buffer);
     expect(initialEvent!.type).toBe('initial');
 
-    // Advance time to trigger the poll, flushing any pending microtasks
     await vi.advanceTimersByTimeAsync(1000);
 
-    // Now read the update event
     const updateEvent = await readNextSSEEvent(reader, buffer);
     reader.cancel();
 
@@ -284,11 +300,7 @@ describe('GET /api/github/activity', () => {
   it('does not send an update event when poll returns no new commits', async () => {
     vi.useFakeTimers();
 
-    const events = [makePushEvent('user/repo-a', 'sha-1')];
-    const mockFn = vi.fn().mockResolvedValue({ data: events });
-    const client: GithubClient = {
-      rest: { activity: { listPublicEventsForUser: mockFn } },
-    };
+    const client = makeMockClient([[makeRepo('user/repo-a')]], { 'user/repo-a': 'sha-1' });
     const app = createTestApp(client, { pollIntervalMs: 500 });
 
     const res = await app.request('/api/github/activity');
@@ -297,14 +309,11 @@ describe('GET /api/github/activity', () => {
 
     const initialEvent = await readNextSSEEvent(reader, buffer);
     expect(initialEvent!.type).toBe('initial');
-    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(client.rest.repos.listForUser).toHaveBeenCalledTimes(1);
 
-    // Advance past the poll interval — the loop fetches again but finds no new SHAs
     await vi.advanceTimersByTimeAsync(500);
 
-    // The client was called a second time for the poll
-    expect(mockFn).toHaveBeenCalledTimes(2);
-    // No extra data was written (buffer still empty after consuming the initial event)
+    expect(client.rest.repos.listForUser).toHaveBeenCalledTimes(2);
     expect(buffer.current).toBe('');
 
     reader.cancel();
@@ -314,14 +323,17 @@ describe('GET /api/github/activity', () => {
   it('sends an error event and stops polling when poll throws', async () => {
     vi.useFakeTimers();
 
-    const initialEvents = [makePushEvent('user/repo-a', 'sha-1')];
+    const listForUser = vi
+      .fn()
+      .mockResolvedValueOnce({ data: [makeRepo('user/repo-a')] })
+      .mockRejectedValue(new Error('poll failed'));
     const client: GithubClient = {
       rest: {
-        activity: {
-          listPublicEventsForUser: vi
-            .fn()
-            .mockResolvedValueOnce({ data: initialEvents })
-            .mockRejectedValue(new Error('poll failed')),
+        repos: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listForUser: listForUser as any,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listCommits: vi.fn(async () => ({ data: [makeCommit('sha-1')] })) as any,
         },
       },
     };
