@@ -39,12 +39,13 @@ export async function fetchRepoActivity(
 ): Promise<GithubActivityData[]> {
   // Fetch a few extra repos as headroom: some may be empty (no commits) and
   // get skipped below, and we still want to fill `limit` slots when possible.
+  // type: 'all' ensures forked repositories are included alongside owned ones.
   const { data: repos } = await client.rest.repos.listForUser({
     username,
     sort: 'pushed',
     direction: 'desc',
     per_page: limit + 3,
-    type: 'owner',
+    type: 'all',
   });
 
   const activity = await Promise.all(

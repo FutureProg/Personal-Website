@@ -6,7 +6,7 @@ import type { GithubClient, GithubActivityConfig } from './githubActivity.js';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
-function makeRepo(fullName: string, pushedAt = '2024-01-01T00:00:00Z') {
+function makeRepo(fullName: string, pushedAt = '2024-01-01T00:00:00Z', fork = false) {
   const [owner, name] = fullName.split('/');
   return {
     name,
@@ -14,6 +14,7 @@ function makeRepo(fullName: string, pushedAt = '2024-01-01T00:00:00Z') {
     html_url: `https://github.com/${fullName}`,
     owner: { login: owner },
     pushed_at: pushedAt,
+    fork,
   };
 }
 
@@ -147,12 +148,22 @@ describe('fetchRepoActivity', () => {
     expect(result).toHaveLength(5);
   });
 
-  it('requests repos sorted by most-recently-pushed', async () => {
+  it('requests repos sorted by most-recently-pushed and includes forks', async () => {
     const client = makeMockClient([[makeRepo('user/repo-a')]], { 'user/repo-a': 'sha-1' });
     await fetchRepoActivity(client, 'testuser');
     expect(client.rest.repos.listForUser).toHaveBeenCalledWith(
-      expect.objectContaining({ username: 'testuser', sort: 'pushed', direction: 'desc' }),
+      expect.objectContaining({ username: 'testuser', sort: 'pushed', direction: 'desc', type: 'all' }),
     );
+  });
+
+  it('includes forked repositories in results', async () => {
+    const client = makeMockClient(
+      [[makeRepo('user/repo-a', '2024-05-01T00:00:00Z'), makeRepo('upstream/repo-b', '2024-06-01T00:00:00Z', true)]],
+      { 'user/repo-a': 'sha-1', 'upstream/repo-b': 'sha-2' },
+    );
+    const result = await fetchRepoActivity(client, 'testuser');
+    expect(result).toHaveLength(2);
+    expect(result.map((r) => r.repository.name)).toContain('upstream/repo-b');
   });
 });
 
