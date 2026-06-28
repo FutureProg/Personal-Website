@@ -47,3 +47,4 @@ export const Error: Story = {
         expect(canvas.getByText('ERROR')).toBeInTheDocument();
     },
 };
+
