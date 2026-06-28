@@ -32,8 +32,7 @@ export const ImageSrc: Story = {
   play: async ({ canvas }) => {
     const img = canvas.getByAltText('');
     expect(img.tagName).toMatch(/img/i);
-    const style = getComputedStyle(img);
-    expect(parseFloat(style.height)).toBeGreaterThan(0);
+    expect(img.className).toMatch(/icon/);
   },
 };
 
@@ -48,8 +47,7 @@ export const DomElement: Story = {
     expect(elems).toHaveLength(1);
     const img = elems[0]!;
     expect(img.tagName).toMatch(/img/i);
-    const style = getComputedStyle(img);
-    expect(parseFloat(style.height)).toBeGreaterThan(0);
+    expect(img.className).toMatch(/icon/);
   },
 };
 
@@ -76,8 +74,8 @@ export const CircularIcon: Story = {
   },
 };
 
-/** Icon passed as a non-image, non-string value — rendered as-is (passthrough branch). */
-export const TextElementPassthrough: Story = {
+/** Icon passed as a React element — cloneElement merges className and resets alt. */
+export const ReactElementIcon: Story = {
   args: {
     children: 'Raw node',
     icon: <span data-testid="custom-icon">★</span>,

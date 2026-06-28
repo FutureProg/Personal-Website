@@ -66,6 +66,8 @@ export const WithLinkExpanded: Story = {
         const link = canvas.getByRole('link', { name: /Safe Streets Halton/i });
         expect(link.className).toMatch(/expanded/);
         expect(link).toHaveAttribute('href', 'https://safestreetshalton.ca');
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer');
         expect(canvas.getByText('→')).toBeInTheDocument();
     },
 };

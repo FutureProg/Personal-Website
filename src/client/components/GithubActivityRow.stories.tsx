@@ -58,6 +58,7 @@ export const RecentCommit: Story = {
         const commitLink = canvas.getByRole('link', { name: 'a1b2c3d' });
         expect(commitLink).toBeInTheDocument();
         expect(commitLink).toHaveAttribute('target', '_blank');
+        expect(commitLink).toHaveAttribute('rel', 'noopener noreferrer');
 
         const timeEl = canvasElement.querySelector('time');
         expect(timeEl).toBeInTheDocument();
