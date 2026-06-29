@@ -8,7 +8,7 @@ import React, { useState } from "react";
 const sampleFeed = Array.from({ length: 5 }).map((_, index) => {
     const repoName = "FutureProg/repository-name" +
         (index > 0 ? "-" + (index + 1) : "");
-    const commitSha = crypto.randomUUID().replace(/-/g, "").slice(0, 40);
+    const commitSha = "e7071f4";
     return {
         repository: {
             name: repoName,
