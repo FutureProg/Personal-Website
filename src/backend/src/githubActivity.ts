@@ -5,8 +5,9 @@ import type { Octokit } from '@octokit/rest';
 
 export interface GithubClient {
   rest: {
-    activity: {
-      listPublicEventsForUser: Octokit['rest']['activity']['listPublicEventsForUser'];
+    repos: {
+      listForUser: Octokit['rest']['repos']['listForUser'];
+      listCommits: Octokit['rest']['repos']['listCommits'];
     };
   };
 }
@@ -17,56 +18,67 @@ export interface GithubActivityConfig {
   pollIntervalMs: number;
 }
 
-type PushPayload = {
-  head?: string;
-  before?: string;
-  ref?: string;
-};
+/** Number of repositories surfaced by the activity stream. */
+const REPO_LIMIT = 5;
 
-type RawEvent = {
-  type: string | null;
-  id: string;
-  repo: { name: string; url: string, id: number };
-  payload: unknown;
-  created_at: string | null;
-};
+/**
+ * Builds the activity list from the user's most-recently-pushed repositories.
+ */
+export async function fetchRepoActivity(
+  client: GithubClient,
+  username: string,
+  limit: number = REPO_LIMIT,
+): Promise<GithubActivityData[]> {
+  const { data: repos } = await client.rest.repos.listForUser({
+    username,
+    sort: 'pushed',
+    direction: 'desc',
+    per_page: limit,
+    type: 'owner',
+  });
 
-export function extractActivity(events: RawEvent[]): GithubActivityData[] {
-  const byRepo = new Map<number, GithubActivityData>();
+  const activity = await Promise.all(
+    repos.map(async (repo): Promise<GithubActivityData | null> => {
+      let commit;
+      try {
+        const { data: commits } = await client.rest.repos.listCommits({          
+          owner: repo.owner.login,
+          repo: repo.name,
+          author: username,
+          per_page: 1,
+        });
+        commit = commits[0];
+      } catch (err) {
+        if ((err as { status?: number }).status !== 409) {
+          console.debug(`Skipping ${repo.full_name}:`, err);
+        }
+        return null;
+      }
+      if (!commit) return null;
 
-  for (const event of events) {
-    if (event.type !== 'PushEvent') continue;    
-    const fullRepoName = event.repo.name;
-    if (byRepo.has(event.repo.id)) continue;
+      return {
+        repository: {
+          name: repo.full_name,
+          url: repo.html_url,
+        },
+        commit: {
+          sha: commit.sha,
+          message: commit.commit.message,
+          url: commit.html_url,
+        },
+        timestamp: repo.pushed_at ?? commit.commit.author?.date ?? new Date().toISOString(),
+      };
+    }),
+  );
 
-    const payload = event.payload as PushPayload;
-    const sha = payload.head;
-    if (!sha) continue;
-    
-    byRepo.set(event.repo.id, {
-      repository: {
-        name: fullRepoName,
-        url: `https://github.com/${fullRepoName}`,
-      },
-      commit: {
-        sha,
-        message: "", // GitHub API doesn't include commit message in PushEvent payload, would need extra API call to fetch it
-        url: `https://github.com/${fullRepoName}/commit/${sha}`,
-      },
-      timestamp: event.created_at ?? new Date().toISOString(),
-    });
-  }
-
-  return Array.from(byRepo.values());
+  return activity.filter((item): item is GithubActivityData => item !== null);
 }
 
 function isRateLimitError(err: unknown): boolean {
-  return (
-    typeof err === 'object' &&
-    err !== null &&
-    'status' in err &&
-    (err as { status: number }).status === 403
-  );
+  if (typeof err !== 'object' || err === null || !('status' in err)) return false;
+  const status = (err as { status: number }).status;
+  // 403 = primary rate limit; 429 = secondary (burst/concurrency) rate limit.
+  return status === 403 || status === 429;
 }
 
 export function registerGithubActivityRoute(app: Hono, config: GithubActivityConfig): void {
@@ -82,13 +94,8 @@ export function registerGithubActivityRoute(app: Hono, config: GithubActivityCon
       // Initial fetch
       let initialData: GithubActivityData[];
       try {
-        const {data: events} = await config.client.rest.activity.listPublicEventsForUser({
-          username: config.username,
-          per_page: 100,
-        });
-        console.log(`Fetched ${events.length} events for user ${config.username}`);        
-        const allActivity = extractActivity(events);
-        initialData = allActivity.slice(0, 5);
+        initialData = await fetchRepoActivity(config.client, config.username);
+        console.log(`Fetched ${initialData.length} repositories for user ${config.username}`);
         for (const item of initialData) {
           knownShas.add(item.commit.sha);
         }
@@ -116,12 +123,7 @@ export function registerGithubActivityRoute(app: Hono, config: GithubActivityCon
         if (aborted) break;
 
         try {
-          const {data: events} = await config.client.rest.activity.listPublicEventsForUser({
-            username: config.username,
-            per_page: 100,
-          });          
-
-          const allActivity = extractActivity(events);
+          const allActivity = await fetchRepoActivity(config.client, config.username);
 
           for (const item of allActivity) {
             if (!knownShas.has(item.commit.sha)) {

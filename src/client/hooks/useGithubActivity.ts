@@ -39,12 +39,21 @@ export const useGithubActivity: (options?: { wrapUpdate?: (update: () => void) =
                     setActivity(payload.data);
                 } else if (payload.type === "update") {
                     const applyUpdate = () => {
-                        setActivity((prev) => [
-                            payload.data,
-                            ...prev.filter((item) =>
-                                item.repository.url !== payload.data.repository.url
-                            ),
-                        ].slice(0, 5));
+                        setActivity((prev) =>
+                            [
+                                payload.data,
+                                ...prev.filter((item) =>
+                                    item.repository.url !== payload.data.repository.url
+                                ),
+                            ]
+                                // Order by push time rather than arrival order: a single poll
+                                // can emit several updates in one tick (newest-first), and naive
+                                // prepending would leave the oldest of that batch on top.
+                                .sort((a, b) =>
+                                    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+                                )
+                                .slice(0, 5)
+                        );
                     };
                     if (options?.wrapUpdate) {
                         options.wrapUpdate(applyUpdate);
