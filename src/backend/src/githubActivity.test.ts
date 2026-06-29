@@ -56,7 +56,7 @@ function makeMockClient(
           }
           return { data: [makeCommit(sha)] } as any;
         }),
-      },
+      } as any,
     },
   };
 }
@@ -152,7 +152,7 @@ describe('fetchRepoActivity', () => {
     const client = makeMockClient([[makeRepo('user/repo-a')]], { 'user/repo-a': 'sha-1' });
     await fetchRepoActivity(client, 'testuser');
     expect(client.rest.repos.listForUser).toHaveBeenCalledWith(
-      expect.objectContaining({ username: 'testuser', sort: 'pushed', direction: 'desc', type: 'all' }),
+      expect.objectContaining({ username: 'testuser', sort: 'pushed', direction: 'desc', type: 'owner' }),
     );
   });
 

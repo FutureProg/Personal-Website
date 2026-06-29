@@ -20,43 +20,31 @@ export interface GithubActivityConfig {
 
 /** Number of repositories surfaced by the activity stream. */
 const REPO_LIMIT = 5;
-/** Extra slots fetched beyond the limit to account for empty/inaccessible repos. */
-const REPO_FETCH_HEADROOM = 3;
 
 /**
  * Builds the activity list from the user's most-recently-pushed repositories.
- *
- * The previous implementation read the public *events* feed and counted only
- * `PushEvent`s, deduped by repo. For a focused contributor whose recent pushes
- * cluster into a handful of repos, that feed contains fewer than 5 distinct
- * repositories — so the stream listed fewer than 5 no matter what. Listing
- * repositories sorted by `pushed` reliably yields up to `limit` repos, and the
- * per-repo commit lookup lets us include the real commit message (the events
- * payload never carried it).
  */
 export async function fetchRepoActivity(
   client: GithubClient,
   username: string,
   limit: number = REPO_LIMIT,
 ): Promise<GithubActivityData[]> {
-  // Fetch a few extra repos as headroom: some may be empty (no commits) and
-  // get skipped below, and we still want to fill `limit` slots when possible.
-  // type: 'all' ensures forked repositories are included alongside owned ones.
   const { data: repos } = await client.rest.repos.listForUser({
     username,
     sort: 'pushed',
     direction: 'desc',
-    per_page: limit + REPO_FETCH_HEADROOM,
-    type: 'all',
+    per_page: limit,
+    type: 'owner',
   });
 
   const activity = await Promise.all(
     repos.map(async (repo): Promise<GithubActivityData | null> => {
       let commit;
       try {
-        const { data: commits } = await client.rest.repos.listCommits({
+        const { data: commits } = await client.rest.repos.listCommits({          
           owner: repo.owner.login,
           repo: repo.name,
+          author: username,
           per_page: 1,
         });
         commit = commits[0];
@@ -83,7 +71,7 @@ export async function fetchRepoActivity(
     }),
   );
 
-  return activity.filter((item): item is GithubActivityData => item !== null).slice(0, limit);
+  return activity.filter((item): item is GithubActivityData => item !== null);
 }
 
 function isRateLimitError(err: unknown): boolean {
