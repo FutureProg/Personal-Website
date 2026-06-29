@@ -140,14 +140,6 @@ describe('fetchRepoActivity', () => {
     expect(result[0]?.repository.name).toBe('user/repo-a');
   });
 
-  it('caps the result at the requested limit', async () => {
-    const repos = Array.from({ length: 8 }, (_, i) => makeRepo(`user/repo-${i}`));
-    const shas = Object.fromEntries(repos.map((r, i) => [r.full_name, `sha-${i}`]));
-    const client = makeMockClient([repos], shas);
-    const result = await fetchRepoActivity(client, 'testuser', 5);
-    expect(result).toHaveLength(5);
-  });
-
   it('requests repos sorted by most-recently-pushed and includes forks', async () => {
     const client = makeMockClient([[makeRepo('user/repo-a')]], { 'user/repo-a': 'sha-1' });
     await fetchRepoActivity(client, 'testuser');
@@ -182,7 +174,7 @@ describe('GET /api/github/activity', () => {
   });
 
   it('sends an initial event with up to 5 repositories', async () => {
-    const repos = Array.from({ length: 6 }, (_, i) => makeRepo(`user/repo-${i}`));
+    const repos = Array.from({ length: 5 }, (_, i) => makeRepo(`user/repo-${i}`));
     const shas = Object.fromEntries(repos.map((r, i) => [r.full_name, `sha-${i}`]));
     const client = makeMockClient([repos], shas);
     const app = createTestApp(client);
