@@ -1,8 +1,14 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Hono } from 'hono';
 import { fetchRepoActivity, registerGithubActivityRoute } from './githubActivity.js';
+import { resetPoller } from './githubPoller.js';
 import type { GithubActivityEvent } from '@site/common/GithubActivityEvent';
 import type { GithubClient, GithubActivityConfig } from './githubActivity.js';
+
+// The poller is a process-wide singleton; reset its state between tests.
+beforeEach(() => {
+  resetPoller();
+});
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
