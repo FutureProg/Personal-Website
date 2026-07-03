@@ -20,7 +20,7 @@ export function createApp(options?: { githubActivity?: GithubActivityConfig }) {
   const githubConfig: GithubActivityConfig = options?.githubActivity ?? {
     client: new Octokit({ auth: process.env.GITHUB_TOKEN }),
     username: process.env.GITHUB_USERNAME ?? '',
-    pollIntervalMs: Number(process.env.GITHUB_POLL_INTERVAL_MS) || 60_000,
+    pollIntervalMs: Number(process.env.GITHUB_POLL_INTERVAL_MS) || 30_000,
   };
 
   registerGithubActivityRoute(app, githubConfig);

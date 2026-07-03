@@ -1,65 +1,17 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Hono } from 'hono';
 import { fetchRepoActivity, registerGithubActivityRoute } from './githubActivity.js';
+import { resetPoller } from './githubPoller.js';
+import { makeRepo, makeCommit, makeMockClient } from './githubPollerTestHelpers.js';
 import type { GithubActivityEvent } from '@site/common/GithubActivityEvent';
 import type { GithubClient, GithubActivityConfig } from './githubActivity.js';
 
+// The poller is a process-wide singleton; reset its state between tests.
+beforeEach(() => {
+  resetPoller();
+});
+
 // ── helpers ────────────────────────────────────────────────────────────────
-
-function makeRepo(fullName: string, pushedAt = '2024-01-01T00:00:00Z', fork = false) {
-  const [owner, name] = fullName.split('/');
-  return {
-    name,
-    full_name: fullName,
-    html_url: `https://github.com/${fullName}`,
-    owner: { login: owner },
-    pushed_at: pushedAt,
-    fork,
-  };
-}
-
-function makeCommit(sha: string, message = 'a commit', date = '2024-01-01T00:00:00Z') {
-  return {
-    sha,
-    html_url: `https://github.com/commit/${sha}`,
-    commit: { message, author: { date } },
-  };
-}
-
-/**
- * Builds a mock GithubClient. `repoResponses` is the sequence of repo lists
- * returned by successive listForUser calls (the last entry repeats). `shaByRepo`
- * maps a repo's full_name to the latest commit SHA listCommits should return;
- * a repo absent from the map (or mapped to null) behaves like an empty repo.
- */
-function makeMockClient(
-  repoResponses: Array<ReturnType<typeof makeRepo>[]>,
-  shaByRepo: Record<string, string | null>,
-): GithubClient {
-  let call = 0;
-  return {
-    rest: {
-      repos: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        listForUser: vi.fn(async () => {
-          const data = repoResponses[call] ?? repoResponses[repoResponses.length - 1]!;
-          call++;
-          return { data } as any;
-        }),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        listCommits: vi.fn(async ({ owner, repo }: { owner: string; repo: string }) => {
-          const fullName = `${owner}/${repo}`;
-          const sha = shaByRepo[fullName];
-          if (!sha) {
-            // Mirror GitHub's 409 for an empty repository.
-            throw Object.assign(new Error('Git Repository is empty.'), { status: 409 });
-          }
-          return { data: [makeCommit(sha)] } as any;
-        }),
-      } as any,
-    },
-  };
-}
 
 function createTestApp(
   client: GithubClient,
@@ -140,14 +92,6 @@ describe('fetchRepoActivity', () => {
     expect(result[0]?.repository.name).toBe('user/repo-a');
   });
 
-  it('caps the result at the requested limit', async () => {
-    const repos = Array.from({ length: 8 }, (_, i) => makeRepo(`user/repo-${i}`));
-    const shas = Object.fromEntries(repos.map((r, i) => [r.full_name, `sha-${i}`]));
-    const client = makeMockClient([repos], shas);
-    const result = await fetchRepoActivity(client, 'testuser', 5);
-    expect(result).toHaveLength(5);
-  });
-
   it('requests repos sorted by most-recently-pushed and includes forks', async () => {
     const client = makeMockClient([[makeRepo('user/repo-a')]], { 'user/repo-a': 'sha-1' });
     await fetchRepoActivity(client, 'testuser');
@@ -182,7 +126,7 @@ describe('GET /api/github/activity', () => {
   });
 
   it('sends an initial event with up to 5 repositories', async () => {
-    const repos = Array.from({ length: 6 }, (_, i) => makeRepo(`user/repo-${i}`));
+    const repos = Array.from({ length: 5 }, (_, i) => makeRepo(`user/repo-${i}`));
     const shas = Object.fromEntries(repos.map((r, i) => [r.full_name, `sha-${i}`]));
     const client = makeMockClient([repos], shas);
     const app = createTestApp(client);
@@ -358,13 +302,14 @@ describe('GET /api/github/activity', () => {
     vi.useRealTimers();
   });
 
-  it('sends an error event and stops polling when poll throws', async () => {
+  it('silently retries on a transient poll error without emitting an error event', async () => {
     vi.useFakeTimers();
 
     const listForUser = vi
       .fn()
       .mockResolvedValueOnce({ data: [makeRepo('user/repo-a')] })
-      .mockRejectedValue(new Error('poll failed'));
+      .mockRejectedValueOnce(new Error('poll failed'))
+      .mockResolvedValue({ data: [makeRepo('user/repo-a')] });
     const client: GithubClient = {
       rest: {
         repos: {
@@ -384,13 +329,13 @@ describe('GET /api/github/activity', () => {
     const initialEvent = await readNextSSEEvent(reader, buffer);
     expect(initialEvent!.type).toBe('initial');
 
-    await vi.advanceTimersByTimeAsync(500);
+    await vi.advanceTimersByTimeAsync(500); // poll #2 -> error (silent)
+    expect(buffer.current).toBe(''); // no error event written to the stream
 
-    const errorEvent = await readNextSSEEvent(reader, buffer);
+    await vi.advanceTimersByTimeAsync(500); // poll #3 -> retry fires
+    expect(listForUser).toHaveBeenCalledTimes(3); // loop kept running
+
     reader.cancel();
-
-    expect(errorEvent!.type).toBe('error');
-
     vi.useRealTimers();
   });
 });

@@ -35,3 +35,6 @@ storybook-static
 .design-sync/node_modules
 .ds-sync/
 ds-bundle/
+
+# opencode agent workspace
+.opencode/
