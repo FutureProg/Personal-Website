@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Hono } from 'hono';
 import { fetchRepoActivity, registerGithubActivityRoute } from './githubActivity.js';
 import { resetPoller } from './githubPoller.js';
+import { makeRepo, makeCommit, makeMockClient } from './githubPollerTestHelpers.js';
 import type { GithubActivityEvent } from '@site/common/GithubActivityEvent';
 import type { GithubClient, GithubActivityConfig } from './githubActivity.js';
 
@@ -11,61 +12,6 @@ beforeEach(() => {
 });
 
 // ── helpers ────────────────────────────────────────────────────────────────
-
-function makeRepo(fullName: string, pushedAt = '2024-01-01T00:00:00Z', fork = false) {
-  const [owner, name] = fullName.split('/');
-  return {
-    name,
-    full_name: fullName,
-    html_url: `https://github.com/${fullName}`,
-    owner: { login: owner },
-    pushed_at: pushedAt,
-    fork,
-  };
-}
-
-function makeCommit(sha: string, message = 'a commit', date = '2024-01-01T00:00:00Z') {
-  return {
-    sha,
-    html_url: `https://github.com/commit/${sha}`,
-    commit: { message, author: { date } },
-  };
-}
-
-/**
- * Builds a mock GithubClient. `repoResponses` is the sequence of repo lists
- * returned by successive listForUser calls (the last entry repeats). `shaByRepo`
- * maps a repo's full_name to the latest commit SHA listCommits should return;
- * a repo absent from the map (or mapped to null) behaves like an empty repo.
- */
-function makeMockClient(
-  repoResponses: Array<ReturnType<typeof makeRepo>[]>,
-  shaByRepo: Record<string, string | null>,
-): GithubClient {
-  let call = 0;
-  return {
-    rest: {
-      repos: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        listForUser: vi.fn(async () => {
-          const data = repoResponses[call] ?? repoResponses[repoResponses.length - 1]!;
-          call++;
-          return { data } as any;
-        }),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        listCommits: vi.fn(async ({ owner, repo }: { owner: string; repo: string }) => {
-          const fullName = `${owner}/${repo}`;
-          const sha = shaByRepo[fullName];
-          if (!sha) {
-            // Mirror GitHub's 409 for an empty repository.
-            throw Object.assign(new Error('Git Repository is empty.'), { status: 409 });
-          }
-          return { data: [makeCommit(sha)] } as any;
-        }),
-      } as any,
-    },
-  };
-}
 
 function createTestApp(
   client: GithubClient,

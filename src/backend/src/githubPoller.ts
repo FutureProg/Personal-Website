@@ -16,7 +16,10 @@ import { fetchRepoActivity } from './githubActivity.js';
 
 const subscribers = new Set<SSEStreamingApi>();
 let pollTimer: ReturnType<typeof setTimeout> | null = null;
-let polling = false;
+// True while a bootstrap()/poll() fetch is awaiting the GitHub client. Tracked
+// separately from `pollTimer` so a resubscribe during an in-flight fetch can't
+// race a second concurrent fetch/timer chain (see stopPolling()).
+let inFlight = false;
 const knownShas = new Set<string>();
 let lastKnownData: GithubActivityData[] | null = null;
 let pollError: Error | null = null;
@@ -98,9 +101,13 @@ export function subscribeToPoller(
   };
 }
 
+/** True while the loop is running or a fetch it kicked off is still pending. */
+function isPollingActive(): boolean {
+  return pollTimer !== null || inFlight;
+}
+
 function startPolling(config: GithubActivityConfig): void {
-  if (polling) return;
-  polling = true;
+  if (isPollingActive()) return;
 
   if (lastKnownData === null) {
     // Cold start: fetch once and broadcast it as the `initial` snapshot.
@@ -116,7 +123,10 @@ function stopPolling(): void {
     clearTimeout(pollTimer);
     pollTimer = null;
   }
-  polling = false;
+  // An in-flight fetch is not cancelled here — it re-checks subscribers.size
+  // once it resolves and stops itself if nobody is left. `isPollingActive()`
+  // still reports true while `inFlight`, so a resubscribe that races an
+  // in-flight fetch reuses it instead of starting a second concurrent one.
 }
 
 function scheduleNextPoll(config: GithubActivityConfig): void {
@@ -127,13 +137,12 @@ function scheduleNextPoll(config: GithubActivityConfig): void {
 
 /** First fetch after a cold start: populates the cache and emits `initial`. */
 async function bootstrap(config: GithubActivityConfig): Promise<void> {
+  inFlight = true;
+  let data: GithubActivityData[];
   try {
-    const data = await fetchRepoActivity(config.client, config.username);
-    lastKnownData = data;
-    pollError = null;
-    for (const item of data) knownShas.add(item.commit.sha);
-    broadcast({ type: 'initial', data });
+    data = await fetchRepoActivity(config.client, config.username);
   } catch (err) {
+    inFlight = false;
     pollError = err as Error;
     // No cached data to fall back on; clients must be told.
     broadcast(errorEvent(err));
@@ -142,15 +151,16 @@ async function bootstrap(config: GithubActivityConfig): Promise<void> {
       const delay = isRateLimitError(err)
         ? getRateLimitResetDelay(err, config.pollIntervalMs)
         : config.pollIntervalMs;
-      polling = true;
       pollTimer = setTimeout(() => void bootstrap(config), delay);
-    } else {
-      polling = false;
     }
     return;
   }
+  inFlight = false;
+  lastKnownData = data;
+  pollError = null;
+  for (const item of data) knownShas.add(item.commit.sha);
+  broadcast({ type: 'initial', data });
   if (subscribers.size > 0) scheduleNextPoll(config);
-  else stopPolling();
 }
 
 /** One steady-state poll: diff against known SHAs and fan out new commits. */
@@ -161,10 +171,12 @@ async function poll(config: GithubActivityConfig): Promise<void> {
     return;
   }
 
+  inFlight = true;
   let data: GithubActivityData[];
   try {
     data = await fetchRepoActivity(config.client, config.username);
   } catch (err) {
+    inFlight = false;
     pollError = err as Error;
     // If a cached snapshot exists, serve it silently — clients already have
     // the last-known data and don't need to see transient failures.
@@ -175,13 +187,13 @@ async function poll(config: GithubActivityConfig): Promise<void> {
       const delay = isRateLimitError(err)
         ? getRateLimitResetDelay(err, config.pollIntervalMs)
         : config.pollIntervalMs;
-      polling = true;
       pollTimer = setTimeout(() => void poll(config), delay);
     } else {
       stopPolling();
     }
     return;
   }
+  inFlight = false;
 
   // Re-check: a slow fetch may have outlived the last subscriber.
   if (subscribers.size === 0) {
@@ -214,6 +226,7 @@ export function getSnapshot(): {
 /** Resets all module state. Intended for test isolation. */
 export function resetPoller(): void {
   stopPolling();
+  inFlight = false;
   subscribers.clear();
   knownShas.clear();
   lastKnownData = null;

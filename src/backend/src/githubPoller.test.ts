@@ -145,6 +145,44 @@ describe('githubPoller (unit)', () => {
     expect(a.events.filter((e) => e.type === 'update')).toHaveLength(0);
   });
 
+  it('does not start a second concurrent fetch when the last subscriber leaves and a new one joins during an in-flight bootstrap', async () => {
+    vi.useFakeTimers();
+    const pending = deferred<{ data: ReturnType<typeof makeRepo>[] }>();
+    const listForUser = vi.fn(async () => pending.promise);
+    const client: GithubClient = {
+      rest: {
+        repos: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listForUser: listForUser as any,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listCommits: vi.fn(async () => ({ data: [makeCommit('sha-1')] })) as any,
+        },
+      },
+    };
+    const config = makeConfig(client, 500);
+
+    const a = makeFakeStream();
+    const unsubscribeA = subscribeToPoller(config, a.stream);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(listForUser).toHaveBeenCalledTimes(1); // bootstrap fetch in flight
+
+    unsubscribeA(); // last subscriber leaves mid-fetch
+
+    const b = makeFakeStream();
+    const unsubscribeB = subscribeToPoller(config, b.stream); // resubscribe before it resolves
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(listForUser).toHaveBeenCalledTimes(1); // must NOT start a second concurrent fetch
+
+    pending.resolve({ data: [makeRepo('user/repo-a')] });
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(listForUser).toHaveBeenCalledTimes(1); // still just the one fetch
+    expect(b.events.filter((e) => e.type === 'initial')).toHaveLength(1); // no duplicate broadcast
+
+    unsubscribeB();
+  });
+
   it('backs off using the x-ratelimit-reset header on a 403, not the poll interval', async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2024-01-01T00:00:00Z'));
