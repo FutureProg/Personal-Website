@@ -30,13 +30,19 @@ function isRateLimitError(err: unknown): boolean {
   return status === 403 || status === 429;
 }
 
-/** Milliseconds to wait before retrying, derived from GitHub's reset header. */
+/** Milliseconds to wait before retrying, derived from GitHub's reset headers. */
 function getRateLimitResetDelay(err: unknown, fallbackMs: number): number {
   const headers = (err as { response?: { headers?: Record<string, string> } }).response?.headers;
+  // 403 primary rate limit: x-ratelimit-reset is a Unix epoch (seconds).
   const reset = headers?.['x-ratelimit-reset'];
   if (reset) {
     const resetMs = parseInt(reset, 10) * 1000;
     return Math.max(0, resetMs - Date.now());
+  }
+  // 429 secondary rate limit: Retry-After is a delay in seconds.
+  const retryAfter = headers?.['retry-after'];
+  if (retryAfter) {
+    return Math.max(0, parseInt(retryAfter, 10) * 1000);
   }
   return fallbackMs;
 }
@@ -92,7 +98,7 @@ export function subscribeToPoller(
   };
 }
 
-export function startPolling(config: GithubActivityConfig): void {
+function startPolling(config: GithubActivityConfig): void {
   if (polling) return;
   polling = true;
 
@@ -105,7 +111,7 @@ export function startPolling(config: GithubActivityConfig): void {
   }
 }
 
-export function stopPolling(): void {
+function stopPolling(): void {
   if (pollTimer) {
     clearTimeout(pollTimer);
     pollTimer = null;
@@ -129,9 +135,18 @@ async function bootstrap(config: GithubActivityConfig): Promise<void> {
     broadcast({ type: 'initial', data });
   } catch (err) {
     pollError = err as Error;
+    // No cached data to fall back on; clients must be told.
     broadcast(errorEvent(err));
-    // Failed to start; allow a later connection to retry from scratch.
-    polling = false;
+    // Schedule a retry so existing connections recover automatically.
+    if (subscribers.size > 0) {
+      const delay = isRateLimitError(err)
+        ? getRateLimitResetDelay(err, config.pollIntervalMs)
+        : config.pollIntervalMs;
+      polling = true;
+      pollTimer = setTimeout(() => void bootstrap(config), delay);
+    } else {
+      polling = false;
+    }
     return;
   }
   if (subscribers.size > 0) scheduleNextPoll(config);
@@ -151,15 +166,17 @@ async function poll(config: GithubActivityConfig): Promise<void> {
     data = await fetchRepoActivity(config.client, config.username);
   } catch (err) {
     pollError = err as Error;
-    broadcast(errorEvent(err));
-    // Stop the loop on error; a fresh connection restarts it. Rate-limit resets
-    // are honoured if the loop is still wanted.
-    if (isRateLimitError(err) && subscribers.size > 0) {
+    // If a cached snapshot exists, serve it silently — clients already have
+    // the last-known data and don't need to see transient failures.
+    if (lastKnownData === null) {
+      broadcast(errorEvent(err));
+    }
+    if (subscribers.size > 0) {
+      const delay = isRateLimitError(err)
+        ? getRateLimitResetDelay(err, config.pollIntervalMs)
+        : config.pollIntervalMs;
       polling = true;
-      pollTimer = setTimeout(
-        () => void poll(config),
-        getRateLimitResetDelay(err, config.pollIntervalMs),
-      );
+      pollTimer = setTimeout(() => void poll(config), delay);
     } else {
       stopPolling();
     }
@@ -190,7 +207,8 @@ export function getSnapshot(): {
   shas: Set<string>;
   error: Error | null;
 } {
-  return { data: lastKnownData, shas: knownShas, error: pollError };
+  // Return a copy of knownShas so callers can't mutate internal state.
+  return { data: lastKnownData, shas: new Set(knownShas), error: pollError };
 }
 
 /** Resets all module state. Intended for test isolation. */

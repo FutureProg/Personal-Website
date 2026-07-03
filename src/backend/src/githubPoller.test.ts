@@ -1,51 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { SSEStreamingApi } from 'hono/streaming';
 import { subscribeToPoller, getSnapshot, resetPoller } from './githubPoller.js';
+import { makeRepo, makeCommit, makeMockClient } from './githubPollerTestHelpers.js';
 import type { GithubClient, GithubActivityConfig } from './githubActivity.js';
 import type { GithubActivityEvent } from '@site/common/GithubActivityEvent';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
-
-function makeRepo(fullName: string, pushedAt = '2024-01-01T00:00:00Z') {
-  const [owner, name] = fullName.split('/');
-  return {
-    name,
-    full_name: fullName,
-    html_url: `https://github.com/${fullName}`,
-    owner: { login: owner },
-    pushed_at: pushedAt,
-    fork: false,
-  };
-}
-
-function makeCommit(sha: string, message = 'a commit', date = '2024-01-01T00:00:00Z') {
-  return { sha, html_url: `https://github.com/commit/${sha}`, commit: { message, author: { date } } };
-}
-
-function makeMockClient(
-  repoResponses: Array<ReturnType<typeof makeRepo>[]>,
-  shaByRepo: Record<string, string | null>,
-): GithubClient {
-  let call = 0;
-  return {
-    rest: {
-      repos: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        listForUser: vi.fn(async () => {
-          const data = repoResponses[call] ?? repoResponses[repoResponses.length - 1]!;
-          call++;
-          return { data } as any;
-        }),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        listCommits: vi.fn(async ({ owner, repo }: { owner: string; repo: string }) => {
-          const sha = shaByRepo[`${owner}/${repo}`];
-          if (!sha) throw Object.assign(new Error('Git Repository is empty.'), { status: 409 });
-          return { data: [makeCommit(sha)] } as any;
-        }),
-      } as any,
-    },
-  };
-}
 
 /** A stand-in for Hono's SSEStreamingApi that records the events written to it. */
 function makeFakeStream() {
@@ -222,7 +182,8 @@ describe('githubPoller (unit)', () => {
     await vi.advanceTimersByTimeAsync(0);
 
     await vi.advanceTimersByTimeAsync(100); // poll #2 -> 403
-    expect(a.events.at(-1)?.type).toBe('error');
+    // No error event: cached snapshot is silently retained.
+    expect(a.events.filter((e) => e.type === 'error')).toHaveLength(0);
     const callsAfterError = listForUser.mock.calls.length;
 
     await vi.advanceTimersByTimeAsync(500); // past the 100ms interval, before the ~2s reset
@@ -231,6 +192,121 @@ describe('githubPoller (unit)', () => {
     await vi.advanceTimersByTimeAsync(1500); // now past the reset
     expect(listForUser.mock.calls.length).toBeGreaterThan(callsAfterError); // retry fired after reset
     expect(a.events.at(-1)?.type).toBe('update');
+  });
+
+  it('backs off using the Retry-After header on a 429', async () => {
+    vi.useFakeTimers();
+
+    let call = 0;
+    const listForUser = vi.fn(async () => {
+      call++;
+      if (call === 1) return { data: [makeRepo('user/repo-a')] };
+      if (call === 2) {
+        throw Object.assign(new Error('secondary rate limited'), {
+          status: 429,
+          response: { headers: { 'retry-after': '2' } }, // wait 2 seconds
+        });
+      }
+      return { data: [makeRepo('user/repo-b', '2024-02-01T00:00:00Z'), makeRepo('user/repo-a')] };
+    });
+    const client: GithubClient = {
+      rest: {
+        repos: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listForUser: listForUser as any,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listCommits: vi.fn(async ({ owner, repo }: { owner: string; repo: string }) => {
+            const sha = `${owner}/${repo}` === 'user/repo-b' ? 'sha-2' : 'sha-1';
+            return { data: [makeCommit(sha)] };
+          }) as any,
+        },
+      },
+    };
+    const config = makeConfig(client, 100); // tiny interval to prove backoff ignores it
+
+    const a = makeFakeStream();
+    subscribeToPoller(config, a.stream);
+    await vi.advanceTimersByTimeAsync(0);
+
+    await vi.advanceTimersByTimeAsync(100); // poll #2 -> 429
+    expect(a.events.filter((e) => e.type === 'error')).toHaveLength(0);
+    const callsAfterError = listForUser.mock.calls.length;
+
+    await vi.advanceTimersByTimeAsync(500); // past the 100ms interval, before the 2s retry-after
+    expect(listForUser).toHaveBeenCalledTimes(callsAfterError); // retry has NOT fired yet
+
+    await vi.advanceTimersByTimeAsync(1500); // now past Retry-After
+    expect(listForUser.mock.calls.length).toBeGreaterThan(callsAfterError); // retry fired
+    expect(a.events.at(-1)?.type).toBe('update');
+  });
+
+  it('silently retries on a transient poll error without emitting an error event', async () => {
+    vi.useFakeTimers();
+    let call = 0;
+    const listForUser = vi.fn(async () => {
+      call++;
+      if (call === 1) return { data: [makeRepo('user/repo-a')] };
+      if (call === 2) throw Object.assign(new Error('network blip'), { status: 500 });
+      return { data: [makeRepo('user/repo-b', '2024-02-01T00:00:00Z'), makeRepo('user/repo-a')] };
+    });
+    const client: GithubClient = {
+      rest: {
+        repos: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listForUser: listForUser as any,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listCommits: vi.fn(async ({ owner, repo }: { owner: string; repo: string }) => {
+            const sha = `${owner}/${repo}` === 'user/repo-b' ? 'sha-2' : 'sha-1';
+            return { data: [makeCommit(sha)] };
+          }) as any,
+        },
+      },
+    };
+    const config = makeConfig(client, 100);
+
+    const a = makeFakeStream();
+    subscribeToPoller(config, a.stream);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(a.events.at(-1)?.type).toBe('initial');
+
+    await vi.advanceTimersByTimeAsync(100); // poll #2 -> 500 error
+    expect(a.events.filter((e) => e.type === 'error')).toHaveLength(0); // no error event
+
+    await vi.advanceTimersByTimeAsync(100); // retry fires
+    expect(listForUser).toHaveBeenCalledTimes(3);
+    expect(a.events.at(-1)?.type).toBe('update'); // recovered
+  });
+
+  it('emits an error and retries when bootstrap fails with no cached data', async () => {
+    vi.useFakeTimers();
+    let call = 0;
+    const listForUser = vi.fn(async () => {
+      call++;
+      if (call === 1) throw Object.assign(new Error('network blip'), { status: 500 });
+      return { data: [makeRepo('user/repo-a')] };
+    });
+    const client: GithubClient = {
+      rest: {
+        repos: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listForUser: listForUser as any,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          listCommits: vi.fn(async () => ({ data: [makeCommit('sha-1')] })) as any,
+        },
+      },
+    };
+    const config = makeConfig(client, 500);
+
+    const a = makeFakeStream();
+    subscribeToPoller(config, a.stream);
+    await vi.advanceTimersByTimeAsync(0);
+
+    // Bootstrap failed: error is emitted (no stale data to serve) and retry is scheduled.
+    expect(a.events.at(-1)?.type).toBe('error');
+
+    await vi.advanceTimersByTimeAsync(500); // retry fires
+    expect(listForUser).toHaveBeenCalledTimes(2);
+    expect(a.events.at(-1)?.type).toBe('initial'); // recovered
   });
 
   it('exposes current data, SHAs, and error through getSnapshot', async () => {
@@ -247,6 +323,20 @@ describe('githubPoller (unit)', () => {
     expect(snap.data).toHaveLength(1);
     expect(snap.shas.has('sha-1')).toBe(true);
     expect(snap.error).toBeNull();
+  });
+
+  it('returns a snapshot of shas, not a live reference', async () => {
+    const client = makeMockClient([[makeRepo('user/repo-a')]], { 'user/repo-a': 'sha-1' });
+    const config = makeConfig(client);
+
+    const a = makeFakeStream();
+    subscribeToPoller(config, a.stream);
+    await vi.waitFor(() => expect(a.events.at(-1)?.type).toBe('initial'));
+
+    const snap = getSnapshot();
+    // The poller may add more SHAs later; the snapshot should not reflect that.
+    resetPoller();
+    expect(snap.shas.has('sha-1')).toBe(true); // snapshot is frozen, not cleared
   });
 
   it('clears all state and stops the loop on resetPoller', async () => {

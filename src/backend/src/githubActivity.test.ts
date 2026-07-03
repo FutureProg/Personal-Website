@@ -356,13 +356,14 @@ describe('GET /api/github/activity', () => {
     vi.useRealTimers();
   });
 
-  it('sends an error event and stops polling when poll throws', async () => {
+  it('silently retries on a transient poll error without emitting an error event', async () => {
     vi.useFakeTimers();
 
     const listForUser = vi
       .fn()
       .mockResolvedValueOnce({ data: [makeRepo('user/repo-a')] })
-      .mockRejectedValue(new Error('poll failed'));
+      .mockRejectedValueOnce(new Error('poll failed'))
+      .mockResolvedValue({ data: [makeRepo('user/repo-a')] });
     const client: GithubClient = {
       rest: {
         repos: {
@@ -382,13 +383,13 @@ describe('GET /api/github/activity', () => {
     const initialEvent = await readNextSSEEvent(reader, buffer);
     expect(initialEvent!.type).toBe('initial');
 
-    await vi.advanceTimersByTimeAsync(500);
+    await vi.advanceTimersByTimeAsync(500); // poll #2 -> error (silent)
+    expect(buffer.current).toBe(''); // no error event written to the stream
 
-    const errorEvent = await readNextSSEEvent(reader, buffer);
+    await vi.advanceTimersByTimeAsync(500); // poll #3 -> retry fires
+    expect(listForUser).toHaveBeenCalledTimes(3); // loop kept running
+
     reader.cancel();
-
-    expect(errorEvent!.type).toBe('error');
-
     vi.useRealTimers();
   });
 });
