@@ -1,0 +1,24 @@
+.view {
+    display: flex;
+    justify-content: center;
+    margin: var(--gap-md, 1.5rem) 0;
+
+    svg {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+.placeholder {
+    min-height: 4rem;
+    margin: var(--gap-md, 1.5rem) 0;
+}
+
+.error {
+    color: var(--color-error, #b00020);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color-light);
+    border-radius: 8px;
+    padding: 1rem;
+    white-space: pre-wrap;
+}
