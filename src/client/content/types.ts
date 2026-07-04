@@ -16,5 +16,5 @@ export interface WorkItem {
   description: string;
   cardColor: string;
   icon: string;
-  component: ComponentType;
+  component: ComponentType<{ components?: MDXComponents }>;
 }

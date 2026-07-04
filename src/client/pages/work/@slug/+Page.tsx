@@ -1,5 +1,6 @@
 import { useData } from 'vike-react/useData'
 import { getWorkItem } from '../../../util/content'
+import { MdxPre } from '../../../components/MdxPre'
 import type { Data } from './+data'
 
 export default function Page() {
@@ -8,7 +9,7 @@ export default function Page() {
   return (
     <main>
       <section>
-        <ItemComponent />
+        <ItemComponent components={{ pre: MdxPre }} />
       </section>
     </main>
   )

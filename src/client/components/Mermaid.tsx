@@ -8,32 +8,39 @@ export type MermaidProps = {
   chart: string;
 };
 
+type RenderState =
+  | { status: 'loading' }
+  | { status: 'ok'; svg: string }
+  | { status: 'error'; message: string };
+
 export const Mermaid = ({ chart }: MermaidProps) => {
   const id = useId().replace(/:/g, '');
-  const [svg, setSvg] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<RenderState>({ status: 'loading' });
 
   useEffect(() => {
     let cancelled = false;
+    setState({ status: 'loading' });
     mermaid.render(`mermaid-${id}`, chart)
       .then(({ svg }) => {
-        if (!cancelled) setSvg(svg);
+        if (!cancelled) setState({ status: 'ok', svg });
       })
       .catch((err: unknown) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : String(err));
+        if (!cancelled) {
+          setState({ status: 'error', message: err instanceof Error ? err.message : String(err) });
+        }
       });
     return () => {
       cancelled = true;
     };
   }, [chart, id]);
 
-  if (error) {
-    return <pre className={styles.error}>Failed to render diagram: {error}</pre>;
+  if (state.status === 'error') {
+    return <pre className={styles.error}>Failed to render diagram: {state.message}</pre>;
   }
 
-  if (!svg) {
+  if (state.status === 'loading') {
     return <div className={styles.placeholder} aria-hidden="true" />;
   }
 
-  return <div className={styles.view} dangerouslySetInnerHTML={{ __html: svg }} />;
+  return <div className={styles.view} dangerouslySetInnerHTML={{ __html: state.svg }} />;
 };

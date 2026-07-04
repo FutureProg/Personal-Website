@@ -1,5 +1,7 @@
-import { Children, isValidElement, type ComponentPropsWithoutRef, type ReactNode } from 'react';
-import { Mermaid } from './Mermaid';
+import { Children, isValidElement, lazy, Suspense, type ComponentPropsWithoutRef, type ReactNode } from 'react';
+import styles from './Mermaid.module.css';
+
+const Mermaid = lazy(() => import('./Mermaid').then((m) => ({ default: m.Mermaid })));
 
 function textContent(node: ReactNode): string {
   if (typeof node === 'string' || typeof node === 'number') return String(node);
@@ -13,11 +15,16 @@ function textContent(node: ReactNode): string {
  * A `language-mermaid` block is a diagram, not code, so it's swapped for a live render.
  */
 export function MdxPre(props: ComponentPropsWithoutRef<'pre'>) {
-  const child = Children.only(props.children);
-  if (isValidElement(child)) {
+  const children = Children.toArray(props.children);
+  const child = children.length === 1 ? children[0] : undefined;
+  if (child !== undefined && isValidElement(child)) {
     const className = (child.props as { className?: string }).className;
     if (className?.split(' ').includes('language-mermaid')) {
-      return <Mermaid chart={textContent(child)} />;
+      return (
+        <Suspense fallback={<div className={styles.placeholder} aria-hidden="true" />}>
+          <Mermaid chart={textContent(child)} />
+        </Suspense>
+      );
     }
   }
   return <pre {...props} />;
