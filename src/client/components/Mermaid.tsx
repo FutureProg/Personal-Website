@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import mermaid from 'mermaid';
 import { TransformComponent, TransformWrapper, type ReactZoomPanPinchContentRef } from 'react-zoom-pan-pinch';
 import styles from './Mermaid.module.css';
@@ -7,6 +7,8 @@ import { Modal } from './Modal';
 import ExpandIcon from '../images/expand-icon.svg';
 
 mermaid.initialize({ startOnLoad: false, theme: 'default' });
+
+const PAN_STEP = 40;
 
 export type MermaidProps = {
   chart: string;
@@ -23,6 +25,7 @@ export const Mermaid = ({ chart }: MermaidProps) => {
   const [expanded, setExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
+  const panRegionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,7 +48,34 @@ export const Mermaid = ({ chart }: MermaidProps) => {
     if (state.status === 'ok' && containerRef.current) {
       state.bindFunctions?.(containerRef.current);
     }
-  }, [state]);
+  }, [state, expanded]);
+
+  useEffect(() => {
+    if (expanded) panRegionRef.current?.focus();
+  }, [expanded]);
+
+  const handlePanKeyDown = (e: KeyboardEvent) => {
+    const transform = transformRef.current;
+    if (!transform) return;
+    const { positionX, positionY, scale } = transform.state;
+    switch (e.key) {
+      case 'ArrowUp':
+        transform.setTransform(positionX, positionY + PAN_STEP, scale, 100);
+        break;
+      case 'ArrowDown':
+        transform.setTransform(positionX, positionY - PAN_STEP, scale, 100);
+        break;
+      case 'ArrowLeft':
+        transform.setTransform(positionX + PAN_STEP, positionY, scale, 100);
+        break;
+      case 'ArrowRight':
+        transform.setTransform(positionX - PAN_STEP, positionY, scale, 100);
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+  };
 
   if (state.status === 'error') {
     return <pre className={styles.error}>Failed to render diagram: {state.message}</pre>;
@@ -55,9 +85,19 @@ export const Mermaid = ({ chart }: MermaidProps) => {
     return <div className={styles.placeholder} aria-hidden="true" />;
   }
 
+  // Rendered once and moved between the inline and expanded slots below (never both at
+  // once), since state.svg's ids would otherwise collide if mounted in two places at once.
+  const diagram = (
+    <div
+      ref={containerRef}
+      className={expanded ? styles.expandedView : styles.view}
+      dangerouslySetInnerHTML={{ __html: state.svg }}
+    />
+  );
+
   return (
     <div className={styles.wrapper}>
-      <div ref={containerRef} className={styles.view} dangerouslySetInnerHTML={{ __html: state.svg }} />
+      {!expanded && diagram}
       <IconButton
         icon={<img src={ExpandIcon} alt="" />}
         label="Expand diagram"
@@ -76,11 +116,20 @@ export const Mermaid = ({ chart }: MermaidProps) => {
           </>
         }
       >
-        <TransformWrapper ref={transformRef} centerOnInit>
-          <TransformComponent wrapperStyle={{ width: '100%', height: '100%' }}>
-            <div className={styles.expandedView} dangerouslySetInnerHTML={{ __html: state.svg }} />
-          </TransformComponent>
-        </TransformWrapper>
+        {expanded && (
+          <div
+            ref={panRegionRef}
+            className={styles.panRegion}
+            tabIndex={0}
+            role="group"
+            aria-label="Diagram viewport. Use arrow keys to pan."
+            onKeyDown={handlePanKeyDown}
+          >
+            <TransformWrapper ref={transformRef} centerOnInit>
+              <TransformComponent wrapperStyle={{ width: '100%', height: '100%' }}>{diagram}</TransformComponent>
+            </TransformWrapper>
+          </div>
+        )}
       </Modal>
     </div>
   );
