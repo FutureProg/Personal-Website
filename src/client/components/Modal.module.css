@@ -1,0 +1,74 @@
+.dialog {
+    width: 100%;
+    max-width: 1080px;
+    max-height: calc(100% - var(--space-6) * 2);
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    box-shadow: var(--glass-shadow-hover);
+    color: inherit;
+    overflow: hidden;
+
+    /* `dialog:not([open]) { display: none }` is a native UA rule; only override
+       display when open so closing the dialog actually hides it again. */
+    &[open] {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &::backdrop {
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: var(--glass-blur-sm);
+        -webkit-backdrop-filter: var(--glass-blur-sm);
+    }
+}
+
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--gap-xs);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: var(--border-width-thin) solid var(--border-color-light);
+}
+
+.closeButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+
+    &:hover {
+        background: var(--bg-page);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-blue-400);
+        outline-offset: 2px;
+    }
+}
+
+.content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+@media (max-width: 800px) {
+    .dialog {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+}
