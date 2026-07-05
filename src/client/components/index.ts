@@ -6,6 +6,5 @@ export { GithubActivityRow } from './GithubActivityRow';
 export type { GithubActivityRowProps } from './GithubActivityRow';
 export { HeroPhotoFrame } from '../views/HeroPhotoFrame';
 export { GithubActivityView } from '../views/GithubActivityView';
-export { Mermaid } from './Mermaid';
 export type { MermaidProps } from './Mermaid';
 export { MdxPre } from './MdxPre';

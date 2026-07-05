@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 import styles from './Mermaid.module.css';
 
@@ -10,19 +10,20 @@ export type MermaidProps = {
 
 type RenderState =
   | { status: 'loading' }
-  | { status: 'ok'; svg: string }
+  | { status: 'ok'; svg: string; bindFunctions: ((el: Element) => void) | undefined }
   | { status: 'error'; message: string };
 
 export const Mermaid = ({ chart }: MermaidProps) => {
   const id = useId().replace(/:/g, '');
   const [state, setState] = useState<RenderState>({ status: 'loading' });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
     setState({ status: 'loading' });
     mermaid.render(`mermaid-${id}`, chart)
-      .then(({ svg }) => {
-        if (!cancelled) setState({ status: 'ok', svg });
+      .then(({ svg, bindFunctions }) => {
+        if (!cancelled) setState({ status: 'ok', svg, bindFunctions });
       })
       .catch((err: unknown) => {
         if (!cancelled) {
@@ -34,6 +35,12 @@ export const Mermaid = ({ chart }: MermaidProps) => {
     };
   }, [chart, id]);
 
+  useEffect(() => {
+    if (state.status === 'ok' && containerRef.current) {
+      state.bindFunctions?.(containerRef.current);
+    }
+  }, [state]);
+
   if (state.status === 'error') {
     return <pre className={styles.error}>Failed to render diagram: {state.message}</pre>;
   }
@@ -42,5 +49,5 @@ export const Mermaid = ({ chart }: MermaidProps) => {
     return <div className={styles.placeholder} aria-hidden="true" />;
   }
 
-  return <div className={styles.view} dangerouslySetInnerHTML={{ __html: state.svg }} />;
+  return <div ref={containerRef} className={styles.view} dangerouslySetInnerHTML={{ __html: state.svg }} />;
 };
