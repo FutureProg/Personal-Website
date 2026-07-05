@@ -1,6 +1,10 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import mermaid from 'mermaid';
+import { TransformComponent, TransformWrapper, type ReactZoomPanPinchContentRef } from 'react-zoom-pan-pinch';
 import styles from './Mermaid.module.css';
+import { IconButton } from './IconButton';
+import { Modal } from './Modal';
+import ExpandIcon from '../images/expand-icon.svg';
 
 mermaid.initialize({ startOnLoad: false, theme: 'default' });
 
@@ -16,7 +20,9 @@ type RenderState =
 export const Mermaid = ({ chart }: MermaidProps) => {
   const id = useId().replace(/:/g, '');
   const [state, setState] = useState<RenderState>({ status: 'loading' });
+  const [expanded, setExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -49,5 +55,33 @@ export const Mermaid = ({ chart }: MermaidProps) => {
     return <div className={styles.placeholder} aria-hidden="true" />;
   }
 
-  return <div ref={containerRef} className={styles.view} dangerouslySetInnerHTML={{ __html: state.svg }} />;
+  return (
+    <div className={styles.wrapper}>
+      <div ref={containerRef} className={styles.view} dangerouslySetInnerHTML={{ __html: state.svg }} />
+      <IconButton
+        icon={<img src={ExpandIcon} alt="" />}
+        label="Expand diagram"
+        className={styles.expandButton}
+        onClick={() => setExpanded(true)}
+      />
+      <Modal
+        open={expanded}
+        onClose={() => setExpanded(false)}
+        label="Diagram viewer"
+        headerActions={
+          <>
+            <IconButton icon={<span aria-hidden>+</span>} label="Zoom in" onClick={() => transformRef.current?.zoomIn()} />
+            <IconButton icon={<span aria-hidden>−</span>} label="Zoom out" onClick={() => transformRef.current?.zoomOut()} />
+            <IconButton icon={<span aria-hidden>⟲</span>} label="Reset zoom" onClick={() => transformRef.current?.resetTransform()} />
+          </>
+        }
+      >
+        <TransformWrapper ref={transformRef} centerOnInit>
+          <TransformComponent wrapperStyle={{ width: '100%', height: '100%' }}>
+            <div className={styles.expandedView} dangerouslySetInnerHTML={{ __html: state.svg }} />
+          </TransformComponent>
+        </TransformWrapper>
+      </Modal>
+    </div>
+  );
 };
