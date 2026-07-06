@@ -6,9 +6,10 @@ export interface ModalProps extends PropsWithChildren {
     onClose: () => void;
     label: string;
     headerActions?: ReactNode;
+    contentClassName?: string;
 }
 
-export const Modal = ({ open, onClose, label, headerActions, children }: ModalProps) => {
+export const Modal = ({ open, onClose, label, headerActions, children, contentClassName }: ModalProps) => {
     const dialogRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
@@ -49,7 +50,7 @@ export const Modal = ({ open, onClose, label, headerActions, children }: ModalPr
                     ✕
                 </button>
             </div>
-            <div className={styles.content}>{children}</div>
+            <div className={styles.content + ' ' + (contentClassName ?? '')}>{children}</div>
         </dialog>
     );
 };
