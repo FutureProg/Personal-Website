@@ -9,3 +9,26 @@ main {
 section {
   grid-column: main-start / main-end;
 }
+
+.blog-post-callout {
+  position: relative;
+  width: 90%;
+  margin: 0 auto;
+  background: oklch(88.875% 0.05072 248.448);
+  padding: var(--padding-md);
+  /* padding-left: calc(var(--padding-md) + 1.75em); */
+  border-radius: var(--radius-md);
+  margin-bottom: 1lh;
+
+  ::before {
+    content: 'NOTE';
+    display: block;    
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-subtitle-size);
+  }
+
+  p {
+    margin-block: 0;
+    margin-inline: 0;
+  }
+}
