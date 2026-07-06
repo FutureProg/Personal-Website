@@ -1,11 +1,14 @@
 import type { ComponentType } from 'react';
+import type { MDXComponents } from 'mdx/types';
+
+export type MdxComponentType = ComponentType<{ components?: MDXComponents }>;
 
 export interface WritingPost {
   slug: string;
   title: string;
   date: string; // "YYYY-MM" format — used for localeCompare sort, e.g. "2025-05"
   description: string;
-  component: ComponentType;
+  component: MdxComponentType;
 }
 
 export interface WorkItem {
@@ -15,5 +18,5 @@ export interface WorkItem {
   description: string;
   cardColor: string;
   icon: string;
-  component: ComponentType;
+  component: MdxComponentType;
 }

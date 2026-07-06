@@ -1,0 +1,36 @@
+.view {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: var(--border-width-thin) solid var(--border-color-light);
+    border-radius: var(--radius-full);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur-sm);
+    -webkit-backdrop-filter: var(--glass-blur-sm);
+    box-shadow: var(--glass-shadow);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+
+    svg, img {
+        width: 16px;
+        height: 16px;
+    }
+
+    &:hover {
+        background: var(--glass-bg-strong);
+        box-shadow: var(--glass-shadow-hover);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-blue-400);
+        outline-offset: 2px;
+    }
+
+    &:active {
+        transform: scale(0.92);
+    }
+}
