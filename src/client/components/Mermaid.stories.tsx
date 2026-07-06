@@ -89,6 +89,39 @@ export const ZoomsInOnExpandedView: Story = {
     },
 };
 
+export const RendersOnlyOneCopyOfTheDiagram: Story = {
+    args: {
+        chart: 'graph TD;\nA-->B;\nB-->C;',
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await waitFor(() => {
+            expect(canvasElement.querySelector('svg')).toBeInTheDocument();
+        });
+
+        // Guards against the duplicate-`id` regression: the same rendered SVG (and its
+        // mermaid-generated ids) must never be mounted in both the inline view and the
+        // modal's expanded view at once, or id-based lookups (getElementById,
+        // bindFunctions) silently resolve to the wrong copy.
+        expect(document.querySelectorAll('svg[id^="mermaid-"]')).toHaveLength(1);
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Expand diagram' }));
+        const dialog = canvas.getByRole('dialog');
+        await waitFor(() => {
+            expect(dialog.querySelector('svg')).toBeInTheDocument();
+        });
+
+        expect(document.querySelectorAll('svg[id^="mermaid-"]')).toHaveLength(1);
+
+        await userEvent.click(canvas.getByRole('button', { name: 'Close' }));
+
+        await waitFor(() => {
+            expect(canvasElement.querySelector('svg')).toBeInTheDocument();
+        });
+        expect(document.querySelectorAll('svg[id^="mermaid-"]')).toHaveLength(1);
+    },
+};
+
 export const ExpandedViewFillsModal: Story = {
     args: {
         chart: 'graph TD;\nA-->B;\nB-->C;',

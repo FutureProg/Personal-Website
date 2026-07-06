@@ -21,8 +21,10 @@ type RenderState =
 
 export const Mermaid = ({ chart }: MermaidProps) => {
   const id = useId().replace(/:/g, '');
+  const panHintId = `mermaid-pan-hint-${id}`;
   const [state, setState] = useState<RenderState>({ status: 'loading' });
   const [expanded, setExpanded] = useState(false);
+  const [reservedHeight, setReservedHeight] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
   const panRegionRef = useRef<HTMLDivElement>(null);
@@ -53,6 +55,13 @@ export const Mermaid = ({ chart }: MermaidProps) => {
   useEffect(() => {
     if (expanded) panRegionRef.current?.focus();
   }, [expanded]);
+
+  const handleExpand = () => {
+    // The inline diagram unmounts while expanded (see `diagram` below), so its height
+    // is captured here to reserve `.wrapper`'s space and avoid a layout jump on open/close.
+    setReservedHeight(containerRef.current?.getBoundingClientRect().height ?? null);
+    setExpanded(true);
+  };
 
   const handlePanKeyDown = (e: KeyboardEvent) => {
     const transform = transformRef.current;
@@ -96,13 +105,13 @@ export const Mermaid = ({ chart }: MermaidProps) => {
   );
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} style={expanded && reservedHeight ? { minHeight: reservedHeight } : undefined}>
       {!expanded && diagram}
       <IconButton
         icon={<img src={ExpandIcon} alt="" />}
         label="Expand diagram"
         className={styles.expandButton}
-        onClick={() => setExpanded(true)}
+        onClick={handleExpand}
       />
       <Modal
         open={expanded}
@@ -122,9 +131,13 @@ export const Mermaid = ({ chart }: MermaidProps) => {
             className={styles.panRegion}
             tabIndex={0}
             role="group"
-            aria-label="Diagram viewport. Use arrow keys to pan."
+            aria-label="Diagram viewport"
+            aria-describedby={panHintId}
             onKeyDown={handlePanKeyDown}
           >
+            <span id={panHintId} className={styles.visuallyHidden}>
+              Use arrow keys to pan.
+            </span>
             <TransformWrapper ref={transformRef} centerOnInit>
               <TransformComponent wrapperStyle={{ width: '100%', height: '100%' }}>{diagram}</TransformComponent>
             </TransformWrapper>
