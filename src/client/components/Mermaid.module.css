@@ -6,6 +6,13 @@
     position: absolute;
     top: var(--space-2);
     right: var(--space-2);
+    opacity: 0.5;
+    transition: opacity var(--transition-fast, 0.15s ease);
+
+    &:hover,
+    &:focus-visible {
+        opacity: 1;
+    }
 }
 
 .view {
