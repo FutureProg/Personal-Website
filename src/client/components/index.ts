@@ -8,3 +8,5 @@ export { HeroPhotoFrame } from '../views/HeroPhotoFrame';
 export { GithubActivityView } from '../views/GithubActivityView';
 export type { MermaidProps } from './Mermaid';
 export { MdxPre } from './MdxPre';
+export { NavBar } from './NavBar';
+export type { NavBarProps } from './NavBar';

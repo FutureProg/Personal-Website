@@ -1,19 +1,14 @@
 import { GithubActivityView } from "../../views/GithubActivityView";
 import { HeroPhotoFrame } from "../../views/HeroPhotoFrame";
+import { NavBar } from "../../components/NavBar";
 import styles from "../../App.module.css";
-import SiteIcon from "../../images/icon.png";
 import { Badge } from "../../components/Badge";
 import skillsList from "./skillsList";
 
 export default function Page() {
   return (
     <>
-      <header>
-        <img
-          src={SiteIcon}
-          alt="website logo, a butterfly with the wings spelling N and M"
-        />
-      </header>
+      <NavBar />
 
       <main>
         <section className={styles.hero} aria-label="introduction">
