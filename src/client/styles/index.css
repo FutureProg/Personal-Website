@@ -84,26 +84,6 @@ p {
   color: var(--text-body);
 }
 
-header {
-  position: relative;
-  display: grid;
-  grid: subgrid/subgrid;
-  grid-area: nav / fullbleed;
-
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-5) var(--header-padding-inline);
-  border-bottom: var(--border-width-thin) solid oklch(100% 0.00011 271.152 / 0.8);
-  height: var(--header-height);
-
-  img {
-    grid-area: nav / main;
-    display: block;
-    height: var(--header-height);
-  }  
-
-}
-
 .subtitle {
   color: var(--text-subtitle);
   font-family: var(--text-subtitle-family);

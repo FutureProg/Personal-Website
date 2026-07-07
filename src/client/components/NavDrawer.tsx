@@ -1,4 +1,5 @@
-import { useEffect, useRef, type PropsWithChildren } from 'react';
+import { useRef, type PropsWithChildren } from 'react';
+import { useDialogController } from '../hooks/useDialogController';
 import styles from './NavDrawer.module.css';
 
 export interface NavDrawerProps extends PropsWithChildren {
@@ -9,31 +10,7 @@ export interface NavDrawerProps extends PropsWithChildren {
 
 export const NavDrawer = ({ open, onClose, label, children }: NavDrawerProps) => {
     const dialogRef = useRef<HTMLDialogElement>(null);
-
-    useEffect(() => {
-        const dialog = dialogRef.current;
-        if (!dialog) return;
-        if (open && !dialog.open) dialog.showModal();
-        if (!open && dialog.open) dialog.close();
-    }, [open]);
-
-    useEffect(() => {
-        // `closedby="any"` (light-dismiss on backdrop click) isn't supported in Safari yet.
-        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy
-        const dialog = dialogRef.current;
-        if (!dialog || 'closedBy' in HTMLDialogElement.prototype) return;
-
-        const onBackdropClick = (e: MouseEvent) => {
-            if (e.target !== dialog) return;
-            const rect = dialog.getBoundingClientRect();
-            const withinContent =
-                rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
-                rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
-            if (!withinContent) dialog.close();
-        };
-        dialog.addEventListener('click', onBackdropClick);
-        return () => dialog.removeEventListener('click', onBackdropClick);
-    }, []);
+    useDialogController(dialogRef, open);
 
     return (
         <dialog ref={dialogRef} className={styles.dialog} closedby="any" aria-label={label} onClose={onClose}>
@@ -47,7 +24,14 @@ export const NavDrawer = ({ open, onClose, label, children }: NavDrawerProps) =>
                     ✕
                 </button>
             </div>
-            <div className={styles.content}>{children}</div>
+            <div
+                className={styles.content}
+                onClick={(e) => {
+                    if ((e.target as HTMLElement).closest('a')) dialogRef.current?.close();
+                }}
+            >
+                {children}
+            </div>
         </dialog>
     );
 };

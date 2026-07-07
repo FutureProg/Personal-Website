@@ -8,7 +8,7 @@
   justify-content: space-between;
   align-items: center;  
   padding: 0;
-  border-bottom: var(--border-width-thin) solid oklch(100% 0.00011 271.152 / 0.8);
+  border-bottom: var(--border-width-thin) solid var(--nav-border-color);
   height: var(--header-height);
 
   .logo {
@@ -17,6 +17,11 @@
     box-sizing: border-box;
     padding: 4px 0;
     height: var(--header-height);
+
+    img {
+      display: block;
+      height: 100%;
+    }
   }
 }
 
@@ -57,9 +62,7 @@
   font-size: var(--font-size-sm);
 }
 
-/* Specificity bumped to `.siteHeader .mobileTrigger` so this reliably wins over
-   IconButton's own `.view { display: inline-flex }`, regardless of CSS bundle order. */
-.siteHeader .mobileTrigger {
+.mobileTrigger {
   display: none;
 }
 
@@ -76,7 +79,7 @@
     display: none;
   }
 
-  .siteHeader .mobileTrigger {
+  .mobileTrigger {
     display: inline-flex;
     grid-area: nav / main;
     justify-self: end;

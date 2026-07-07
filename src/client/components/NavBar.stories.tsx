@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ReactElement } from 'react';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { NavBar } from './NavBar';
 
@@ -103,7 +103,16 @@ export const Mobile: Story = {
             expect(drawer.getByRole('link', { name: label })).toBeInTheDocument();
         }
 
-        await userEvent.click(drawer.getByRole('button', { name: 'Close' }));
-        expect(canvas.queryByRole('dialog', { name: 'Site navigation' })).not.toBeInTheDocument();
+        // Clicking a page link should close the drawer, not leave it open over the destination.
+        // The real navigation is suppressed here only so the test doesn't leave the story's page.
+        const aboutLink = drawer.getByRole('link', { name: 'About' });
+        aboutLink.addEventListener('click', (e) => e.preventDefault(), { once: true });
+        await userEvent.click(aboutLink);
+        // The dialog's transform/display transition takes 250ms to finish before it's fully hidden.
+        await waitFor(() => expect(canvas.queryByRole('dialog', { name: 'Site navigation' })).not.toBeInTheDocument());
+
+        await userEvent.click(trigger);
+        await userEvent.click(within(canvas.getByRole('dialog', { name: 'Site navigation' })).getByRole('button', { name: 'Close' }));
+        await waitFor(() => expect(canvas.queryByRole('dialog', { name: 'Site navigation' })).not.toBeInTheDocument());
     },
 };

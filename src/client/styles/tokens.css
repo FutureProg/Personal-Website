@@ -110,6 +110,7 @@
     /* Border Colors */
     --border-primary: var(--color-gray-200);
     --border-color-light: oklch(0 0 0 / 0.2);
+    --nav-border-color: oklch(100% 0.00011 271.152 / 0.8);
 
     /* Status Colors */
     --status-error: var(--color-red-500);

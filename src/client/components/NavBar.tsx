@@ -53,20 +53,22 @@ export const NavBar = ({ pageLinks, cta }: NavBarProps) => {
 
   return (
     <header className={styles.siteHeader}>
-      <img
-        className={styles.logo}
-        src={SiteIcon}
-        alt="website logo, a butterfly with the wings spelling N and M"
-      />
+      <a className={styles.logo} href="/">
+        <img
+          src={SiteIcon}
+          alt="website logo, a butterfly with the wings spelling N and M"
+        />
+      </a>
       <nav className={styles.nav}>
         <NavLinks pageLinks={pageLinks} cta={cta} />
       </nav>
-      <IconButton
-        className={styles.mobileTrigger}
-        icon={<img src={MenuIcon} alt="" />}
-        label="Open menu"
-        onClick={() => setDrawerOpen(true)}
-      />
+      <span className={styles.mobileTrigger}>
+        <IconButton
+          icon={<img src={MenuIcon} alt="" />}
+          label="Open menu"
+          onClick={() => setDrawerOpen(true)}
+        />
+      </span>
       <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} label="Site navigation">
         <div className={styles.drawerNav}>
           <NavLinks pageLinks={pageLinks} cta={cta} />
