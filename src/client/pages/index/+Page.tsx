@@ -27,7 +27,7 @@ export default function Page() {
           </div>
           <HeroPhotoFrame className={styles.heroPhotoFrame} />
         </section>
-        <section className={styles.whoIAmSection} aria-labelledby="who-i-am-heading">
+        <section id="about" className={styles.whoIAmSection} aria-labelledby="who-i-am-heading">
           <div className={styles.sectionHeader}>
             <div className="subtitle">AT A GLANCE</div>
             <h1 id="who-i-am-heading">
