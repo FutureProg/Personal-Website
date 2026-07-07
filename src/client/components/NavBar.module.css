@@ -1,18 +1,58 @@
 .siteHeader {
-  position: relative;
+  box-sizing: border-box;
+  position: relative;  
   display: grid;
   grid: subgrid/subgrid;
   grid-area: nav / fullbleed;
 
   justify-content: space-between;
-  align-items: center;
-  padding: var(--space-5) var(--header-padding-inline);
+  align-items: center;  
+  padding: 0;
   border-bottom: var(--border-width-thin) solid oklch(100% 0.00011 271.152 / 0.8);
   height: var(--header-height);
 
-  img {
+  .logo {
     grid-area: nav / main;
     display: block;
+    box-sizing: border-box;
+    padding: 4px 0;
     height: var(--header-height);
-  }  
+  }
+}
+
+.nav {
+  height: var(--header-height);
+
+  grid-area: nav / main;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.pageLink {
+  color: inherit;
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+
+  img {
+    height: var(--space-6);
+    width: var(--space-6);
+  }
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: black;
+  color: white;
+  text-decoration: none;
+  font-size: var(--font-size-sm);
 }

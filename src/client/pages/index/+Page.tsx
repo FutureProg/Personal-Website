@@ -1,15 +1,11 @@
 import { GithubActivityView } from "../../views/GithubActivityView";
 import { HeroPhotoFrame } from "../../views/HeroPhotoFrame";
-import { NavBar } from "../../components/NavBar";
 import styles from "../../App.module.css";
 import { Badge } from "../../components/Badge";
 import skillsList from "./skillsList";
 
 export default function Page() {
   return (
-    <>
-      <NavBar />
-
       <main>
         <section className={styles.hero} aria-label="introduction">
           <div className={styles.intro}>
@@ -74,6 +70,5 @@ export default function Page() {
           </div>
         </section>
       </main>
-    </>
   );
 }
