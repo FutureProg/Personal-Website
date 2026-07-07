@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ReactElement } from 'react';
-import { expect, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { NavBar } from './NavBar';
 
@@ -69,5 +69,41 @@ export const PostPage: Story = {
 
         expect(canvas.getByRole('link', { name: 'Home' })).toBeInTheDocument();
         expect(canvas.queryByRole('link', { name: 'Get in touch' })).not.toBeInTheDocument();
+    },
+};
+
+export const Mobile: Story = {
+    args: {
+        pageLinks: [
+            { label: 'About', href: '#about' },
+            { label: 'Work', href: '#work' },
+            { label: 'Writing', href: '#writing' },
+        ],
+        cta: { label: 'Get in touch', href: '#contact' },
+    },
+    globals: {
+        viewport: {
+            value: 'mobile1',
+            isRotated: false,
+        },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+
+        // Below 800px the full nav is replaced by a hamburger trigger.
+        expect(canvas.queryByRole('link', { name: 'About' })).not.toBeInTheDocument();
+        const trigger = canvas.getByRole('button', { name: 'Open menu' });
+
+        await userEvent.click(trigger);
+        const drawer = within(canvas.getByRole('dialog', { name: 'Site navigation' }));
+        for (const label of ['About', 'Work', 'Writing', 'Get in touch']) {
+            expect(drawer.getByRole('link', { name: label })).toBeInTheDocument();
+        }
+        for (const label of ['Github', 'LinkedIn']) {
+            expect(drawer.getByRole('link', { name: label })).toBeInTheDocument();
+        }
+
+        await userEvent.click(drawer.getByRole('button', { name: 'Close' }));
+        expect(canvas.queryByRole('dialog', { name: 'Site navigation' })).not.toBeInTheDocument();
     },
 };

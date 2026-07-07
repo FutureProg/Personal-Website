@@ -56,3 +56,29 @@
   text-decoration: none;
   font-size: var(--font-size-sm);
 }
+
+/* Specificity bumped to `.siteHeader .mobileTrigger` so this reliably wins over
+   IconButton's own `.view { display: inline-flex }`, regardless of CSS bundle order. */
+.siteHeader .mobileTrigger {
+  display: none;
+}
+
+.drawerNav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+  padding: var(--space-6);
+}
+
+@media (max-width: 800px) {
+  .nav {
+    display: none;
+  }
+
+  .siteHeader .mobileTrigger {
+    display: inline-flex;
+    grid-area: nav / main;
+    justify-self: end;
+  }
+}

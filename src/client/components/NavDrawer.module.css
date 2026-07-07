@@ -1,0 +1,92 @@
+.dialog {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    margin: 0;
+    width: min(80vw, 320px);
+    height: 100%;
+    max-height: 100%;
+    padding: 0;
+    border: none;
+    background: var(--bg-primary);
+    box-shadow: var(--glass-shadow-hover);
+    color: inherit;
+    overflow: hidden;
+
+    transform: translateX(100%);
+    transition:
+        transform 0.25s ease-out,
+        overlay 0.25s ease-out allow-discrete,
+        display 0.25s ease-out allow-discrete;
+
+    /* `dialog:not([open]) { display: none }` is a native UA rule; only override
+       display when open so closing the dialog actually hides it again. */
+    &[open] {
+        display: flex;
+        flex-direction: column;
+        transform: translateX(0);
+
+        /* Starting-style for the entry transition; without this the dialog would
+           jump straight to its open position instead of sliding in. */
+        @starting-style {
+            transform: translateX(100%);
+        }
+    }
+
+    &::backdrop {
+        background: rgba(0, 0, 0, 0);
+        backdrop-filter: var(--glass-blur-sm);
+        -webkit-backdrop-filter: var(--glass-blur-sm);
+        transition:
+            background-color 0.25s ease-out,
+            overlay 0.25s ease-out allow-discrete,
+            display 0.25s ease-out allow-discrete;
+    }
+
+    &[open]::backdrop {
+        background: rgba(0, 0, 0, 0.5);
+
+        @starting-style {
+            background: rgba(0, 0, 0, 0);
+        }
+    }
+}
+
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--gap-xs);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: var(--border-width-thin) solid var(--border-color-light);
+}
+
+.closeButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+
+    &:hover {
+        background: var(--bg-page);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--color-blue-400);
+        outline-offset: 2px;
+    }
+}
+
+.content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
