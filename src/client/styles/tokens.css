@@ -77,11 +77,9 @@
     /* Layout */
     --max-width-content: 1080px;
     --header-height: 52px;
-    --header-padding-inline: 52px;
     --page-padding-inline: 52px;
 
     @media (max-width: 800px) {
-      --header-padding-inline: 20px;
       --page-padding-inline: 20px;
     }
 

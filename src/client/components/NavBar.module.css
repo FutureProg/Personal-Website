@@ -44,11 +44,31 @@
 .socialLink {
   display: flex;
   align-items: center;
+  color: inherit;
+}
 
-  img {
-    height: var(--space-6);
-    width: var(--space-6);
-  }
+.socialIcon,
+.menuIcon {
+  display: block;
+  background-color: currentColor;
+  mask-image: var(--icon-url);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: var(--icon-url);
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+.socialIcon {
+  height: var(--space-6);
+  width: var(--space-6);
+}
+
+.menuIcon {
+  height: 16px;
+  width: 16px;
 }
 
 .cta {
@@ -56,8 +76,8 @@
   align-items: center;
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-pill);
-  background: black;
-  color: white;
+  background: var(--text-primary);
+  color: var(--bg-primary);
   text-decoration: none;
   font-size: var(--font-size-sm);
 }

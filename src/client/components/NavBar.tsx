@@ -1,11 +1,13 @@
-import { useState } from "react";
-import SiteIcon from "../images/icon.png";
-import GithubIcon from "../images/github-icon.svg";
-import LinkedInIcon from "../images/linkedin-icon.svg";
-import MenuIcon from "../images/menu-icon.svg";
-import { IconButton } from "./IconButton";
-import { NavDrawer } from "./NavDrawer";
+import { useState, type CSSProperties } from 'react';
+import SiteIcon from '../images/icon.png';
+import GithubIcon from '../images/github-icon.svg';
+import LinkedInIcon from '../images/linkedin-icon.svg';
+import MenuIcon from '../images/menu-icon.svg';
+import { IconButton } from './IconButton';
+import { NavDrawer } from './NavDrawer';
 import styles from './NavBar.module.css';
+
+const iconMaskStyle = (icon: string): CSSProperties => ({ '--icon-url': `url(${icon})` } as CSSProperties);
 
 export type NavLink = {
   label: string;
@@ -36,8 +38,9 @@ const NavLinks = ({ pageLinks, cta }: NavBarProps) => (
         href={social.href}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label={social.label}
       >
-        <img src={social.icon} alt={social.label} />
+        <span className={styles.socialIcon} style={iconMaskStyle(social.icon)} />
       </a>
     ))}
     {cta && (
@@ -64,15 +67,15 @@ export const NavBar = ({ pageLinks, cta }: NavBarProps) => {
       </nav>
       <span className={styles.mobileTrigger}>
         <IconButton
-          icon={<img src={MenuIcon} alt="" />}
+          icon={<span className={styles.menuIcon} style={iconMaskStyle(MenuIcon)} />}
           label="Open menu"
           onClick={() => setDrawerOpen(true)}
         />
       </span>
       <NavDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} label="Site navigation">
-        <div className={styles.drawerNav}>
+        <nav className={styles.drawerNav}>
           <NavLinks pageLinks={pageLinks} cta={cta} />
-        </div>
+        </nav>
       </NavDrawer>
     </header>
   );
