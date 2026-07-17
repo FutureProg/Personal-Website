@@ -1,22 +1,20 @@
-import { useRef, type PropsWithChildren, type ReactNode } from 'react';
+import { useRef, type PropsWithChildren } from 'react';
 import { useDialogController } from '../hooks/useDialogController';
-import styles from './Modal.module.css';
+import styles from './NavDrawer.module.css';
 
-export interface ModalProps extends PropsWithChildren {
+export interface NavDrawerProps extends PropsWithChildren {
     open: boolean;
     onClose: () => void;
     label: string;
-    headerActions?: ReactNode;
 }
 
-export const Modal = ({ open, onClose, label, headerActions, children }: ModalProps) => {
+export const NavDrawer = ({ open, onClose, label, children }: NavDrawerProps) => {
     const dialogRef = useRef<HTMLDialogElement>(null);
     useDialogController(dialogRef, open);
 
     return (
         <dialog ref={dialogRef} className={styles.dialog} closedby="any" aria-label={label} onClose={onClose}>
             <div className={styles.header}>
-                {headerActions}
                 <button
                     type="button"
                     className={styles.closeButton}
@@ -26,7 +24,14 @@ export const Modal = ({ open, onClose, label, headerActions, children }: ModalPr
                     ✕
                 </button>
             </div>
-            <div className={styles.content}>{children}</div>
+            <div
+                className={styles.content}
+                onClick={(e) => {
+                    if ((e.target as HTMLElement).closest('a')) dialogRef.current?.close();
+                }}
+            >
+                {children}
+            </div>
         </dialog>
     );
 };

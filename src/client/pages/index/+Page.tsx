@@ -1,20 +1,11 @@
 import { GithubActivityView } from "../../views/GithubActivityView";
 import { HeroPhotoFrame } from "../../views/HeroPhotoFrame";
 import styles from "../../App.module.css";
-import SiteIcon from "../../images/icon.png";
 import { Badge } from "../../components/Badge";
 import skillsList from "./skillsList";
 
 export default function Page() {
   return (
-    <>
-      <header>
-        <img
-          src={SiteIcon}
-          alt="website logo, a butterfly with the wings spelling N and M"
-        />
-      </header>
-
       <main>
         <section className={styles.hero} aria-label="introduction">
           <div className={styles.intro}>
@@ -36,7 +27,7 @@ export default function Page() {
           </div>
           <HeroPhotoFrame className={styles.heroPhotoFrame} />
         </section>
-        <section className={styles.whoIAmSection} aria-labelledby="who-i-am-heading">
+        <section id="about" className={styles.whoIAmSection} aria-labelledby="who-i-am-heading">
           <div className={styles.sectionHeader}>
             <div className="subtitle">AT A GLANCE</div>
             <h1 id="who-i-am-heading">
@@ -79,6 +70,5 @@ export default function Page() {
           </div>
         </section>
       </main>
-    </>
   );
 }

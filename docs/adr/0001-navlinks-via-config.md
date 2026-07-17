@@ -1,0 +1,3 @@
+# Per-page NavBar links are declared via `+config.ts`, not `+data.ts`
+
+Each route (homepage, work/@slug, writing/@slug) needs to declare its own set of NavBar Page Links and whether to show the "Get in touch" CTA. `+data.ts` is already used in this codebase for slug-based content lookups (fetching a post by slug), and could plausibly be extended to also carry nav metadata. We chose a static custom Vike config field (extended via `+config.ts` and read in the root `+Layout.tsx` via `usePageContext()`) instead, because nav links are known at build time with no lookup involved — reusing `+data.ts` would blur the line between "fetched content" and "declarative route metadata" and make every future page need a `+data.ts` file just to configure its nav.
