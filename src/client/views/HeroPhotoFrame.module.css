@@ -91,25 +91,6 @@
     pointer-events: none;
 }
 
-.locationDotWrapper {
-    position: relative;
-    flex-shrink: 0;
-    width: 7px;
-    height: 7px;
-}
-
-.locationDotInner {
-    position: absolute;
-    inset: -85.71%;
-}
-
-.locationDotImg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    max-width: none;
-}
-
 .locationText {
     position: relative;
     flex-shrink: 0;

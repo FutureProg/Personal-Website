@@ -121,11 +121,6 @@ export const HeroPhotoFrame = ({className, photo = '/hero-photo.png'}: {classNam
 
             <div className={styles.locationPill}>
                 <div aria-hidden className={styles.locationPillBg} />
-                <div className={styles.locationDotWrapper}>
-                    <div className={styles.locationDotInner}>
-                        <img alt="" className={styles.locationDotImg} src="/location-dot.svg" />
-                    </div>
-                </div>
                 <p className={styles.locationText}>Burlington, Ontario 🇨🇦</p>
                 <div aria-hidden className={styles.locationPillInset} />
             </div>
