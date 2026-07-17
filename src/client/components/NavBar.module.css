@@ -1,15 +1,49 @@
 .siteHeader {
   box-sizing: border-box;
-  position: relative;  
+  position: sticky;
+  top: 0;
+  z-index: 10;
   display: grid;
   grid: subgrid/subgrid;
   grid-area: nav / fullbleed;
 
   justify-content: space-between;
-  align-items: center;  
+  align-items: center;
   padding: 0;
-  border-bottom: var(--border-width-thin) solid var(--nav-border-color);
   height: var(--header-height);
+
+  /* The background/blur/border live on a separate layer so only `opacity`
+     (a compositor-friendly property) needs to animate in on scroll. */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-bottom: var(--border-width-thin) solid var(--nav-border-color);
+    background: var(--bg-primary);
+    background: color-mix(in oklch, var(--bg-primary) 80%, transparent);
+    backdrop-filter: var(--glass-blur-nav);
+    -webkit-backdrop-filter: var(--glass-blur-nav);
+  }
+
+  @supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+    &::before {
+      opacity: 0;
+      animation-name: reveal-header-chrome;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(block root);
+      animation-range: 0px 40px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::before {
+        animation: none;
+        opacity: 1;
+      }
+    }
+  }
 
   .logo {
     grid-area: nav / main;
@@ -22,6 +56,12 @@
       display: block;
       height: 100%;
     }
+  }
+}
+
+@keyframes reveal-header-chrome {
+  to {
+    opacity: 1;
   }
 }
 
