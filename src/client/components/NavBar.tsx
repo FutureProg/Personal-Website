@@ -7,7 +7,7 @@ import { IconButton } from './IconButton';
 import { NavDrawer } from './NavDrawer';
 import styles from './NavBar.module.css';
 
-const iconMaskStyle = (icon: string): CSSProperties => ({ '--icon-url': `url(${icon})` } as CSSProperties);
+const iconMaskStyle = (icon: string): CSSProperties => ({ '--icon-url': `url("${icon}")` } as CSSProperties);
 
 export type NavLink = {
   label: string;
