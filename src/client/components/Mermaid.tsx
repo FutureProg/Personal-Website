@@ -116,6 +116,7 @@ export const Mermaid = ({ chart }: MermaidProps) => {
       <Modal
         open={expanded}
         onClose={() => setExpanded(false)}
+        contentClassName={styles.popupContentView}
         label="Diagram viewer"
         headerActions={
           <>
@@ -139,7 +140,12 @@ export const Mermaid = ({ chart }: MermaidProps) => {
               Use arrow keys to pan.
             </span>
             <TransformWrapper ref={transformRef} centerOnInit>
-              <TransformComponent wrapperStyle={{ width: '100%', height: '100%' }}>{diagram}</TransformComponent>
+              <TransformComponent
+                wrapperStyle={{ width: '100%', height: '100%' }}
+                contentStyle={{ width: '100%', height: '100%' }}
+              >
+                {diagram}
+              </TransformComponent>
             </TransformWrapper>
           </div>
         )}
